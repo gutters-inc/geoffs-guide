@@ -27,6 +27,7 @@ function renderRaceDay(){
    if(scenario.preferTrack)causes.push('Flemington history preferred');
    if(scenario.handicap)causes.push(`Weight assumption: ${h.scenarioWeight??h.weight}kg`);
    if(h.drawBonus)causes.push(`${signedChange(h.drawBonus)}L gate assumption`);
+   if(h.crowdBonus){const support=currentCrowd().support[h.name];causes.push(`+${h.crowdBonus.toFixed(2)}L crowd boost · ${support?.guides.join(', ')||'published first picks'}`)}
    if(h.manualBonus)causes.push(`${signedChange(h.manualBonus)}L personal adjustment`);
    if(b&&h.jockey!==b.jockey)causes.push(`Jockey changed to ${h.jockey} · no automatic bonus`);
    if(!causes.length)causes.push(Math.abs(delta)>.005?'Updated field changes the connected comparison.':'No rating adjustment applied.');

@@ -10,7 +10,7 @@ function openMethod(){ $('method').open=true;$('method').scrollIntoView({behavio
 $('methodButton').onclick=openMethod;$('ratingHelp').onclick=openMethod;
 function chooseRace(n){
   if(pendingFrame!==null&&typeof cancelAnimationFrame==='function')cancelAnimationFrame(pendingFrame);pendingFrame=null;
-  race=data.races.find(r=>r.number===n);if(typeof syncLiveForRace==='function')syncLiveForRace();baseline=M.rate(graph,originalData.races.find(r=>r.number===race.number));ranked=M.rate(graph,race,scenario);selected=active()[0]?.name||ranked[0]?.name;
+  race=data.races.find(r=>r.number===n);if(typeof syncLiveForRace==='function')syncLiveForRace();baseline=M.rate(graph,originalData.races.find(r=>r.number===race.number));ranked=M.rate(graph,race,scenarioWithCrowd());selected=active()[0]?.name||ranked[0]?.name;
   $('raceTabs').innerHTML=data.races.map(r=>`<button class="race-tab ${r.number===n?'active':''}" aria-pressed="${r.number===n}" data-race="${r.number}"><span class="tab-number">R${r.number} ${r.number===n?'<span>↗</span>':''}</span><span class="tab-name">${esc(r.name)}</span><span class="tab-time">${r.time} AEDT</span></button>`).join('');
   document.querySelectorAll('[data-race]').forEach(b=>b.onclick=()=>chooseRace(+b.dataset.race));
   $('raceMeta').textContent=`RACE ${n.toString().padStart(2,'0')} / ${race.time} AEDT`;$('raceName').textContent=race.name;

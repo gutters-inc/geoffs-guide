@@ -1,7 +1,7 @@
 let lastAction='',lastEditRows=null,editKey=null,pendingFrame=null,dialogReturnFocus=null;
 const signedChange=n=>Math.abs(n)<.005?'0.00':`${n>0?'+':'−'}${Math.abs(n).toFixed(Math.abs(n)<1?2:1)}`;
 const ratingMap=rows=>new Map(rows.filter(h=>h.eligible).map((h,i)=>[h.name,{...h,rank:i+1}]));
-function scenarioActive(){return scenario.going!=='all'&&scenario.groundStrength>0||scenario.preferTrack||scenario.handicap||!!scenario.drawBias||race.horses.some(h=>Number(scenario.overrides[h.name]?.bonus))}
+function scenarioActive(){return scenario.going!=='all'&&scenario.groundStrength>0||scenario.preferTrack||scenario.handicap||!!scenario.drawBias||!!scenario.crowdEnabled&&typeof currentCrowd==='function'&&currentCrowd().guideCount>0||race.horses.some(h=>Number(scenario.overrides[h.name]?.bonus))}
 function syncRoute(){if(race)history.replaceState(null,'',`#race-${race.number}${experience==='form'?'':'/'+experience}`)}
 function setExperience(value,sync=true){
   const previous=experience;
@@ -34,9 +34,9 @@ function renderConnectionsMeta(){
   document.getElementById('connectionsBadge').textContent=`${pairs} direct ${pairs===1?'pair':'pairs'}`;
 }
 function renderScenarioControls(){
-  for(const [id,key] of [['goingInput','going'],['drawInput','drawBias'],['kgInput','kgFactor'],['groundStrength','groundStrength']])document.getElementById(id).value=String(scenario[key]);
+  for(const [id,key] of [['goingInput','going'],['drawInput','drawBias'],['kgInput','kgFactor'],['groundStrength','groundStrength']]){const el=document.getElementById(id),value=String(scenario[key]);if(![...el.options].some(o=>o.value===value)){const option=document.createElement('option');option.value=value;option.textContent=key==='drawBias'?`Current gate assumption · ${Number(value).toFixed(2)}L`: `Saved setting · ${value}`;el.appendChild(option)}el.value=value;}
   document.getElementById('trackInput').checked=scenario.preferTrack;document.getElementById('handicapInput').checked=scenario.handicap;
-  editKey=null;lastAction='';lastEditRows=null;renderControlState();renderAdjustmentRows();renderScenarioStatus();
+  editKey=null;lastAction='';lastEditRows=null;renderControlState();renderAdjustmentRows();renderScenarioStatus();renderCrowdControls();
 }
 function renderControlState(){
   const groundOn=scenario.going!=='all';
@@ -50,7 +50,7 @@ function renderControlState(){
   document.getElementById('trackHint').textContent=scenario.preferTrack?'Flemington runs: full influence. Other tracks: 50%.':'Off · every track keeps its normal influence.';
   const bias=Number(scenario.drawBias);document.getElementById('drawOutput').textContent=bias?`${bias<0?'Inside':'Outside'} +${Math.abs(bias).toFixed(1)}L`:'Neutral · no draw edge';
   document.getElementById('drawInput').setAttribute('aria-valuetext',document.getElementById('drawOutput').textContent);
-  document.getElementById('drawHint').textContent=bias?`${Math.abs(bias).toFixed(1)}L advantage at the ${bias<0?'inside':'outside'} end; the same penalty at the other end.`:'Start at “No edge”. Use the presets for a small 0.25-length assumption, or fine-tune below.';
+  document.getElementById('drawHint').textContent=bias?`${Math.abs(bias).toFixed(1)}L advantage at the ${bias<0?'inside':'outside'} end; the same penalty at the other end.`:'Choose no advantage unless you have a reason to favour inside or outside gates.';
 }
 function renderScenarioStatus(){
   const labels=[];
@@ -58,6 +58,7 @@ function renderScenarioStatus(){
   if(scenario.preferTrack)labels.push('Flemington form preferred');
   if(scenario.handicap)labels.push(`Weights · ${Number(scenario.kgFactor).toFixed(2)}L/kg`);
   if(scenario.drawBias)labels.push(`${scenario.drawBias<0?'Inside':'Outside'} +${Math.abs(scenario.drawBias).toFixed(1)}L`);
+  if(scenario.crowdEnabled)labels.push(`Published tips · ${currentCrowd().guideCount} active guides`);
   const n=race.horses.filter(h=>!h.scratched&&!h.emergency&&(Number(scenario.overrides[h.name]?.bonus)||scenario.handicap&&Number.isFinite(scenario.overrides[h.name]?.weight)&&scenario.overrides[h.name].weight!==h.weight)).length;
   if(n)labels.push(`${n} custom runner ${n===1?'adjustment':'adjustments'}`);
   document.getElementById('scenarioStatus').innerHTML=`<span class="scenario-dot ${scenarioActive()?'':'baseline-dot'}"></span><b>${scenarioActive()?'Your scenario is active':'No active assumptions'}</b><span>${esc(labels.length?labels.join(' · '):'No adjustments applied. Start with the ground or carried weight.')}</span>`;
@@ -100,8 +101,8 @@ function updateScenario(action,commit){
   }else if(pendingFrame===null)pendingFrame=requestAnimationFrame(()=>{pendingFrame=null;applyScenario()});
 }
 function applyScenario(){
-  saveScenario();ranked=M.rate(graph,race,scenario);
-  renderVerdict();renderRankings();renderDetail();renderNewViews();renderScenarioStatus();renderControlState();renderAdjustmentFeedback();renderImpact();renderTipSummary();renderLadder();if(typeof renderLive==='function')renderLive();if(typeof renderRaceDay==='function')renderRaceDay();
+  saveScenario();ranked=M.rate(graph,race,scenarioWithCrowd());
+  renderVerdict();renderRankings();renderDetail();renderNewViews();renderScenarioStatus();renderControlState();renderCrowdControls();renderAdjustmentFeedback();renderImpact();renderTipSummary();renderLadder();if(typeof renderLive==='function')renderLive();if(typeof renderRaceDay==='function')renderRaceDay();
 }
 function renderImpact(){
   const current=ratingMap(ranked),base=ratingMap(baseline),leader=active()[0];if(!leader)return;
@@ -114,7 +115,7 @@ function renderImpact(){
     const old=ratingMap(lastEditRows),diffs=active().map(h=>({h,delta:h.score-(old.get(h.name)?.score??h.score)})).sort((a,b)=>Math.abs(b.delta)-Math.abs(a.delta)),big=diffs[0];
     const oldLeader=lastEditRows.find(h=>h.eligible),newLeader=oldLeader?.name!==leader.name;
     note.innerHTML=`<span class="live-dot"></span><b>${esc(lastAction)}</b><span>${Math.abs(big.delta)<.005?'No measurable rating change. Try another assumption or a larger adjustment.':`${esc(big.h.display)} ${signedChange(big.delta)} pts from this change. ${newLeader?`${esc(leader.display)} is now the leader.`:'Leader unchanged.'}`}</span>`;
-  }else note.innerHTML='<span class="live-dot"></span><b>Live impact</b><span>Drag a slider or edit a runner. Changes appear as you move.</span>';
+  }else note.innerHTML='<span class="live-dot"></span><b>Live impact</b><span>Choose a setting or tick a signal. See the effect against the original form.</span>';
   if(scenario.going!=='all'&&scenario.groundStrength>0){const missing=active().filter(h=>h.goingRuns===0).length;if(missing)note.innerHTML+=`<small class="impact-evidence">${missing} runners have no available ${esc(scenario.going.toLowerCase())}-ground start. A score moving up can reflect weaker evidence, not proven ground suitability.</small>`}
 }
 function renderNewViews(){renderSimple();renderFormVisual()}
@@ -141,7 +142,7 @@ for(const [id,tab] of [['simpleMode','form'],['raceDayMode','race-day'],['valueM
   const b=document.getElementById(id);b.onclick=()=>setExperience(tab);
   b.onkeydown=e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();const tabs=['form','race-day','value','connections'],target=e.key==='Home'?'form':e.key==='End'?'connections':tabs[(tabs.indexOf(experience)+(e.key==='ArrowRight'?1:3))%4];setExperience(target);document.getElementById({form:'simpleMode','race-day':'raceDayMode',value:'valueMode',connections:'exploreMode'}[target]).focus?.()}};
 }
-const controlBindings=[['goingInput','going','Ground preference'],['groundStrength','groundStrength','Matching-ground strength'],['drawInput','drawBias','Draw advantage'],['trackInput','preferTrack','Flemington preference'],['handicapInput','handicap','Carried-weight adjustment'],['kgInput','kgFactor','Weight sensitivity']];
+const controlBindings=[['goingInput','going','Ground preference'],['groundStrength','groundStrength','Matching-ground strength'],['drawInput','drawBias','Draw advantage'],['trackInput','preferTrack','Flemington preference'],['handicapInput','handicap','Carried-weight adjustment'],['kgInput','kgFactor','Weight sensitivity'],['crowdInput','crowdEnabled','Published-tip crowd boost'],['crowdStrength','crowdStrength','Crowd influence']];
 for(const [id,key,label] of controlBindings){
   const el=document.getElementById(id),read=commit=>{if(typeof livePrefs!=='undefined'){if(key==='going')livePrefs.followTrack=false;if(key==='drawBias')livePrefs.learnDraw=false;saveLivePrefs()}beginEdit(id);scenario[key]=el.type==='checkbox'?el.checked:key==='going'?el.value:Number(el.value);updateScenario(label,commit)};
   el.oninput=()=>read(false);el.onchange=()=>read(true);

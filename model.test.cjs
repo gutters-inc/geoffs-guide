@@ -54,3 +54,18 @@ assert.equal(raw({going:'Good',groundStrength:0}),raw({}),'Zero ground preferenc
 assert.equal(M.weight(sample,2000,{going:'Good',groundStrength:1}),0,'Maximum matching preference excludes nonmatching ground');
 assert(M.weight(sample,2000,{going:'Good',groundStrength:.2})>M.weight(sample,2000,{going:'Good',groundStrength:.8}),'Sensitivity changes evidence smoothly');
 console.log('PASS: neutral scenario, handicap direction and zero coefficient, draw bias, manual lengths, ground reweighting, sparse-ground flag and unchanged results.');
+
+// Shared groups and duplicate guide identities cannot create extra crowd votes.
+const voices=[{id:'one',name:'One',group:'Shared',picks:{1:'A'}},{id:'two',name:'Two',group:'Shared',picks:{1:'A'}},{id:'three',name:'Three',group:'Other',picks:{1:'B'}},{id:'abstain',name:'Abstain',picks:{1:null}}];
+const consensus=M.crowd([...voices,voices[0]],race,{strength:.5});
+assert.equal(consensus.guideCount,3);assert.equal(consensus.groupCount,2);
+assert.equal(consensus.bonuses.A,.25);assert.equal(consensus.bonuses.B,.25);
+assert.equal(consensus.bonuses.C,undefined);
+const withVotes=M.rate(g,race,{crowdBonuses:consensus.bonuses});
+assert.equal(withVotes.find(h=>h.name==='A').crowdBonus,.25);
+assert.equal(M.rate(g,race,{crowdBonuses:{D:.5}}).find(h=>h.name==='D').crowdBonus,0,'Missing form must not acquire an average plus a crowd bonus');
+assert.equal(M.crowd(voices,race,{excludedGuides:['one','two','three']}).guideCount,0);
+const scratchedRace={...race,horses:race.horses.map(h=>({...h,scratched:h.name==='A'}))};
+assert.equal(M.crowd(voices,scratchedRace).bonuses.A,undefined);
+assert.equal(M.crowd(voices,race,{strength:10}).bonuses.A,.375);
+console.log('PASS: crowd deduplication, group discounting, exclusions, missing-form protection and bounded boosts.');

@@ -1,5 +1,5 @@
 let media={},baseline=[],experience='form',userPhotos={};
-const defaults=()=>({going:'all',groundStrength:.7,preferTrack:false,handicap:false,kgFactor:.5,drawBias:0,overrides:{}});
+const defaults=()=>({going:'all',groundStrength:.7,preferTrack:false,handicap:false,kgFactor:.5,drawBias:0,crowdEnabled:false,crowdStrength:.5,excludedGuides:[],overrides:{}});
 let scenario=defaults();
 try{const saved=JSON.parse(localStorage.getItem('oaks-scenario-v1')||'null');if(saved&&typeof saved==='object'){scenario={...defaults(),...saved};scenario.overrides=saved.overrides&&typeof saved.overrides==='object'?saved.overrides:{}}}catch{}
 function saveScenario(){try{localStorage.setItem('oaks-scenario-v1',JSON.stringify(scenario))}catch{}}

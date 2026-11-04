@@ -51,6 +51,19 @@
     const trackFactor=scenario.preferTrack&&!/^flemington$/i.test(edge.race.track) ? .5 : 1;
     return Math.pow(.5,days/45)*Math.exp(-Math.abs(Math.log(distance/edge.race.distance))/.7)/Math.max(1,edge.race.results.size-1)*goingFactor*trackFactor;
   }
+  function crowd(sources,race,options={}){
+    const key=s=>String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,''),excluded=new Set(options.excludedGuides||[]),seen=new Set(),groups=new Map(),support={},bonuses={};
+    for(const source of sources||[]){
+      if(!source.id||seen.has(source.id)||excluded.has(source.id))continue;seen.add(source.id);
+      const pick=source.picks?.[String(race.number)],h=pick&&race.horses.find(h=>key(h.name)===key(pick));
+      if(!h||h.scratched||h.emergency)continue;
+      const group=source.group||source.id;if(!groups.has(group))groups.set(group,[]);groups.get(group).push({source,h});
+    }
+    let guideCount=0;for(const voters of groups.values())for(const {source,h} of voters){guideCount++;if(!support[h.name])support[h.name]={weight:0,guides:[]};support[h.name].weight+=1/voters.length;support[h.name].guides.push(source.name)}
+    const max=Number.isFinite(options.strength)?Math.max(0,Math.min(.75,options.strength)):.5;
+    for(const [name,s] of Object.entries(support))bonuses[name]=groups.size?max*s.weight/groups.size:0;
+    return {bonuses,support,guideCount,groupCount:groups.size};
+  }
   function rate(graph,race,scenario={}){
     const overrides=scenario.overrides||{};
     const targets=new Map(race.horses.map(h=>[h.name,Number.isFinite(overrides[h.name]?.weight)?overrides[h.name].weight:h.weight]));
@@ -86,8 +99,9 @@
       const evidence=conditionSparse?'Sparse':relevantRuns>=3&&direct>=2?'Supported':relevantRuns>=2?'Limited':'Sparse';
       const manualBonus=Math.max(-5,Math.min(5,Number(overrides[h.name]?.bonus)||0));
       const drawBonus=maxBarrier>minBarrier?(Number(scenario.drawBias)||0)*(2*(h.barrier-minBarrier)/(maxBarrier-minBarrier)-1):0;
-      const raw=(ratings.get(h.name)||0)+manualBonus+drawBonus;
-      return {...h,raw,score:50+45*Math.tanh(raw/4),direct,runs:connectedRuns.size,relevantRuns,evidence,component:graph.components.get(h.name),eligible:!h.scratched&&!h.emergency,edges,goingRuns,trackRuns,manualBonus,drawBonus,scenarioWeight:targets.get(h.name)};
+      const crowdBonus=!h.scratched&&!h.emergency&&connectedRuns.size?Math.max(0,Math.min(.75,Number(scenario.crowdBonuses?.[h.name])||0)):0;
+      const raw=(ratings.get(h.name)||0)+manualBonus+drawBonus+crowdBonus;
+      return {...h,raw,score:50+45*Math.tanh(raw/4),direct,runs:connectedRuns.size,relevantRuns,evidence,component:graph.components.get(h.name),eligible:!h.scratched&&!h.emergency,edges,goingRuns,trackRuns,manualBonus,drawBonus,crowdBonus,scenarioWeight:targets.get(h.name)};
     }).sort((a,b)=>Number(b.eligible)-Number(a.eligible)||b.raw-a.raw||a.number-b.number);
   }
   function path(graph,from,to,max=3){
@@ -127,5 +141,5 @@
     if(steps){const forward=steps.every(s=>s.delta>=0)&&steps.some(s=>s.delta>0),reverse=steps.every(s=>s.delta<=0)&&steps.some(s=>s.delta<0);const commonRival=steps.length===2?steps[0].to:null;const marginRead=commonRival?steps[0].delta+steps[1].delta:null;return {kind:'indirect',direction:forward?'supports':reverse?'opposes':'mixed',steps,commonRival,marginRead};}
     return {kind:graph.components.get(a)===graph.components.get(b)?'long-chain':'disconnected',direction:'uncertain',steps:null};
   }
-  const api={build,rate,path,wins,weight,title,ground,comparison};root.FormModel=api;if(typeof module!=='undefined')module.exports=api;
+  const api={build,crowd,rate,path,wins,weight,title,ground,comparison};root.FormModel=api;if(typeof module!=='undefined')module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);

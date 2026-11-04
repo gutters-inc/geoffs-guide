@@ -49,7 +49,7 @@ function acceptLiveMeeting(feed){
  for(const result of incoming){if(!liveFresh(result))continue;const target=data.races.find(r=>r.number===result.number);if(!target)continue;
   for(const h of target.horses){const update=result.runners.find(x=>x.number===h.number&&LiveForm.key(x.name)===LiveForm.key(h.name));if(!update)continue;h.scratched=update.scratched;if(update.jockey)h.jockey=M.title(update.jockey);if(Number.isFinite(update.weight)&&update.weight>=45&&update.weight<=75)h.weight=update.weight;if(Number.isFinite(update.barrier)&&update.barrier>0)h.barrier=update.barrier;/* Emergency promotion requires a confirmed final field, not absence of a marker. */}
  }
- syncLiveForRace();baseline=M.rate(graph,originalData.races.find(r=>r.number===race.number));selected=selected&&race.horses.some(h=>h.name===selected)?selected:race.horses[0]?.name;ranked=M.rate(graph,race,scenario);renderScenarioControls();applyScenario();renderTips();if(typeof renderRaceFacts==='function')renderRaceFacts();renderLive();
+ syncLiveForRace();baseline=M.rate(graph,originalData.races.find(r=>r.number===race.number));selected=selected&&race.horses.some(h=>h.name===selected)?selected:race.horses[0]?.name;ranked=M.rate(graph,race,scenarioWithCrowd());renderScenarioControls();applyScenario();renderTips();if(typeof renderRaceFacts==='function')renderRaceFacts();renderLive();
 }
 async function refreshLive(){
  if(liveBusy||!race)return;liveBusy=true;renderLive();

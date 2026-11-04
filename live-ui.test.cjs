@@ -51,14 +51,14 @@ setTimeout(()=>{
   document.querySelector('[data-ladder-horse="DE ARMAS"]').onclick();assert(document.getElementById('runnerDialog').hasAttribute('open'));document.getElementById('closeRunner').onclick();assert(!document.getElementById('runnerDialog').hasAttribute('open'));
   document.getElementById('previousRace').onclick();assert.equal(document.getElementById('mobileRaceSelect').value,'7');document.getElementById('nextRace').onclick();assert.equal(document.getElementById('mobileRaceSelect').value,'8');
   assert(document.getElementById('scenarioSettings').hasAttribute('open'));
-  assert.equal(document.querySelectorAll('.control-group').length,3);
+  assert.equal(document.querySelectorAll('.control-group').length,4);
   const stamp=new Date().toISOString();
   context.liveFixture={date:'2026-11-05',checked:stamp,errors:[],races:[{number:8,checked:stamp,condition:'Soft6',status:'pending',distance:2500,source:'https://www.tabtouch.com.au/racing/2026-11-05/mr/8',winners:[],runners:data.races[7].horses.map(h=>({...h,scratched:h.name==='DE ARMAS'?true:h.scratched}))}]};
   vm.runInContext('livePrefs.followTrack=true;acceptLiveMeeting(liveFixture)',context);
   assert.equal(vm.runInContext('scenario.going',context),'Soft');
   assert.equal(vm.runInContext('active().some(h=>h.name==="DE ARMAS")',context),false);
   assert(document.getElementById('liveTrack').textContent.includes('Soft6'));
-  document.querySelector('[data-ground-preset="Heavy"]').onclick();
+  const groundSelect=document.getElementById('goingInput');groundSelect.value='Heavy';groundSelect.onchange();
   assert.equal(vm.runInContext('scenario.going',context),'Heavy');assert.equal(vm.runInContext('livePrefs.followTrack',context),false);
   vm.runInContext('acceptLiveMeeting(liveFixture)',context);assert.equal(vm.runInContext('scenario.going',context),'Heavy');
   document.getElementById('resetScenario').onclick();assert.equal(vm.runInContext('scenario.going',context),'all');assert.equal(vm.runInContext('livePrefs.followTrack',context),false);
@@ -92,6 +92,27 @@ setTimeout(()=>{
   assert(!document.getElementById('liveEmpty').hidden);
   assert(document.getElementById('liveEmpty').textContent.includes('not confirmed'));
   assert(document.querySelectorAll('.page-tabs [role="tab"]').length===4);
+  // Dropdowns replace every slider; crowd support changes only adjusted ratings.
+  assert.equal(document.querySelector('input[type="range"]'),null);
+  for(const id of ['drawInput','groundStrength','kgInput'])assert.equal(document.getElementById(id).tagName,'SELECT');
+  vm.runInContext('chooseRace(7)',context);
+  const crowdBaseline=vm.runInContext('JSON.stringify(baseline.map(h=>[h.name,h.raw]))',context);
+  const unboosted=vm.runInContext('ranked.find(h=>h.name==="SEQUINNED").raw',context);
+  const crowdCheck=document.getElementById('crowdInput');crowdCheck.checked=true;crowdCheck.onchange();
+  assert(vm.runInContext('ranked.find(h=>h.name==="SEQUINNED").raw',context)>unboosted);
+  assert.equal(vm.runInContext('JSON.stringify(baseline.map(h=>[h.name,h.raw]))',context),crowdBaseline);
+  document.getElementById('showDayField').onclick();
+  assert(document.getElementById('raceDayMoves').textContent.includes('crowd boost'));
+  const beforeExclude=vm.runInContext('currentCrowd().guideCount',context);
+  const voice=document.querySelector('[data-crowd-guide="timms"]');voice.checked=false;voice.onchange();
+  assert.equal(vm.runInContext('currentCrowd().guideCount',context),beforeExclude-1);
+  const strength=document.getElementById('crowdStrength');strength.value='0.75';strength.onchange();
+  assert.equal(vm.runInContext('scenario.crowdStrength',context),0.75);
+  crowdCheck.checked=false;crowdCheck.onchange();
+  assert.equal(vm.runInContext('ranked.find(h=>h.name==="SEQUINNED").raw',context),unboosted);
+  assert.equal(document.getElementById('crowdStrength').disabled,true);
+  document.getElementById('resetScenario').onclick();assert.equal(vm.runInContext('scenario.crowdEnabled',context),false);
+
 
 
   console.log('PASS: all nine mobile fields, 12 source identities, tips-only layout, no-bet/scratched exclusions, price UI removal, ladder evidence/expansion, fixed baseline / separate Race-day moves, preserved scenario controls, comparisons, navigation and runner sheet. DOM logic only; rendered browser QA unavailable.');
