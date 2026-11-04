@@ -23,3 +23,7 @@ Review new source fields, scratchings and data before republishing. There is no 
 Slider and numeric input events recalculate live, coalesced to animation frames. Edits preserve the focused input node. The impact dashboard reports the actual leader, rank changes, biggest gain/drop against baseline, and the effect of the current edit relative to its starting point. Invalid values keep the last valid model input and show an inline error. Disabled controls explain their dependency. A matching-ground strength of 0 restores baseline influence and 100% removes other-ground observations. A zero-observation warning prevents interpreting weaker evidence as proven suitability.
 
 The focused form chart uses a labelled field-specific scale by default; the full 0–100 scale remains available. It changes the presentation only. Ratings are not amplified to create visual movement. The two page tabs have proper tab/panel semantics and arrow-key navigation. Direct URLs use `#race-8/connections` (and equivalents for other races).
+
+## Mobile-only product constraint
+
+The user confirmed this guide is used only on mobile. Keep the phone layout at every viewport, with a 520px maximum reading column. `mobile.css` supplies safe-area-aware bottom tabs, a sticky native race picker, 48px touch targets, 16px input text, stacked ranking/adjustment cards and a bottom-sheet runner dialog. `mobile.js` provides readable connection and head-to-head lists; the wide map and full matrix are optional, locally scrollable details. Preserve this constraint in future changes.

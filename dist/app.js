@@ -19,7 +19,7 @@ function chooseRace(n){
   const options=ranked.map(h=>`<option value="${esc(h.name)}">${h.number}. ${esc(h.display)}${h.scratched?' · SCR':h.emergency?' · Emergency':''}</option>`).join('');
   $('horseA').innerHTML=options;$('horseB').innerHTML=options;
   $('horseA').value=selected;$('horseB').value=active()[1]?.name||selected;
-  renderVerdict();renderRankings();renderDetail();renderPath();renderScenarioControls();renderNewViews();renderImpact();renderConnectionsMeta();renderMatrix();
+  renderVerdict();renderRankings();renderDetail();renderPath();renderScenarioControls();renderNewViews();renderImpact();renderConnectionsMeta();renderMatrix();syncMobileRace();renderMobileNetwork();
   syncRoute();
 }
 function renderVerdict(){
@@ -47,7 +47,7 @@ function renderRankings(){
   document.querySelectorAll('[data-horse]').forEach(b=>b.onclick=()=>inspectRunner(b.dataset.horse));
   $('rankingNote').innerHTML=`${componentCount()>1?`<div class="group-warning">${componentCount()} separate network groups in this field. Ranking across groups is provisional; a disconnected horse is not proven inferior.</div>`:''}Each rival is counted once, even if they met repeatedly. Emergencies and scratchings are excluded from the verdict. Click any runner to inspect its history.`;
 }
-function selectHorse(n){selected=n;if([...$('horseA').options].some(o=>o.value===n)){$('horseA').value=n;if($('horseB').value===n)$('horseB').value=active().find(h=>h.name!==n)?.name||n}renderRankings();renderDetail();renderPath();renderFormVisual()}
+function selectHorse(n){selected=n;if([...$('horseA').options].some(o=>o.value===n)){$('horseA').value=n;if($('horseB').value===n)$('horseB').value=active().find(h=>h.name!==n)?.name||n}renderRankings();renderDetail();renderPath();renderFormVisual();renderMobileNetwork()}
 function renderDetail(){
   const h=ranked.find(h=>h.name===selected)||graph.nodes.get(selected)?.horse;
   if(!h){$('horseDetail').innerHTML=`<h3>${esc(display(selected))}</h3><p class="section-description">Historical common rival. Only results evidenced by today’s runners’ form are included.</p>`;return}

@@ -35,11 +35,14 @@ function renderSimple(){
 }
 function renderMatrix(){
   const horses=active().slice().sort((a,b)=>a.number-b.number);
-  document.getElementById('matrixVisual').innerHTML=`<div class="matrix-scroll"><table class="h2h-matrix"><thead><tr><th>ROW HORSE ↓ / RIVAL →</th>${horses.map(h=>`<th title="${esc(h.display)}">${silk(h)}<span>${h.number}</span></th>`).join('')}</tr></thead><tbody>${horses.map(h=>`<tr><th><button data-matrix-runner="${esc(h.name)}">${silk(h)}<span>${h.number}. ${esc(h.display)}</span></button></th>${horses.map(o=>{
+  const grid=`<div class="matrix-scroll"><table class="h2h-matrix"><thead><tr><th>ROW HORSE ↓ / RIVAL →</th>${horses.map(h=>`<th title="${esc(h.display)}">${silk(h)}<span>${h.number}</span></th>`).join('')}</tr></thead><tbody>${horses.map(h=>`<tr><th><button data-matrix-runner="${esc(h.name)}">${silk(h)}<span>${h.number}. ${esc(h.display)}</span></button></th>${horses.map(o=>{
     if(h.name===o.name)return '<td class="matrix-self">·</td>';
     const edges=graph.adjacency.get(h.name)?.get(o.name)||[],wins=edges.filter(e=>(e.a===h.name?e.delta:-e.delta)>0).length,losses=edges.filter(e=>(e.a===h.name?e.delta:-e.delta)<0).length,ties=edges.length-wins-losses;
     return `<td><button data-match-a="${esc(h.name)}" data-match-b="${esc(o.name)}" class="matrix-cell ${!edges.length?'empty':wins>losses?'win':wins<losses?'loss':'even'}" aria-label="${esc(h.display)} versus ${esc(o.display)}: ${edges.length?`${wins} ahead, ${losses} behind, ${ties} level`:'no direct meeting'}" title="${edges.length?`${edges.length} shared races${ties?`, ${ties} level`:''}`:'No direct meeting'}">${edges.length?`${wins}–${losses}`:'—'}</button></td>`;
   }).join('')}</tr>`).join('')}</tbody></table></div>`;
+  document.getElementById('matrixVisual').innerHTML=`<label class="mobile-field-label">Results for<select id="matchupHorse" aria-label="Choose horse for head-to-head results">${horses.map(h=>`<option value="${esc(h.name)}">${h.number}. ${esc(h.display)}</option>`).join('')}</select></label><div id="mobileMatchups"></div><details class="full-matrix"><summary>Open the full head-to-head grid <span>+</span></summary>${grid}</details>`;
+  document.getElementById('matchupHorse').onchange=renderMobileMatchups;
+  renderMobileMatchups();
   document.querySelectorAll('[data-matrix-runner]').forEach(b=>b.onclick=()=>inspectRunner(b.dataset.matrixRunner));
   document.querySelectorAll('[data-match-a]').forEach(b=>b.onclick=()=>{setExperience('connections');document.getElementById('horseA').value=b.dataset.matchA;document.getElementById('horseB').value=b.dataset.matchB;selected=b.dataset.matchA;renderDetail();renderRankings();renderPath();document.getElementById('pathResult').scrollIntoView?.({behavior:'smooth',block:'center'})});
 }

@@ -4,6 +4,7 @@ const ratingMap=rows=>new Map(rows.filter(h=>h.eligible).map((h,i)=>[h.name,{...
 function scenarioActive(){return scenario.going!=='all'&&scenario.groundStrength>0||scenario.preferTrack||scenario.handicap||!!scenario.drawBias||race.horses.some(h=>Number(scenario.overrides[h.name]?.bonus))}
 function syncRoute(){if(race)history.replaceState(null,'',`#race-${race.number}${experience==='connections'?'/connections':''}`)}
 function setExperience(value,sync=true){
+  const previous=experience;
   experience=['form','simple'].includes(value)?'form':'connections';
   document.body.classList.toggle('simple-mode',experience==='form');
   document.getElementById('formPanel').hidden=experience!=='form';document.getElementById('connectionsPanel').hidden=experience!=='connections';
@@ -11,6 +12,7 @@ function setExperience(value,sync=true){
     const b=document.getElementById(id),on=experience===tab;b.classList.toggle('active',on);b.setAttribute('aria-selected',String(on));b.setAttribute('tabindex',on?'0':'-1');
   }
   if(sync)syncRoute();
+  if(sync&&previous!==experience&&typeof window.scrollTo==='function')window.scrollTo({top:0,behavior:'instant'});
 }
 function inspectRunner(name){
   dialogReturnFocus=document.activeElement;ensureComparisonOption(name);selectHorse(name);

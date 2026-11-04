@@ -10,6 +10,7 @@ const context=vm.createContext({window,document,console,location:{hash:''},histo
 vm.runInContext(fs.readFileSync('dist/model.js','utf8'),context);context.FormModel=window.FormModel;
 vm.runInContext(fs.readFileSync('dist/views.js','utf8'),context);
 vm.runInContext(fs.readFileSync('dist/ux.js','utf8'),context);
+vm.runInContext(fs.readFileSync('dist/mobile.js','utf8'),context);
 vm.runInContext(fs.readFileSync('dist/app.js','utf8'),context);
 setTimeout(()=>{
  try{
@@ -77,6 +78,17 @@ setTimeout(()=>{
   document.getElementById('chartRange').value='field';document.getElementById('chartRange').onchange();
   assert(document.getElementById('visualDescription').textContent.includes('Focused on this field'));
   assert.equal(vm.runInContext('ranked.find(h=>h.name==="DE ARMAS").score',context),before,'Chart zoom must not change ratings');
+  // Phone-first navigation and readable alternatives to the map/grid.
+  assert.equal(document.getElementById('mobileRaceSelect').value,'8');
+  document.getElementById('previousRace').onclick();assert.equal(document.getElementById('raceName').textContent,'Crown Red Roses Stakes');
+  document.getElementById('nextRace').onclick();assert.equal(document.getElementById('mobileRaceSelect').value,'8');
+  document.getElementById('mobileRaceSelect').value='1';document.getElementById('mobileRaceSelect').onchange({target:document.getElementById('mobileRaceSelect')});assert(document.getElementById('previousRace').disabled);
+  vm.runInContext('chooseRace(9)',context);assert(document.getElementById('nextRace').disabled);
+  vm.runInContext('chooseRace(8)',context);
+  assert(document.querySelectorAll('.mobile-connection-row').length>5);assert(document.querySelectorAll('.mobile-matchup-row').length>5);
+  assert(document.querySelector('.full-network #graph'));assert(document.querySelector('.full-matrix .h2h-matrix'));
+  const rival=document.querySelector('[data-mobile-rival="ICELADY"]');rival.onclick();assert(document.getElementById('pathResult').textContent.includes('Icelady'));
+  const match=document.querySelector('[data-mobile-match]');match.onclick();assert(document.getElementById('pathResult').textContent.length>20);
   console.log('PASS: all nine races, shared-runner histories, separate accessible tabs, indirect example, runner dialog, real-time small edits, retained input nodes, validation, sensitivity dependencies, focused chart, matrix drill-down and reset. DOM logic only; visual browser QA unavailable.');
  }catch(e){console.error(e);process.exitCode=1}
 },100);
