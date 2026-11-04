@@ -24,7 +24,37 @@
         "8": "DE ARMAS",
         "9": "BEV'S NINE"
       },
-      "profile": "Full-card column · TAB NZ"
+      "profile": "Full-card column · TAB NZ",
+      "tipNotes": {
+        "1": {
+          "why": "Fitter; reliable second-up record."
+        },
+        "2": {
+          "why": "Consecutive wins; lighter weight."
+        },
+        "3": {
+          "why": "Competitive form; Flemington mile suits."
+        },
+        "4": {
+          "why": "Repeat Empire Rose effort wins."
+        },
+        "5": {
+          "why": "Debut winner; improvement over 1800m."
+        },
+        "6": {
+          "why": "Strong finish against Bendigo’s pattern."
+        },
+        "7": {
+          "why": "Dominant winner; trial maintains fitness.",
+          "run": "Find cover before accelerating."
+        },
+        "8": {
+          "why": "Wakeful winner; distance and backup suit."
+        },
+        "9": {
+          "why": "Close fresh efforts; improvement expected."
+        }
+      }
     },
     {
       "id": "cook",
@@ -47,7 +77,47 @@
         "8": "PROXIMA DEA",
         "9": "REY MAGNERIO"
       },
-      "profile": "Full-card bookmaker column"
+      "profile": "Full-card bookmaker column",
+      "tipNotes": {
+        "1": {
+          "why": "Strong jumpouts.",
+          "ground": "Creditable heavy-track form.",
+          "run": "Use gate; find early cover."
+        },
+        "2": {
+          "why": "Two resuming wins; 1400m suits.",
+          "ground": "Wet conditions potentially advantageous.",
+          "run": "Inside barrier provides cover."
+        },
+        "3": {
+          "why": "Fitness improvement; blinkers."
+        },
+        "4": {
+          "why": "Strong Empire Rose effort.",
+          "ground": null,
+          "run": "Needs cover from tricky gate."
+        },
+        "5": {
+          "why": "Strong Australian debut; proven beyond 2000m."
+        },
+        "6": {
+          "why": "Eye-catching return win.",
+          "ground": "Handles rain-affected going.",
+          "run": "Saved for late from wide alley."
+        },
+        "7": {
+          "why": "Dominant Caulfield win; explosive acceleration."
+        },
+        "8": {
+          "why": "Unbeaten; Derby result strengthens form.",
+          "ground": "Wet or dry suitable.",
+          "run": "Must cross early and secure cover."
+        },
+        "9": {
+          "why": "Fastest final 200m; ready third-up."
+        }
+      },
+      "meetingGround": "Wednesday rain forecast; monitor conditions."
     },
     {
       "id": "page",
@@ -70,7 +140,8 @@
         "8": "DE ARMAS",
         "9": "CAVALRY GIRL"
       },
-      "profile": "Full-card analyst · main selections"
+      "profile": "Full-card analyst · main selections",
+      "tipNotes": {}
     },
     {
       "id": "cody",
@@ -93,7 +164,13 @@
           "ICELADY"
         ]
       },
-      "profile": "Oaks runner-by-runner preview"
+      "profile": "Oaks runner-by-runner preview",
+      "tipNotes": {
+        "8": {
+          "run": "Steady tempo expected; needs cover from wide gate."
+        }
+      },
+      "meetingGround": "Expected Good 4, rail out 6m; monitor showers."
     },
     {
       "id": "gately",
@@ -109,7 +186,9 @@
         "7": "SEQUINNED"
       },
       "note": "Published alternative Cilacap is scratched in the guide’s field snapshot; excluded from active tips.",
-      "profile": "Reported best-bet selections"
+      "profile": "Reported best-bet selections",
+      "tipNotes": {},
+      "meetingGround": "Prepared for Good/Soft; possible improvement during meeting."
     },
     {
       "id": "orwin",
@@ -157,7 +236,16 @@
       "profile": "Full-card analyst · explicit no-bet calls",
       "rationale": {
         "8": "Unbeaten Sydney form, including a line through the Derby winner. The staying trip remains the test."
-      }
+      },
+      "tipNotes": {
+        "2": {
+          "run": "Lead or box-seat from gate two."
+        },
+        "8": {
+          "run": "First test at this staying distance."
+        }
+      },
+      "meetingGround": "Expected Good 4, rail out 6m; monitor showers."
     },
     {
       "id": "curnow",
@@ -186,7 +274,8 @@
           "ICELADY",
           "REFUSE TO CURTSY"
         ]
-      }
+      },
+      "tipNotes": {}
     },
     {
       "id": "ingram",
@@ -267,6 +356,40 @@
       "rationale": {
         "8": "Prefers the Wakeful winner’s class and quick back-up while acknowledging the staying question.",
         "5": "A lighter weight and a forward ride are the appeal for Veyepee."
+      },
+      "tipNotes": {
+        "1": {
+          "why": "Stuck on after working wide."
+        },
+        "2": {
+          "why": "Progressive; stable going well."
+        },
+        "3": {
+          "why": "Maps to a soft lead.",
+          "run": "Soft lead expected."
+        },
+        "4": {
+          "why": "Strong latest run behind leaders."
+        },
+        "5": {
+          "why": "Weight drop; inside draw.",
+          "run": "Forward from inside draw."
+        },
+        "6": {
+          "why": "Promising first-up gap-taking win.",
+          "run": "Stronger class is the test."
+        },
+        "7": {
+          "why": "Strong acceleration; straight looks suitable.",
+          "run": "Outside draw suits straight racing."
+        },
+        "8": {
+          "why": "Wakeful win; quick backup.",
+          "run": "Stamina beyond 2000m remains a query."
+        },
+        "9": {
+          "why": "Published choice now scratched."
+        }
       }
     },
     {
@@ -310,6 +433,11 @@
       },
       "conditional": {
         "1": "Only if Bon Fete gains a start."
+      },
+      "tipNotes": {
+        "8": {
+          "run": "Handy from gate five; proven at 2500m."
+        }
       }
     },
     {
@@ -331,7 +459,8 @@
       },
       "rationale": {
         "8": "Strong Sydney form through Global Goal and Stormy Marco underpins the selection."
-      }
+      },
+      "tipNotes": {}
     },
     {
       "id": "palmer",
@@ -351,7 +480,8 @@
       },
       "rationale": {
         "8": "The unbeaten filly is the leading selection; Quick Finish is the alternative with proven staying form."
-      }
+      },
+      "tipNotes": {}
     },
     {
       "id": "eckford",
@@ -382,7 +512,8 @@
       },
       "rationale": {
         "8": "Quick Finish heads the published Oaks order after the Derby placing."
-      }
+      },
+      "tipNotes": {}
     }
   ],
   "offers": [
