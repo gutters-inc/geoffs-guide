@@ -27,3 +27,21 @@ for(const r of data.races){const ranks=M.rate(actual,r);for(const h of ranks){as
 }
 for(const e of actual.observations){assert(actual.adjacency.get(e.a).has(e.b));assert(e.race.results.has(e.a)&&e.race.results.has(e.b))}
 console.log('PASS: chain direction, depth, missing connections, ratings, reversals, future leakage and all nine race datasets.');
+// Scenario controls change only ratings; observed margins and paths remain intact.
+const weighted={races:[{distance:2000,horses:[
+ {...horse('LIGHT',[{...run('2026-10-20','LIGHT',1,0),weight:'56kg',winnerWeight:56,going:'Soft'}]),weight:56,barrier:1},
+ {...horse('HEAVY',[{...run('2026-10-20','LIGHT',2,1),weight:'56kg',winnerWeight:56,going:'Soft'}]),weight:56,barrier:8}
+]}]};
+const wg=M.build(weighted),wr=weighted.races[0];
+const raw=(options,n='LIGHT')=>M.rate(wg,wr,options).find(h=>h.name===n).raw;
+assert.equal(raw({}),raw({going:'all',handicap:false,drawBias:0,overrides:{}}));
+assert(raw({handicap:true,kgFactor:.5,overrides:{LIGHT:{weight:58}}})<raw({}),'More carried weight must hurt');
+assert(raw({handicap:true,kgFactor:.5,overrides:{LIGHT:{weight:54}}})>raw({}),'Less carried weight must help');
+assert.equal(raw({handicap:true,kgFactor:0,overrides:{LIGHT:{weight:58}}}),raw({}));
+assert.equal(raw({overrides:{LIGHT:{bonus:1}}})-raw({}),1);
+assert.equal(raw({drawBias:-.5})-raw({}),.5);
+assert.equal(raw({drawBias:-.5},'HEAVY')-raw({},'HEAVY'),-.5);
+const sample=wg.observations[0];assert(M.weight(sample,2000,{going:'Soft'})>M.weight(sample,2000,{going:'Good'}));
+assert.equal(M.rate(wg,wr,{going:'Heavy'})[0].evidence,'Sparse');
+assert.equal(M.path(wg,'LIGHT','HEAVY',1)[0].delta,1);
+console.log('PASS: neutral scenario, handicap direction and zero coefficient, draw bias, manual lengths, ground reweighting, sparse-ground flag and unchanged results.');

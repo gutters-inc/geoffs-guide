@@ -1,0 +1,38 @@
+{
+  "DE ARMAS": {
+    "src": "assets/de-armas.jpg",
+    "source": "https://elsdonpark.com/de-armas-delivers-brilliant-gr-2-win/",
+    "credit": "Pat Scala / Racing Photos, via Elsdon Park",
+    "original": "https://cdn.elsdonpark.com/wp-content/uploads/2026/10/14232037/De-Armas-420-2364895.jpg"
+  },
+  "PROXIMA DEA": {
+    "src": "assets/proxima-dea.jpg",
+    "source": "https://www.johntapp.racing/gallops/2026/10/27/proxima-dea-plain-as-day-but-will-stay-till-the-cows-come-home",
+    "credit": "Bradley Photos, via John Tapp Racing",
+    "original": "https://images.squarespace-cdn.com/content/v1/5af00b76da02bc7e4a0b1e47/d75bfbd0-b529-4d47-8651-e21d328a9a99/1+-+Proxima+Dea+looked+almost+nonchalant+as+she+cruised+past+the+post+to+win+the+Spring+Champion+Stakes+-+courtesy+Bradley+Photos.jpg?format=1000w"
+  },
+  "SULEK": {
+    "src": "assets/sulek.jpg",
+    "source": "https://events.loveracing.nz/news/sulek-surges-sandown-success",
+    "credit": "Pat Scala / Racing Photos, via LOVERACING.NZ",
+    "original": "https://events.loveracing.nz/sites/eventsloveracing/files/2025-10/Sulek%20Sandown%201-10-2025.JPG"
+  },
+  "QUICK FINISH": {
+    "src": "assets/quick-finish.jpg",
+    "source": "https://yulonginvest.com.au/quick-finish-stays-strong-and-lives-up-to-her-name-in-the-ethereal-stakes/",
+    "credit": "The Image Is Everything, via Yulong",
+    "original": "https://firebasestorage.googleapis.com/v0/b/tdn-prod.appspot.com/o/image-assets%2Fc87uj5occ-r2_quickfinish_jyemcneil_gw_tiiejpg?alt=media&token=81114ebd-dc5f-47a6-ac5b-7516eede2950"
+  },
+  "ICELADY": {
+    "src": "assets/icelady.jpg",
+    "source": "https://www.anzbloodstocknews.com/its-in-the-blood-icelady/",
+    "credit": "Racing Photos, via ANZ Bloodstock News",
+    "original": "https://www.anzbloodstocknews.com/wp-content/uploads/2026/09/aac_1985_copy.jpg"
+  },
+  "VEYEPEE": {
+    "src": "assets/veyepee.jpg",
+    "source": "https://peterellisracing.com/horse-racing/caulfield-heath-feb-18-selections-by-peter-ellis/",
+    "credit": "Brett Holburt / Racing Photos, via Peter Ellis Racing",
+    "original": "https://cdn.racing.com/-/media/rvphotos/2026/1/26/brh_0558.jpg"
+  }
+}

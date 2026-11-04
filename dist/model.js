@@ -12,11 +12,12 @@
         const key=[run.date,run.track,run.distance,run.raceTime||run.grade].join('|');
         if(!races.has(key))races.set(key,{...run,key,results:new Map()});
         const race=races.get(key);
-        race.results.set(h.name,{name:h.name,pos:run.pos,margin:run.margin});
+        race.results.set(h.name,{name:h.name,pos:run.pos,margin:run.margin,weight:parseFloat(run.weight)||null});
         if(run.winner){
           const winner=norm(run.winner);
           if(!nodes.has(winner))nodes.set(winner,{name:winner,display:title(winner)});
-          race.results.set(winner,{name:winner,pos:1,margin:0});
+          const prior=race.results.get(winner);
+          race.results.set(winner,{name:winner,pos:1,margin:0,weight:run.winnerWeight||prior?.weight||null});
         }
       }
     }
@@ -42,15 +43,24 @@
     }
     return {nodes,races,adjacency,observations,components};
   }
-  function weight(edge,distance){
+  function ground(s){return /heavy/i.test(s)?'Heavy':/soft/i.test(s)?'Soft':/good|firm/i.test(s)?'Good':'Unknown'}
+  function weight(edge,distance,scenario={}){
     const days=(Date.parse(TODAY)-Date.parse(edge.race.date))/86400000;
-    return Math.pow(.5,days/45)*Math.exp(-Math.abs(Math.log(distance/edge.race.distance))/.7)/Math.max(1,edge.race.results.size-1);
+    const goingFactor=!scenario.going||scenario.going==='all'?1:ground(edge.race.going)===scenario.going?1:.3;
+    const trackFactor=scenario.preferTrack&&!/^flemington$/i.test(edge.race.track) ? .5 : 1;
+    return Math.pow(.5,days/45)*Math.exp(-Math.abs(Math.log(distance/edge.race.distance))/.7)/Math.max(1,edge.race.results.size-1)*goingFactor*trackFactor;
   }
-  function rate(graph,race){
+  function rate(graph,race,scenario={}){
+    const overrides=scenario.overrides||{};
+    const targets=new Map(race.horses.map(h=>[h.name,Number.isFinite(overrides[h.name]?.weight)?overrides[h.name].weight:h.weight]));
+    const kgFactor=Number.isFinite(scenario.kgFactor)?Math.max(0,Math.min(1,scenario.kgFactor)):.5;
     const ratings=new Map([...graph.nodes.keys()].map(n=>[n,0]));
     const incident=new Map([...graph.nodes.keys()].map(n=>[n,[]]));
     for(const e of graph.observations){
-      const w=weight(e,race.distance), delta=Math.max(-8,Math.min(8,e.delta));
+      const w=weight(e,race.distance,scenario);
+      const change=name=>{const hist=e.race.results.get(name)?.weight,today=targets.get(name);return hist&&Number.isFinite(today)?hist-today:0};
+      const correction=scenario.handicap?kgFactor*(change(e.a)-change(e.b)):0;
+      const delta=Math.max(-8,Math.min(8,e.delta+correction));
       incident.get(e.a).push({other:e.b,delta,w});incident.get(e.b).push({other:e.a,delta:-delta,w});
     }
     // Coordinate descent minimises sum w*(rA-rB-margin)^2 + .15*sum r^2.
@@ -63,14 +73,20 @@
       if(change<1e-7)break;
     }
     const field=race.horses.filter(h=>!h.scratched&&!h.emergency);
+    const barriers=field.map(h=>h.barrier).filter(Number.isFinite),minBarrier=Math.min(...barriers),maxBarrier=Math.max(...barriers);
     return race.horses.map(h=>{
       const edges=graph.adjacency.get(h.name)||new Map();
       const direct=field.filter(o=>o.name!==h.name&&edges.has(o.name)).length;
       const connectedRuns=new Set([...edges.values()].flat().map(e=>e.race.key));
       const relevantRuns=[...connectedRuns].filter(key=>{const r=graph.races.get(key);return (Date.parse(TODAY)-Date.parse(r.date))/86400000<=90&&Math.abs(Math.log(race.distance/r.distance))<.5}).length;
-      const evidence=relevantRuns>=3&&direct>=2?'Supported':relevantRuns>=2?'Limited':'Sparse';
-      const raw=ratings.get(h.name)||0;
-      return {...h,raw,score:50+45*Math.tanh(raw/4),direct,runs:connectedRuns.size,relevantRuns,evidence,component:graph.components.get(h.name),eligible:!h.scratched&&!h.emergency,edges};
+      const goingRuns=h.history.filter(r=>ground(r.going)===scenario.going).length;
+      const trackRuns=h.history.filter(r=>/^flemington$/i.test(r.track)).length;
+      const conditionSparse=scenario.going&&scenario.going!=='all'&&goingRuns<2||scenario.preferTrack&&trackRuns===0;
+      const evidence=conditionSparse?'Sparse':relevantRuns>=3&&direct>=2?'Supported':relevantRuns>=2?'Limited':'Sparse';
+      const manualBonus=Math.max(-5,Math.min(5,Number(overrides[h.name]?.bonus)||0));
+      const drawBonus=maxBarrier>minBarrier?(Number(scenario.drawBias)||0)*(2*(h.barrier-minBarrier)/(maxBarrier-minBarrier)-1):0;
+      const raw=(ratings.get(h.name)||0)+manualBonus+drawBonus;
+      return {...h,raw,score:50+45*Math.tanh(raw/4),direct,runs:connectedRuns.size,relevantRuns,evidence,component:graph.components.get(h.name),eligible:!h.scratched&&!h.emergency,edges,goingRuns,trackRuns,manualBonus,drawBonus,scenarioWeight:targets.get(h.name)};
     }).sort((a,b)=>Number(b.eligible)-Number(a.eligible)||b.raw-a.raw||a.number-b.number);
   }
   function path(graph,from,to,max=3){
@@ -98,5 +114,5 @@
     }
     return out.sort((a,b)=>b.value-a.value);
   }
-  const api={build,rate,path,wins,weight,title};root.FormModel=api;if(typeof module!=='undefined')module.exports=api;
+  const api={build,rate,path,wins,weight,title,ground};root.FormModel=api;if(typeof module!=='undefined')module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);

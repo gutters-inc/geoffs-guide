@@ -28,9 +28,10 @@ def get(n):
                     margin=float(c[16]); distance=int(c[4])
                     winner=clean(c[15].split(' / ')[0])
                     # A winner's displayed margin is its winning margin, not its deficit.
-                    hist.append(dict(pos=pos,total=total,track=c[1],date=date,distance=distance,grade=c[5],raceTime=c[12],going=c[6],weight=c[9],winner=winner,margin=0 if pos==1 else margin,winMargin=margin if pos==1 else None))
+                    winner_weight=re.search(r'\s(\d+(?:\.\d+)?)kg(?:\s|$)',c[15])
+                    hist.append(dict(pos=pos,total=total,track=c[1],date=date,distance=distance,grade=c[5],raceTime=c[12],going=c[6],weight=c[9],winner=winner,winnerWeight=float(winner_weight[1]) if winner_weight else None,margin=0 if pos==1 else margin,winMargin=margin if pos==1 else None))
                 except (ValueError,IndexError):pass
-        horses.append(dict(number=h['number'],name=clean(h['name']),display=h['name'].title(),barrier=h['barrier'],weight=h['weight'],jockey=h['rider'].title(),trainer=h['trainer'],form=h['last4Starts'],scratched=h.get('isFobScratched',False) or h.get('isToteOff',False),emergency='(EM' in h['name'],history=hist))
+        horses.append(dict(number=h['number'],name=clean(h['name']),display=clean(h['name']).title(),barrier=h['barrier'],weight=h['weight'],jockey=h['rider'].title(),trainer=h['trainer'],form=h['last4Starts'],scratched=h.get('isFobScratched',False) or h.get('isToteOff',False),emergency='(EM' in h['name'],history=hist))
     return dict(number=n,name=names[n-1],time=times[n-1],distance=model['raceInfo']['distance'],going=model['raceInfo']['condition'],source=url,horses=horses)
 with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
     races=sorted(pool.map(get,range(1,10)),key=lambda x:x['number'])

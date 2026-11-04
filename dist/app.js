@@ -9,7 +9,7 @@ const componentCount=()=>new Set(active().map(h=>h.component)).size;
 function openMethod(){ $('method').open=true;$('method').scrollIntoView({behavior:'smooth',block:'start'}) }
 $('methodButton').onclick=openMethod;$('ratingHelp').onclick=openMethod;
 function chooseRace(n){
-  race=data.races.find(r=>r.number===n);ranked=M.rate(graph,race);selected=active()[0]?.name||ranked[0]?.name;
+  race=data.races.find(r=>r.number===n);baseline=M.rate(graph,race);ranked=M.rate(graph,race,scenario);selected=active()[0]?.name||ranked[0]?.name;
   $('raceTabs').innerHTML=data.races.map(r=>`<button class="race-tab ${r.number===n?'active':''}" aria-pressed="${r.number===n}" data-race="${r.number}"><span class="tab-number">R${r.number} ${r.number===n?'<span>↗</span>':''}</span><span class="tab-name">${esc(r.name)}</span><span class="tab-time">${r.time} AEDT</span></button>`).join('');
   document.querySelectorAll('[data-race]').forEach(b=>b.onclick=()=>chooseRace(+b.dataset.race));
   $('raceMeta').textContent=`RACE ${n.toString().padStart(2,'0')} / ${race.time} AEDT`;$('raceName').textContent=race.name;
@@ -18,7 +18,7 @@ function chooseRace(n){
   const options=ranked.map(h=>`<option value="${esc(h.name)}">${h.number}. ${esc(h.display)}${h.scratched?' · SCR':h.emergency?' · Emergency':''}</option>`).join('');
   $('horseA').innerHTML=options;$('horseB').innerHTML=options;
   $('horseA').value=selected;$('horseB').value=active()[1]?.name||selected;
-  renderVerdict();renderRankings();renderDetail();renderPath();
+  renderVerdict();renderRankings();renderDetail();renderPath();renderScenarioControls();renderNewViews();
   history.replaceState(null,'',`#race-${n}`);
 }
 function renderVerdict(){
@@ -26,8 +26,8 @@ function renderVerdict(){
   if(!h){$('verdict').innerHTML='<h3>No confirmed runners</h3>';$('pickReasons').textContent='Check the published field.';return}
   const disconnected=componentCount()>1;
   const noData=h.runs===0;
-  const weak=h.relevantRuns<2||h.raw<=0;
-  $('verdict').innerHTML=`<span class="pick-tag">${noData?'NO USABLE EVIDENCE':weak?'NO RELIABLE PICK':disconnected?'PROVISIONAL FORM LEADER':'TOP ON CONNECTION FORM'} ↗</span><h3>${weak?'Too little to call':esc(h.display)}</h3><div class="pick-subtitle">${weak?`Highest provisional score: ${esc(h.display)}<br>`:''}No. ${h.number} · Barrier ${h.barrier} · ${h.weight}kg<br>${esc(h.jockey)} / ${esc(h.trainer)}</div><div class="rating-row"><strong>${h.runs?h.score.toFixed(1):'—'}</strong><span>/ 95<br>FORM RATING</span></div><div class="evidence-tag">${h.evidence.toUpperCase()} EVIDENCE · ${h.relevantRuns} relevant connected runs</div>${disconnected?'<p class="group-warning">The field spans separate network groups. Scores between those groups are not directly comparable.</p>':''}`;
+  const weak=h.relevantRuns<2||h.raw<=0||(scenario.going!=='all'&&h.goingRuns===0);
+  $('verdict').innerHTML=`<span class="pick-tag">${noData?'NO USABLE EVIDENCE':weak?'NO RELIABLE PICK':disconnected?'PROVISIONAL FORM LEADER':'TOP ON CONNECTION FORM'} ↗</span><h3>${weak?'Too little to call':esc(h.display)}</h3>${scenarioActive()?'<div class="scenario-verdict-tag">YOUR SCENARIO IS APPLIED</div>':''}<div class="pick-subtitle">${weak?`Highest provisional score: ${esc(h.display)}<br>`:''}No. ${h.number} · Barrier ${h.barrier} · ${h.weight}kg<br>${esc(h.jockey)} / ${esc(h.trainer)}</div><div class="rating-row"><strong>${h.runs?h.score.toFixed(1):'—'}</strong><span>/ 95<br>FORM RATING</span></div><div class="evidence-tag">${h.evidence.toUpperCase()} EVIDENCE · ${h.relevantRuns} relevant connected runs</div>${disconnected?'<p class="group-warning">The field spans separate network groups. Scores between those groups are not directly comparable.</p>':''}`;
   const wins=M.wins(graph,h.name,race.distance), reasons=[];
   const used=new Set();
   for(const w of wins){if(used.has(w.edge.race.key))continue;used.add(w.edge.race.key);
@@ -42,15 +42,15 @@ function renderVerdict(){
 }
 function renderRankings(){
   let rank=0;
-  $('rankings').innerHTML=ranked.map(h=>`<tr class="${h.name===selected?'selected ':''}${h.eligible&&rank===0?'top':''}"><td>${h.eligible?String(++rank).padStart(2,'0'):'—'}</td><td><button class="horse-link ${h.scratched?'scratch':''}" data-horse="${esc(h.name)}">${h.number}. ${esc(h.display)}</button><small>${h.scratched?'SCRATCHED':h.emergency?'EMERGENCY · excluded from verdict':`Barrier ${h.barrier} · ${h.weight}kg · ${esc(h.form||'—')}`}</small></td><td><div class="rating-cell"><b>${h.runs?h.score.toFixed(1):'—'}</b><span class="rating-track"><i style="width:${h.runs?h.score:0}%"></i></span></div></td><td>${h.direct} / ${Math.max(0,active().length-(h.eligible?1:0))}</td><td><span class="badge ${h.evidence==='Sparse'?'sparse':''}">${h.evidence}</span></td></tr>`).join('');
+  $('rankings').innerHTML=ranked.map(h=>`<tr class="${h.name===selected?'selected ':''}${h.eligible&&rank===0?'top':''}"><td>${h.eligible?String(++rank).padStart(2,'0'):'—'}</td><td><button class="horse-link ${h.scratched?'scratch':''}" data-horse="${esc(h.name)}">${silk(h)}<span>${h.number}. ${esc(h.display)}</span></button><small>${h.scratched?'SCRATCHED':h.emergency?'EMERGENCY · excluded from verdict':`Barrier ${h.barrier} · ${h.weight}kg · ${esc(h.form||'—')}`}</small></td><td><div class="rating-cell"><b>${h.runs?h.score.toFixed(1):'—'}</b><span class="rating-track"><i style="width:${h.runs?h.score:0}%"></i></span></div></td><td>${h.direct} / ${Math.max(0,active().length-(h.eligible?1:0))}</td><td><span class="badge ${h.evidence==='Sparse'?'sparse':''}">${h.evidence}</span></td></tr>`).join('');
   document.querySelectorAll('[data-horse]').forEach(b=>b.onclick=()=>selectHorse(b.dataset.horse));
   $('rankingNote').innerHTML=`${componentCount()>1?`<div class="group-warning">${componentCount()} separate network groups in this field. Ranking across groups is provisional; a disconnected horse is not proven inferior.</div>`:''}Each rival is counted once, even if they met repeatedly. Emergencies and scratchings are excluded from the verdict. Click any runner to inspect its history.`;
 }
-function selectHorse(n){selected=n;if([...$('horseA').options].some(o=>o.value===n)){$('horseA').value=n;if($('horseB').value===n)$('horseB').value=active().find(h=>h.name!==n)?.name||n}renderRankings();renderDetail();renderPath()}
+function selectHorse(n){selected=n;if([...$('horseA').options].some(o=>o.value===n)){$('horseA').value=n;if($('horseB').value===n)$('horseB').value=active().find(h=>h.name!==n)?.name||n}renderRankings();renderDetail();renderPath();renderFormVisual()}
 function renderDetail(){
   const h=ranked.find(h=>h.name===selected)||graph.nodes.get(selected)?.horse;
   if(!h){$('horseDetail').innerHTML=`<h3>${esc(display(selected))}</h3><p class="section-description">Historical common rival. Only results evidenced by today’s runners’ form are included.</p>`;return}
-  $('horseDetail').innerHTML=`<span class="silk">${h.number}</span><h3>${esc(h.display)}</h3>${h.emergency?'<span class="status-tag">EMERGENCY · NOT IN VERDICT</span>':''}${h.scratched?'<span class="status-tag">SCRATCHED</span>':''}<div class="horse-detail-grid"><div><span>JOCKEY</span><b>${esc(h.jockey)}</b></div><div><span>TRAINER</span><b>${esc(h.trainer)}</b></div><div><span>BARRIER / WEIGHT</span><b>${h.barrier} / ${h.weight}kg</b></div><div><span>RECENT FORM</span><b>${esc(h.form||'—')}</b></div></div><div class="history-title">AVAILABLE RECENT STARTS</div>${h.history.length?h.history.map(r=>`<div class="history-item"><span class="history-pos">${r.pos}<small>/${r.total}</small></span><div><strong>${esc(r.track)} · ${r.distance}m</strong><small>${shortDate(r.date)} 2026 · ${esc(r.going)} · ${esc(r.grade)}</small><span class="deficit">${r.pos===1?`Won${r.winMargin?' by '+fmt(r.winMargin)+'L':''}`:`${fmt(r.margin)}L behind ${esc(M.title(r.winner))}`}</span></div></div>`).join(''):'<p class="section-description">No usable recent race starts in the source. Trials are excluded.</p>'}`;
+  $('horseDetail').innerHTML=`${horsePhoto(h,'detail')}${silk(h,'large')}<h3>${esc(h.display)}</h3>${h.emergency?'<span class="status-tag">EMERGENCY · NOT IN VERDICT</span>':''}${h.scratched?'<span class="status-tag">SCRATCHED</span>':''}<div class="horse-detail-grid"><div><span>JOCKEY</span><b>${esc(h.jockey)}</b></div><div><span>TRAINER</span><b>${esc(h.trainer)}</b></div><div><span>BARRIER / WEIGHT</span><b>${h.barrier} / ${scenario.handicap?(h.scenarioWeight??h.weight):h.weight}kg</b></div><div><span>RECENT FORM</span><b>${esc(h.form||'—')}</b></div></div><div class="history-title">AVAILABLE RECENT STARTS</div>${h.history.length?h.history.map(r=>`<div class="history-item"><span class="history-pos">${r.pos}<small>/${r.total}</small></span><div><strong>${esc(r.track)} · ${r.distance}m</strong><small>${shortDate(r.date)} 2026 · ${esc(r.going)} · ${esc(r.grade)}</small><span class="deficit">${r.pos===1?`Won${r.winMargin?' by '+fmt(r.winMargin)+'L':''}`:`${fmt(r.margin)}L behind ${esc(M.title(r.winner))}`}</span></div></div>`).join(''):'<p class="section-description">No usable recent race starts in the source. Trials are excluded.</p>'}`;
 }
 function renderPath(){
   const a=$('horseA').value,b=$('horseB').value,max=+$('maxHops').value;
@@ -98,7 +98,7 @@ function renderGraph(){
     else{y=27}
     const words=label.split(' ');let labelSvg;
     if(label.length>18&&words.length>1){const mid=Math.ceil(words.length/2);labelSvg=`<text class="node-name" x="${x}" y="${y}" text-anchor="${anchor}"><tspan x="${x}">${esc(words.slice(0,mid).join(' '))}</tspan><tspan x="${x}" dy="13">${esc(words.slice(mid).join(' '))}</tspan></text>`}else labelSvg=`<text class="node-name" x="${x}" y="${y}" text-anchor="${anchor}">${esc(label)}</text>`;
-    return `<g class="node ${isField?'runner':'bridge'} ${isSelected?'selected':''} ${dim?'dim':''}" transform="translate(${p.x} ${p.y})" role="button" tabindex="0" data-node="${esc(name)}" aria-label="Inspect ${esc(label)}"><title>${esc(label)}${h?` · No. ${h.number}${h.emergency?' · Emergency':''}`:' · Common rival'}</title><circle r="${r}" fill="${isSelected?'#173e30':isField?'#e7efda':'#fff'}" stroke="${isSelected||isPath?'#91b454':isField?'#b9cba3':'#cdd7c5'}" stroke-width="${isSelected||isPath?2:1}" ${h?.emergency?'stroke-dasharray="3 2"':''}/><text class="node-num" y="4" text-anchor="middle">${isField?h.number:'·'}</text>${labelSvg}</g>`;
+    return `<g class="node ${isField?'runner':'bridge'} ${isSelected?'selected':''} ${dim?'dim':''}" transform="translate(${p.x} ${p.y})" role="button" tabindex="0" data-node="${esc(name)}" aria-label="Inspect ${esc(label)}"><title>${esc(label)}${h?` · No. ${h.number}${h.emergency?' · Emergency':''}`:' · Common rival'}</title><circle r="${r}" fill="${isSelected?'#173e30':isField?'#e7efda':'#fff'}" stroke="${isSelected||isPath?'#91b454':isField?'#b9cba3':'#cdd7c5'}" stroke-width="${isSelected||isPath?2:1}" ${h?.emergency?'stroke-dasharray="3 2"':''}/>${isField?svgSilk(h):'<text class="node-num" y="4" text-anchor="middle">·</text>'}${labelSvg}</g>`;
   }).join('');
   $('graph').innerHTML=`<defs><radialGradient id="wash"><stop offset="0" stop-color="#f6f8f0"/><stop offset="1" stop-color="#fff"/></radialGradient></defs><circle cx="425" cy="325" r="250" fill="url(#wash)"/><ellipse cx="425" cy="325" rx="295" ry="252" fill="none" stroke="#f0f3e9" stroke-dasharray="2 6"/>${lines}${nodeSvg}`;
   $('graphCount').textContent=`${names.length} horses · ${edgeCount} links`;
@@ -108,7 +108,7 @@ function renderGraph(){
 $('horseA').onchange=()=>{selected=$('horseA').value;renderDetail();renderRankings();renderPath()};$('horseB').onchange=renderPath;$('maxHops').onchange=renderPath;
 $('swap').onclick=()=>{const a=$('horseA').value;$('horseA').value=$('horseB').value;$('horseB').value=a;selected=$('horseA').value;renderDetail();renderRankings();renderPath()};
 for(const [id,value] of [['allView','all'],['focusView','focus']])$(id).onclick=()=>{mode=value;$('allView').classList.toggle('active',mode==='all');$('focusView').classList.toggle('active',mode==='focus');renderGraph()};
-fetch('data.json').then(r=>{if(!r.ok)throw Error('Could not load form data');return r.json()}).then(d=>{
+Promise.all([fetch('data.json').then(r=>{if(!r.ok)throw Error('Could not load form data');return r.json()}),fetch('media.json').then(r=>r.ok?r.json():{}).catch(()=>({}))]).then(([d,photos])=>{media=photos;
   data=d;graph=M.build(data);$('dataTimestamp').textContent=`Retrieved ${new Date(d.retrieved).toLocaleString('en-AU',{timeZone:'Australia/Melbourne',dateStyle:'long',timeStyle:'short'})} Melbourne time. This is a fixed snapshot; verify late scratchings and conditions with the published form.`;
   const n=+(location.hash.match(/race-(\d)/)?.[1]||8);chooseRace(n>=1&&n<=9?n:8);$('loading').hidden=true;
 }).catch(e=>{$('loading').innerHTML=`<div>Unable to load the form guide.<br><br><button onclick="location.reload()">Try again</button><p>${esc(e.message)}</p></div>`});
