@@ -1,0 +1,1 @@
+{"name":"oaks-form-connections","private":true,"version":"1.0.0","scripts":{"test":"node model.test.cjs && node ui.test.cjs"},"devDependencies":{"linkedom":"^0.18.12"}}
