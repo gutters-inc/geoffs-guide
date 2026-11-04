@@ -19,12 +19,12 @@ function inspectRunner(name){
   const dialog=document.getElementById('runnerDialog');
   if(!dialog.open){if(typeof dialog.showModal==='function')dialog.showModal();else dialog.setAttribute('open','')}
 }
-function closeRunner(){const d=document.getElementById('runnerDialog');if(typeof d.close==='function')d.close();else d.removeAttribute('open');let target=dialogReturnFocus;if(target&&!target.isConnected){const entries=Object.entries(target.dataset||{});target=[...document.querySelectorAll('[data-horse],[data-node],[data-lane]')].find(el=>entries.some(([key,value])=>el.dataset[key]===value))}target?.focus?.()}
+function closeRunner(){const d=document.getElementById('runnerDialog');if(typeof d.close==='function')d.close();else d.removeAttribute('open');let target=dialogReturnFocus;if(target&&!target.isConnected){const entries=Object.entries(target.dataset||{});target=[...document.querySelectorAll('[data-horse],[data-lane],[data-ladder-horse]')].find(el=>entries.some(([key,value])=>el.dataset[key]===value))}target?.focus?.()}
 function ensureComparisonOption(name){const select=document.getElementById('horseA');if(![...select.options].some(o=>o.value===name)){const option=document.createElement('option');option.value=name;option.textContent=display(name)+' · Common rival';select.appendChild(option)}}
 function traceHorse(name){
   closeRunner();setExperience('connections');ensureComparisonOption(name);selectHorse(name);
-  document.getElementById('horseA').value=name;document.getElementById('horseB').value=active().find(h=>h.name!==name)?.name||name;renderPath();
-  document.getElementById('horseA').focus?.();document.getElementById('pathResult').scrollIntoView?.({behavior:'smooth',block:'center'});
+  const index=active().findIndex(h=>h.name===name);if(index>=6){ladderExpanded=true;renderLadder()}
+  const card=[...document.querySelectorAll('[data-ladder-horse]')].find(b=>b.dataset.ladderHorse===name);card?.scrollIntoView?.({behavior:'smooth',block:'center'});
 }
 function renderConnectionsMeta(){
   const names=new Set(active().map(h=>h.name));let pairs=0;
@@ -99,7 +99,7 @@ function updateScenario(action,commit){
 }
 function applyScenario(){
   saveScenario();ranked=M.rate(graph,race,scenario);
-  renderVerdict();renderRankings();renderDetail();renderNewViews();renderScenarioStatus();renderControlState();renderAdjustmentFeedback();renderImpact();renderValueSummary();
+  renderVerdict();renderRankings();renderDetail();renderNewViews();renderScenarioStatus();renderControlState();renderAdjustmentFeedback();renderImpact();renderTipSummary();renderLadder();
 }
 function renderImpact(){
   const current=ratingMap(ranked),base=ratingMap(baseline),leader=active()[0];if(!leader)return;
@@ -146,9 +146,3 @@ for(const [id,key,label] of controlBindings){
 }
 document.getElementById('chartRange').onchange=renderFormVisual;
 document.getElementById('resetScenario').onclick=()=>{if(pendingFrame!==null&&typeof cancelAnimationFrame==='function')cancelAnimationFrame(pendingFrame);pendingFrame=null;scenario=defaults();saveScenario();renderScenarioControls();applyScenario();document.getElementById('impactAnnouncement').textContent='All scenario assumptions reset. Baseline ratings restored.'};
-document.getElementById('tryIndirect').onclick=()=>{
-  const horses=active();let example=null;
-  for(let i=0;i<horses.length&&!example;i++)for(let j=i+1;j<horses.length;j++){const p=M.path(graph,horses[i].name,horses[j].name,3);if(p?.length>1){example=[horses[i],horses[j],p];break}}
-  if(!example){document.getElementById('exampleStatus').textContent='No indirect chain within three links in this field’s available history.';return}
-  const [a,b,p]=example;document.getElementById('horseA').value=a.name;document.getElementById('horseB').value=b.name;document.getElementById('maxHops').value=String(Math.max(2,p.length));selected=a.name;renderPath();renderDetail();renderRankings();document.getElementById('exampleStatus').textContent=`${a.display} to ${b.display} · ${p.length} links`;document.getElementById('pathResult').scrollIntoView?.({behavior:'smooth',block:'center'});
-};

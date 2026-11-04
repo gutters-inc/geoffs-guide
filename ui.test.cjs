@@ -1,110 +1,63 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const {parseHTML}=require('linkedom');
-const {window}=parseHTML(fs.readFileSync('dist/index.html','utf8'));
-const document=window.document;
-// Supply the select value behaviour that this minimal DOM implementation omits.
+const {window}=parseHTML(fs.readFileSync('dist/index.html','utf8')),document=window.document;
 Object.defineProperty(window.HTMLSelectElement.prototype,'value',{get(){return this._value??this.options[0]?.value??''},set(v){this._value=String(v)},configurable:true});
-const data=JSON.parse(fs.readFileSync('dist/data.json','utf8'));
-const errors=[];
-const context=vm.createContext({window,document,console,location:{hash:''},history:{replaceState(){}},fetch:async(url)=>({ok:true,json:async()=>url==='media.json'?JSON.parse(fs.readFileSync('dist/media.json','utf8')):url==='editorial.json'?JSON.parse(fs.readFileSync('dist/editorial.json','utf8')):data}),setTimeout,Date,Map,Set,Error});
-vm.runInContext(fs.readFileSync('dist/model.js','utf8'),context);context.FormModel=window.FormModel;
-vm.runInContext(fs.readFileSync('dist/views.js','utf8'),context);
-vm.runInContext(fs.readFileSync('dist/ux.js','utf8'),context);
-vm.runInContext(fs.readFileSync('dist/mobile.js','utf8'),context);
-vm.runInContext(fs.readFileSync('dist/value.js','utf8'),context);
-vm.runInContext(fs.readFileSync('dist/app.js','utf8'),context);
+const data=JSON.parse(fs.readFileSync('dist/data.json')),editorialData=JSON.parse(fs.readFileSync('dist/editorial.json'));
+const saved=new Map(),location={hash:''};
+const context=vm.createContext({window,document,console,location,history:{replaceState(_,__,hash){location.hash=hash}},localStorage:{getItem:k=>saved.get(k)||null,setItem:(k,v)=>saved.set(k,v)},fetch:async(url)=>({ok:true,json:async()=>url==='data.json'?data:JSON.parse(fs.readFileSync('dist/'+url))}),setTimeout,Date,Map,Set,Error});
+for(const f of ['model','views','ux','mobile','tips','ladder','app']){vm.runInContext(fs.readFileSync(`dist/${f}.js`,'utf8'),context);if(f==='model')context.FormModel=window.FormModel}
 setTimeout(()=>{
  try{
-  assert.equal(document.getElementById('loading').hidden,true);
-  assert.equal(document.getElementById('raceName').textContent,'Crown Oaks');
+  assert(document.getElementById('loading').hidden);assert.equal(document.getElementById('raceName').textContent,'Crown Oaks');
   assert(!document.getElementById('formPanel').hidden);assert(document.getElementById('connectionsPanel').hidden);
-  assert.equal(document.getElementById('formPanel').querySelector('.comparison'),null);
-  assert(document.getElementById('connectionsPanel').querySelector('.comparison'));
-  assert(document.getElementById('connectionsPanel').querySelector('#matrixVisual'));
-  assert(document.getElementById('kgInput').disabled);assert(document.getElementById('groundStrength').disabled);
-  assert(document.getElementById('verdict').textContent.includes('De Armas'));
+  assert(document.title.includes('Geoffs Guide'));assert(document.querySelector('img[alt="Geoff"]'));
+  // Every field retains working race navigation, runner details and an honest ladder edge.
   for(let n=1;n<=9;n++){
    vm.runInContext(`chooseRace(${n})`,context);
-   assert.equal(document.querySelectorAll('#raceTabs button').length,9);
+   const activeCount=data.races[n-1].horses.filter(h=>!h.scratched&&!h.emergency).length;
    assert.equal(document.querySelectorAll('#rankings tr').length,data.races[n-1].horses.length);
-   for(const h of data.races[n-1].horses){vm.runInContext(`selectHorse(${JSON.stringify(h.name)})`,context);assert(document.getElementById('horseDetail').textContent.includes(h.display));}
-   document.getElementById('swap').onclick();document.getElementById('focusView').onclick();document.getElementById('allView').onclick();
+   assert.equal(document.querySelectorAll('.ladder-rung').length,Math.min(6,activeCount));
+   assert.equal(document.querySelectorAll('.rung-explanation').length,Math.min(6,activeCount)-1);
+   assert(document.querySelectorAll('.guide-card').length>=5);
+   document.getElementById('showFullLadder').onclick();assert.equal(document.querySelectorAll('.ladder-rung').length,activeCount);
+   for(const h of data.races[n-1].horses){vm.runInContext(`selectHorse(${JSON.stringify(h.name)})`,context);assert(document.getElementById('horseDetail').textContent.includes(h.display))}
   }
   vm.runInContext('chooseRace(8)',context);
-  const a=document.getElementById('horseA'),b=document.getElementById('horseB');a.value='PROXIMA DEA';b.value='DE ARMAS';document.getElementById('maxHops').value='3';a.onchange();
-  assert(document.getElementById('pathResult').textContent.includes('Voynichese'));
-  assert(document.getElementById('pathResult').textContent.includes('mixed directions'));
-  document.getElementById('maxHops').value='1';document.getElementById('maxHops').onchange();assert(document.getElementById('pathResult').textContent.includes('No connection'));
-  b.value=a.value;b.onchange();assert(document.getElementById('pathResult').textContent.includes('two different horses'));
-  assert.equal(document.querySelectorAll('.contender-card').length,3);
-  assert.equal(document.querySelectorAll('.form-lane').length,data.races[7].horses.filter(h=>!h.scratched&&!h.emergency).length);
+  assert(document.getElementById('formLadder').textContent.includes('De Armas'));
+  assert(document.getElementById('formLadder').textContent.includes('Icelady'));
+  assert(document.getElementById('formLadder').textContent.includes('2.75L ahead'));
+  assert(document.getElementById('formLadder').textContent.includes('traded places'));
+  assert.equal(document.querySelector('#graph'),null);assert.equal(document.getElementById('priceCheck'),null);assert.equal(document.getElementById('offeredOdds'),null);assert.equal(document.getElementById('fairChance'),null);
+  assert.equal(vm.runInContext('typeof valueMath',context),'undefined');
+  // Trust is a local preference: it pins a guide without changing model ratings.
+  document.getElementById('valueMode').onclick();assert(!document.getElementById('valuePanel').hidden);assert(document.getElementById('connectionsPanel').hidden);
+  assert.equal(document.querySelectorAll('.guide-card').length,11);assert(editorialData.sources.length>=12);
+  const formBefore=vm.runInContext('JSON.stringify(ranked.map(h=>[h.name,h.score]))',context);
+  document.querySelector('[data-trust="cusworth"]').onclick();
+  assert(document.getElementById('trustedPick').textContent.includes('Quick Finish'));assert(document.getElementById('trustedPick').textContent.includes('Adam Cusworth'));
+  assert.equal(saved.get('geoffs-trusted-guide-v1'),'cusworth');
+  assert.equal(vm.runInContext('JSON.stringify(ranked.map(h=>[h.name,h.score]))',context),formBefore);
+  assert(document.querySelector('.guide-card').textContent.includes('Adam Cusworth'));
+  document.getElementById('trustedOnly').onclick();assert.equal(document.querySelectorAll('.guide-card').length,1);
+  document.getElementById('trustedOnly').onclick();assert.equal(document.querySelectorAll('.guide-card').length,11);
+  vm.runInContext('chooseRace(2)',context);assert(document.getElementById('trustedPick').textContent.includes('No published tip'));
+  const picker=document.getElementById('trustedGuide');picker.value='orwin';picker.onchange({target:picker});
+  vm.runInContext('chooseRace(1)',context);assert(document.getElementById('trustedPick').textContent.includes('No bet'));
+  vm.runInContext('chooseRace(5)',context);assert(document.getElementById('trustedPick').textContent.includes('scratched'));
+  const votes=document.getElementById('tipsRoundup').textContent;assert(!votes.includes('Fiorenot'));
+  document.querySelector('[data-trust="orwin"]').onclick();assert.equal(saved.get('geoffs-trusted-guide-v1'),'');
+  // Live scenario controls still update ratings and the ladder without recreating the input.
+  vm.runInContext('chooseRace(8)',context);document.getElementById('simpleMode').onclick();
   const before=vm.runInContext('ranked.find(h=>h.name==="DE ARMAS").score',context);
-  const input=document.querySelector('[data-bonus="DE ARMAS"]');input.value='1';input.onchange();
-  assert(vm.runInContext('ranked.find(h=>h.name==="DE ARMAS").score',context)>before);
-  assert(document.getElementById('scenarioStatus').textContent.includes('active'));
-  const kg=document.querySelector('[data-weight="DE ARMAS"]');kg.value='57';kg.onchange();assert(document.getElementById('handicapInput').checked);
-  const going=document.getElementById('goingInput');going.value='Heavy';going.onchange({target:going});assert(document.getElementById('scenarioStatus').textContent.includes('Heavy'));
-  assert(document.querySelectorAll('.matrix-cell').length>10);
-  const cell=document.querySelector('[data-match-a="DE ARMAS"][data-match-b="ICELADY"]');cell.onclick();assert(!document.body.classList.contains('simple-mode'));assert(document.getElementById('pathResult').textContent.includes('Icelady'));
-  document.getElementById('simpleMode').onclick();assert(document.body.classList.contains('simple-mode'));
-  document.getElementById('chartRange').value='full';document.getElementById('chartRange').onchange();document.getElementById('resetScenario').onclick();assert.equal(vm.runInContext('ranked.find(h=>h.name==="DE ARMAS").score',context),before);
-  assert(document.querySelectorAll('.race-silk').length>20);assert(document.querySelector('img[alt="De Armas"]'));
-  // Small edits are live, retain the input node, and show their actual impact.
-  const live=document.querySelector('[data-bonus="DE ARMAS"]');live.value='0.1';live.oninput();
-  assert(vm.runInContext('ranked.find(h=>h.name==="DE ARMAS").score',context)>before);
-  assert.equal(document.querySelector('[data-bonus="DE ARMAS"]'),live,'Recalculation must not recreate a focused input');
-  assert(document.getElementById('lastChange').textContent.includes('extra edge'));
-  assert(document.querySelector('[data-runner-impact="DE ARMAS"]').textContent.includes('+'));
-  const valid=vm.runInContext('ranked.find(h=>h.name==="DE ARMAS").score',context);live.value='6';live.oninput();
-  assert.equal(vm.runInContext('ranked.find(h=>h.name==="DE ARMAS").score',context),valid);
-  assert.equal(live.getAttribute('aria-invalid'),'true');assert(document.querySelector('[data-bonus-error="DE ARMAS"]').textContent.includes('Last valid'));
-  live.value='0.2';live.oninput();assert(!live.hasAttribute('aria-invalid'));
-  document.getElementById('resetScenario').onclick();
-  const draw=document.getElementById('drawInput');draw.value='0.1';draw.oninput();assert(document.getElementById('drawOutput').textContent.includes('Outside +0.1L'));
-  assert(document.getElementById('impactSummary').textContent.includes('BIGGEST GAIN'));
-  document.getElementById('resetScenario').onclick();
-  going.value='Soft';going.oninput();assert(!document.getElementById('groundStrength').disabled);
-  const strength=document.getElementById('groundStrength');strength.value='0';strength.oninput();assert.equal(vm.runInContext('ranked.find(h=>h.name==="DE ARMAS").score',context),before);
-  assert(document.getElementById('lastChange').textContent.includes('Matching-ground strength'));
-  document.getElementById('resetScenario').onclick();
-  document.getElementById('simpleMode').onkeydown({key:'End',preventDefault(){}});
-  assert(!document.getElementById('connectionsPanel').hidden);assert(document.getElementById('formPanel').hidden);
-  assert.equal(document.getElementById('exploreMode').getAttribute('aria-selected'),'true');
-  assert.equal(document.getElementById('simpleMode').getAttribute('tabindex'),'-1');
-  document.getElementById('tryIndirect').onclick();assert(document.getElementById('exampleStatus').textContent.includes('links'));
-  document.getElementById('simpleMode').onclick();
-  document.querySelector('[data-inspect="DE ARMAS"]').onclick();assert(document.getElementById('runnerDialog').hasAttribute('open'));
-  assert(!document.getElementById('formPanel').hidden,'Runner details should not change tabs');
-  document.getElementById('closeRunner').onclick();assert(!document.getElementById('runnerDialog').hasAttribute('open'));
-  document.getElementById('chartRange').value='field';document.getElementById('chartRange').onchange();
-  assert(document.getElementById('visualDescription').textContent.includes('Focused on this field'));
-  assert.equal(vm.runInContext('ranked.find(h=>h.name==="DE ARMAS").score',context),before,'Chart zoom must not change ratings');
-  // Phone-first navigation and readable alternatives to the map/grid.
-  assert.equal(document.getElementById('mobileRaceSelect').value,'8');
-  document.getElementById('previousRace').onclick();assert.equal(document.getElementById('raceName').textContent,'Crown Red Roses Stakes');
-  document.getElementById('nextRace').onclick();assert.equal(document.getElementById('mobileRaceSelect').value,'8');
-  document.getElementById('mobileRaceSelect').value='1';document.getElementById('mobileRaceSelect').onchange({target:document.getElementById('mobileRaceSelect')});assert(document.getElementById('previousRace').disabled);
-  vm.runInContext('chooseRace(9)',context);assert(document.getElementById('nextRace').disabled);
-  vm.runInContext('chooseRace(8)',context);
-  assert(document.querySelectorAll('.mobile-connection-row').length>5);assert(document.querySelectorAll('.mobile-matchup-row').length>5);
-  assert(document.querySelector('.full-network #graph'));assert(document.querySelector('.full-matrix .h2h-matrix'));
-  const rival=document.querySelector('[data-mobile-rival="ICELADY"]');rival.onclick();assert(document.getElementById('pathResult').textContent.includes('Icelady'));
-  const match=document.querySelector('[data-mobile-match]');match.onclick();assert(document.getElementById('pathResult').textContent.length>20);
-  // Value is a separate tab: opinions, source prices and user assumptions stay distinct.
-  document.getElementById('valueMode').onclick();assert(!document.getElementById('valuePanel').hidden);assert(document.getElementById('formPanel').hidden);assert(document.getElementById('connectionsPanel').hidden);
-  assert.equal(document.getElementById('valueMode').getAttribute('aria-selected'),'true');
-  assert(document.title.includes('Geoffs Guide'));assert(document.querySelector('img[alt="Geoff"]'));
-  assert(document.querySelectorAll('.tip-card').length===4);assert(document.querySelectorAll('.published-quote').length===4);
-  assert(document.getElementById('offerStatus').textContent.includes('No public Oaks-specific'));
+  const bonus=document.querySelector('[data-bonus="DE ARMAS"]');bonus.value='0.1';bonus.oninput();
+  assert(vm.runInContext('ranked.find(h=>h.name==="DE ARMAS").score',context)>before);assert.equal(document.querySelector('[data-bonus="DE ARMAS"]'),bonus);
+  bonus.value='6';bonus.oninput();assert.equal(bonus.getAttribute('aria-invalid'),'true');
+  document.getElementById('resetScenario').onclick();assert.equal(vm.runInContext('ranked.find(h=>h.name==="DE ARMAS").score',context),before);
+  const a=document.getElementById('horseA'),b=document.getElementById('horseB');a.value='PROXIMA DEA';b.value='DE ARMAS';document.getElementById('maxHops').value='3';a.onchange();assert(document.getElementById('pathResult').textContent.includes('Voynichese'));
+  document.getElementById('simpleMode').onkeydown({key:'End',preventDefault(){}});assert(!document.getElementById('connectionsPanel').hidden);
+  document.querySelector('[data-ladder-horse="DE ARMAS"]').onclick();assert(document.getElementById('runnerDialog').hasAttribute('open'));document.getElementById('closeRunner').onclick();assert(!document.getElementById('runnerDialog').hasAttribute('open'));
+  document.getElementById('previousRace').onclick();assert.equal(document.getElementById('mobileRaceSelect').value,'7');document.getElementById('nextRace').onclick();assert.equal(document.getElementById('mobileRaceSelect').value,'8');
   assert(document.querySelectorAll('.offer-card').length===4);
-  assert(document.getElementById('valueCalculation').textContent.includes('NO ASSESSMENT YET'));
-  const offered=document.getElementById('offeredOdds'),chance=document.getElementById('fairChance');offered.value='3.1';chance.value='35';chance.oninput();
-  assert(document.getElementById('valueCalculation').textContent.includes('Value at this price'));assert(document.getElementById('valueCalculation').textContent.includes('+8.5%'));
-  chance.value='20';chance.oninput();assert(document.getElementById('valueCalculation').textContent.includes('price is too short'));
-  chance.value='101';chance.oninput();assert(document.getElementById('valueCalculation').textContent.includes('Check your inputs'));
-  vm.runInContext('chooseRace(4)',context);assert(document.getElementById('staleTipNotes').textContent.includes('Cilacap scratched'));
-  vm.runInContext('chooseRace(1)',context);assert(document.getElementById('tipCards').textContent.includes('now excluded'));
-  assert.equal(vm.runInContext('valueMath(2,50).roi',context),0);assert.equal(vm.runInContext('valueMath(1,50)',context),null);
-  console.log('PASS: all nine races, shared-runner histories, separate accessible tabs, indirect example, runner dialog, real-time small edits, retained input nodes, validation, sensitivity dependencies, focused chart, matrix drill-down and reset. DOM logic only; visual browser QA unavailable.');
+  console.log('PASS: all nine mobile fields, 12 source identities, trust preference persistence, no-bet/scratched exclusions, price UI removal, ladder evidence/expansion, preserved scenario controls, comparisons, navigation and runner sheet. DOM logic only; rendered browser QA unavailable.');
  }catch(e){console.error(e);process.exitCode=1}
 },100);

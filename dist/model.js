@@ -115,5 +115,17 @@
     }
     return out.sort((a,b)=>b.value-a.value);
   }
-  const api={build,rate,path,wins,weight,title,ground};root.FormModel=api;if(typeof module!=='undefined')module.exports=api;
+  function comparison(graph,a,b){
+    const direct=graph.adjacency.get(a)?.get(b)||[];
+    if(direct.length){
+      const latest=direct.slice().sort((x,y)=>y.race.date.localeCompare(x.race.date))[0];
+      const delta=latest.a===a?latest.delta:-latest.delta;
+      const ahead=direct.filter(e=>(e.a===a?e.delta:-e.delta)>0).length,behind=direct.filter(e=>(e.a===a?e.delta:-e.delta)<0).length;
+      return {kind:'direct',direction:delta>0?'supports':delta<0?'opposes':'level',delta,latest,ahead,behind,reversal:ahead>0&&behind>0};
+    }
+    const steps=path(graph,a,b,4);
+    if(steps){const forward=steps.every(s=>s.delta>=0)&&steps.some(s=>s.delta>0),reverse=steps.every(s=>s.delta<=0)&&steps.some(s=>s.delta<0);const commonRival=steps.length===2?steps[0].to:null;const marginRead=commonRival?steps[0].delta+steps[1].delta:null;return {kind:'indirect',direction:forward?'supports':reverse?'opposes':'mixed',steps,commonRival,marginRead};}
+    return {kind:graph.components.get(a)===graph.components.get(b)?'long-chain':'disconnected',direction:'uncertain',steps:null};
+  }
+  const api={build,rate,path,wins,weight,title,ground,comparison};root.FormModel=api;if(typeof module!=='undefined')module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);

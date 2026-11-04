@@ -2,7 +2,7 @@ const $=id=>document.getElementById(id), M=FormModel;
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=n=>Number(n).toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
 const shortDate=d=>new Date(d+'T00:00:00Z').toLocaleDateString('en-AU',{day:'numeric',month:'short',timeZone:'UTC'});
-let data,graph,race,ranked,selected,mode='all',chain=null;
+let data,graph,race,ranked,selected,chain=null;
 const display=n=>graph.nodes.get(n)?.display||M.title(n);
 const active=()=>ranked.filter(h=>h.eligible);
 const componentCount=()=>new Set(active().map(h=>h.component)).size;
@@ -19,7 +19,7 @@ function chooseRace(n){
   const options=ranked.map(h=>`<option value="${esc(h.name)}">${h.number}. ${esc(h.display)}${h.scratched?' · SCR':h.emergency?' · Emergency':''}</option>`).join('');
   $('horseA').innerHTML=options;$('horseB').innerHTML=options;
   $('horseA').value=selected;$('horseB').value=active()[1]?.name||selected;
-  renderVerdict();renderRankings();renderDetail();renderPath();renderScenarioControls();renderNewViews();renderImpact();renderConnectionsMeta();renderMatrix();syncMobileRace();renderMobileNetwork();renderValue();
+  renderVerdict();renderRankings();renderDetail();renderPath();renderScenarioControls();renderNewViews();renderImpact();renderConnectionsMeta();syncMobileRace();renderTips();ladderExpanded=false;renderLadder();
   syncRoute();
 }
 function renderVerdict(){
@@ -47,7 +47,7 @@ function renderRankings(){
   document.querySelectorAll('[data-horse]').forEach(b=>b.onclick=()=>inspectRunner(b.dataset.horse));
   $('rankingNote').innerHTML=`${componentCount()>1?`<div class="group-warning">${componentCount()} separate network groups in this field. Ranking across groups is provisional; a disconnected horse is not proven inferior.</div>`:''}Each rival is counted once, even if they met repeatedly. Emergencies and scratchings are excluded from the verdict. Click any runner to inspect its history.`;
 }
-function selectHorse(n){selected=n;if([...$('horseA').options].some(o=>o.value===n)){$('horseA').value=n;if($('horseB').value===n)$('horseB').value=active().find(h=>h.name!==n)?.name||n}renderRankings();renderDetail();renderPath();renderFormVisual();renderMobileNetwork()}
+function selectHorse(n){selected=n;if([...$('horseA').options].some(o=>o.value===n)){$('horseA').value=n;if($('horseB').value===n)$('horseB').value=active().find(h=>h.name!==n)?.name||n}renderRankings();renderDetail();renderPath();renderFormVisual();renderLadder()}
 function renderDetail(){
   const h=ranked.find(h=>h.name===selected)||graph.nodes.get(selected)?.horse;
   if(!h){$('horseDetail').innerHTML=`<h3>${esc(display(selected))}</h3><p class="section-description">Historical common rival. Only results evidenced by today’s runners’ form are included.</p>`;return}
@@ -56,8 +56,8 @@ function renderDetail(){
 function renderPath(){
   const a=$('horseA').value,b=$('horseB').value,max=+$('maxHops').value;
   chain=M.path(graph,a,b,max);
-  if(a===b){$('pathResult').innerHTML='<div class="no-path">Choose two different horses to explore their connection.</div>';renderGraph();return}
-  if(!chain){$('pathResult').innerHTML=`<div class="no-path">No connection within ${max} ${max===1?'link':'links'} in the available history.<br>${graph.components.get(a)!==graph.components.get(b)?'These horses sit in separate network groups.':'Try allowing more links.'} Missing connections do not mean the horses have never met.</div>`;renderGraph();return}
+  if(a===b){$('pathResult').innerHTML='<div class="no-path">Choose two different horses to explore their connection.</div>';return}
+  if(!chain){$('pathResult').innerHTML=`<div class="no-path">No connection within ${max} ${max===1?'link':'links'} in the available history.<br>${graph.components.get(a)!==graph.components.get(b)?'These horses sit in separate network groups.':'Try allowing more links.'} Missing connections do not mean the horses have never met.</div>`;return}
   const names=[a,...chain.map(s=>s.to)], allForward=chain.every(s=>s.delta>0),allReverse=chain.every(s=>s.delta<0);
   const readings=allForward?`The results in this chain favour ${display(a)} over ${display(b)}.`:allReverse?`The results in this chain favour ${display(b)} over ${display(a)}.`:'This chain has mixed directions. It connects the horses but does not establish a consistent form advantage.';
   $('pathResult').innerHTML=`<div class="path-summary"><b>${chain.length} ${chain.length===1?'degree':'degrees'} of separation.</b> ${esc(readings)}</div><div class="path-chain">${names.map((name,i)=>{
@@ -68,47 +68,11 @@ function renderPath(){
     const otherEdges=graph.adjacency.get(name)?.get(s.to)||[],reversal=otherEdges.some(e=>(e.a===name?e.delta:-e.delta)*s.delta<0);
     return node+`<div class="path-step"><strong>${s.delta===0?'Dead heat / level margin':`${esc(display(ahead))} ahead of ${esc(display(behind))}<br>by ${fmt(Math.abs(s.delta))}L`}</strong><span class="arrow">→</span><small>${esc(r.track)} · ${shortDate(r.date)} · ${r.distance}m</small><small>${s.edge.a===name?s.edge.aPos:s.edge.bPos}${ordinal(s.edge.a===name?s.edge.aPos:s.edge.bPos)} vs ${s.edge.a===name?s.edge.bPos:s.edge.aPos}${ordinal(s.edge.a===name?s.edge.bPos:s.edge.aPos)}${reversal?' · Result reversed in another meeting':''}</small></div>`;
   }).join('')}</div><p class="path-note">Shortest available chain; most recent race shown for each link. Margins are the difference in beaten margins. ${allForward||allReverse?'This is a form inference, not a guarantee. ':''}Different trips, weights and conditions limit comparisons. The rating uses all available matchups, including reversals.</p>`;
-  renderGraph();
+  
 }
 function ordinal(n){return n%100>=11&&n%100<=13?'th':({1:'st',2:'nd',3:'rd'}[n%10]||'th')}
-function renderGraph(){
-  const field=new Set(race.horses.map(h=>h.name)),bridges=new Set();
-  // Show current field plus rivals who provide a meaningful bridge between field runners.
-  for(const [name,edges] of graph.adjacency)if(!field.has(name)&&[...edges.keys()].filter(k=>field.has(k)).length>=2)bridges.add(name);
-  let bridgeList=[...bridges].sort((a,b)=>[...graph.adjacency.get(b).keys()].filter(k=>field.has(k)).length-[...graph.adjacency.get(a).keys()].filter(k=>field.has(k)).length).slice(0,10);
-  if(chain)for(const s of chain)for(const n of [s.from,s.to])if(!field.has(n)&&!bridgeList.includes(n))bridgeList.push(n);
-  const visibleField=race.horses,names=[...visibleField.map(h=>h.name),...bridgeList],positions=new Map();
-  visibleField.forEach((h,i)=>{const t=-Math.PI/2+i*2*Math.PI/visibleField.length;positions.set(h.name,{x:425+Math.cos(t)*260,y:325+Math.sin(t)*245})});
-  bridgeList.forEach((name,i)=>{const t=-Math.PI/2+i*2*Math.PI/bridgeList.length;positions.set(name,{x:425+Math.cos(t)*132,y:325+Math.sin(t)*114})});
-  const pathEdges=new Set((chain||[]).map(s=>[s.from,s.to].sort().join('|'))),pathNames=new Set((chain||[]).flatMap(s=>[s.from,s.to]));
-  let edgeCount=0,lines='';
-  for(let i=0;i<names.length;i++)for(let j=i+1;j<names.length;j++){
-    const a=names[i],b=names[j],edges=graph.adjacency.get(a)?.get(b);if(!edges)continue;
-    const isPath=pathEdges.has([a,b].sort().join('|')),focus=a===selected||b===selected;
-    if(mode==='focus'&&!focus&&!isPath)continue;
-    const p=positions.get(a),q=positions.get(b);edgeCount++;
-    lines+=`<line class="graph-edge ${isPath?'path':focus?'focus':''} ${mode==='all'&&pathEdges.size&&!isPath&&!focus?'dim':''}" x1="${p.x}" y1="${p.y}" x2="${q.x}" y2="${q.y}"><title>${esc(display(a))} / ${esc(display(b))} · ${edges.length} shared ${edges.length===1?'race':'races'}</title></line>`;
-  }
-  const nodeSvg=names.map(name=>{
-    const p=positions.get(name),h=race.horses.find(h=>h.name===name),isField=!!h,isSelected=name===selected,isPath=pathNames.has(name),isFocus=graph.adjacency.get(selected)?.has(name);
-    const dim=mode==='focus'&&!isSelected&&!isFocus&&!isPath;
-    const label=display(name),r=isField?20:13;
-    // Labels sit outside the field ring; bridge labels sit beside their node.
-    let x=0,y=0,anchor='middle';
-    if(isField){const dx=p.x-425,dy=p.y-325;if(Math.abs(dx)>150){x=dx>0?29:-29;y=4;anchor=dx>0?'start':'end'}else{y=dy>0?37:-31}}
-    else{y=27}
-    const words=label.split(' ');let labelSvg;
-    if(label.length>18&&words.length>1){const mid=Math.ceil(words.length/2);labelSvg=`<text class="node-name" x="${x}" y="${y}" text-anchor="${anchor}"><tspan x="${x}">${esc(words.slice(0,mid).join(' '))}</tspan><tspan x="${x}" dy="13">${esc(words.slice(mid).join(' '))}</tspan></text>`}else labelSvg=`<text class="node-name" x="${x}" y="${y}" text-anchor="${anchor}">${esc(label)}</text>`;
-    return `<g class="node ${isField?'runner':'bridge'} ${isSelected?'selected':''} ${dim?'dim':''}" transform="translate(${p.x} ${p.y})" role="button" tabindex="0" data-node="${esc(name)}" aria-label="Inspect ${esc(label)}"><title>${esc(label)}${h?` · No. ${h.number}${h.emergency?' · Emergency':''}`:' · Common rival'}</title><circle r="${r}" fill="${isSelected?'#173e30':isField?'#e7efda':'#fff'}" stroke="${isSelected||isPath?'#91b454':isField?'#b9cba3':'#cdd7c5'}" stroke-width="${isSelected||isPath?2:1}" ${h?.emergency?'stroke-dasharray="3 2"':''}/>${isField?svgSilk(h):'<text class="node-num" y="4" text-anchor="middle">·</text>'}${labelSvg}</g>`;
-  }).join('');
-  $('graph').innerHTML=`<defs><radialGradient id="wash"><stop offset="0" stop-color="#f6f8f0"/><stop offset="1" stop-color="#fff"/></radialGradient></defs><circle cx="425" cy="325" r="250" fill="url(#wash)"/><ellipse cx="425" cy="325" rx="295" ry="252" fill="none" stroke="#f0f3e9" stroke-dasharray="2 6"/>${lines}${nodeSvg}`;
-  $('graphCount').textContent=`${names.length} horses · ${edgeCount} links`;
-  $('graphEmpty').hidden=edgeCount>0;
-  document.querySelectorAll('[data-node]').forEach(el=>{const choose=()=>inspectRunner(el.dataset.node);el.onclick=choose;el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();choose()}}});
-}
 $('horseA').onchange=()=>{selected=$('horseA').value;renderDetail();renderRankings();renderPath()};$('horseB').onchange=renderPath;$('maxHops').onchange=renderPath;
 $('swap').onclick=()=>{const a=$('horseA').value;$('horseA').value=$('horseB').value;$('horseB').value=a;selected=$('horseA').value;renderDetail();renderRankings();renderPath()};
-for(const [id,value] of [['allView','all'],['focusView','focus']])$(id).onclick=()=>{mode=value;$('allView').classList.toggle('active',mode==='all');$('focusView').classList.toggle('active',mode==='focus');renderGraph()};
 Promise.all([fetch('data.json').then(r=>{if(!r.ok)throw Error('Could not load form data');return r.json()}),fetch('media.json').then(r=>r.ok?r.json():{}).catch(()=>({})),fetch('editorial.json').then(r=>r.ok?r.json():null).catch(()=>null)]).then(([d,photos,research])=>{media=photos;editorial=research;
   data=d;graph=M.build(data);$('dataTimestamp').textContent=`Retrieved ${new Date(d.retrieved).toLocaleString('en-AU',{timeZone:'Australia/Melbourne',dateStyle:'long',timeStyle:'short'})} Melbourne time. This is a fixed snapshot; verify late scratchings and conditions with the published form.`;
   const n=+(location.hash.match(/race-(\d)/)?.[1]||8);setExperience(location.hash.includes('/connections')?'connections':location.hash.includes('/value')?'value':'form',false);chooseRace(n>=1&&n<=9?n:8);$('loading').hidden=true;
