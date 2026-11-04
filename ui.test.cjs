@@ -29,23 +29,16 @@ setTimeout(()=>{
   assert(document.getElementById('formLadder').textContent.includes('traded places'));
   assert.equal(document.querySelector('#graph'),null);assert.equal(document.getElementById('priceCheck'),null);assert.equal(document.getElementById('offeredOdds'),null);assert.equal(document.getElementById('fairChance'),null);
   assert.equal(vm.runInContext('typeof valueMath',context),'undefined');
-  // Trust is a local preference: it pins a guide without changing model ratings.
-  document.getElementById('valueMode').onclick();assert(!document.getElementById('valuePanel').hidden);assert(document.getElementById('connectionsPanel').hidden);
-  assert.equal(document.querySelectorAll('.guide-card').length,11);assert(editorialData.sources.length>=12);
-  const formBefore=vm.runInContext('JSON.stringify(ranked.map(h=>[h.name,h.score]))',context);
-  document.querySelector('[data-trust="cusworth"]').onclick();
-  assert(document.getElementById('trustedPick').textContent.includes('Quick Finish'));assert(document.getElementById('trustedPick').textContent.includes('Adam Cusworth'));
-  assert.equal(saved.get('geoffs-trusted-guide-v1'),'cusworth');
-  assert.equal(vm.runInContext('JSON.stringify(ranked.map(h=>[h.name,h.score]))',context),formBefore);
-  assert(document.querySelector('.guide-card').textContent.includes('Adam Cusworth'));
-  document.getElementById('trustedOnly').onclick();assert.equal(document.querySelectorAll('.guide-card').length,1);
-  document.getElementById('trustedOnly').onclick();assert.equal(document.querySelectorAll('.guide-card').length,11);
-  vm.runInContext('chooseRace(2)',context);assert(document.getElementById('trustedPick').textContent.includes('No published tip'));
-  const picker=document.getElementById('trustedGuide');picker.value='orwin';picker.onchange({target:picker});
-  vm.runInContext('chooseRace(1)',context);assert(document.getElementById('trustedPick').textContent.includes('No bet'));
-  vm.runInContext('chooseRace(5)',context);assert(document.getElementById('trustedPick').textContent.includes('scratched'));
-  const votes=document.getElementById('tipsRoundup').textContent;assert(!votes.includes('Fiorenot'));
-  document.querySelector('[data-trust="orwin"]').onclick();assert.equal(saved.get('geoffs-trusted-guide-v1'),'');
+  // Tips are source-led, with no preference selector, pinning or promotions.
+  document.getElementById('valueMode').onclick();assert(!document.getElementById('valuePanel').hidden);
+  assert.equal(document.querySelectorAll('.guide-card').length,11);
+  assert.equal(document.getElementById('trustedGuide'),null);assert.equal(document.getElementById('trustedOnly'),null);
+  assert.equal(document.querySelector('[data-trust]'),null);assert.equal(document.getElementById('bookieSpecials'),null);
+  assert(document.getElementById('guideCards').textContent.includes('Why this tip'));
+  assert(document.getElementById('guideCards').textContent.includes('Track assumption'));
+  vm.runInContext('chooseRace(1)',context);assert(document.getElementById('guideCards').textContent.includes('No bet'));
+  vm.runInContext('chooseRace(5)',context);assert(document.getElementById('guideCards').textContent.includes('Scratched'));
+  assert(!document.getElementById('tipsRoundup').textContent.includes('Fiorenot'));
   // Live scenario controls still update ratings and the ladder without recreating the input.
   vm.runInContext('chooseRace(8)',context);document.getElementById('simpleMode').onclick();
   const before=vm.runInContext('ranked.find(h=>h.name==="DE ARMAS").score',context);
@@ -57,7 +50,6 @@ setTimeout(()=>{
   document.getElementById('simpleMode').onkeydown({key:'End',preventDefault(){}});assert(!document.getElementById('connectionsPanel').hidden);
   document.querySelector('[data-ladder-horse="DE ARMAS"]').onclick();assert(document.getElementById('runnerDialog').hasAttribute('open'));document.getElementById('closeRunner').onclick();assert(!document.getElementById('runnerDialog').hasAttribute('open'));
   document.getElementById('previousRace').onclick();assert.equal(document.getElementById('mobileRaceSelect').value,'7');document.getElementById('nextRace').onclick();assert.equal(document.getElementById('mobileRaceSelect').value,'8');
-  assert(document.querySelectorAll('.offer-card').length===4);
-  console.log('PASS: all nine mobile fields, 12 source identities, trust preference persistence, no-bet/scratched exclusions, price UI removal, ladder evidence/expansion, preserved scenario controls, comparisons, navigation and runner sheet. DOM logic only; rendered browser QA unavailable.');
+  console.log('PASS: all nine mobile fields, 12 source identities, tips-only layout, no-bet/scratched exclusions, price UI removal, ladder evidence/expansion, preserved scenario controls, comparisons, navigation and runner sheet. DOM logic only; rendered browser QA unavailable.');
  }catch(e){console.error(e);process.exitCode=1}
 },100);
