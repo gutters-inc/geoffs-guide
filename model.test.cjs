@@ -44,4 +44,7 @@ assert.equal(raw({drawBias:-.5},'HEAVY')-raw({},'HEAVY'),-.5);
 const sample=wg.observations[0];assert(M.weight(sample,2000,{going:'Soft'})>M.weight(sample,2000,{going:'Good'}));
 assert.equal(M.rate(wg,wr,{going:'Heavy'})[0].evidence,'Sparse');
 assert.equal(M.path(wg,'LIGHT','HEAVY',1)[0].delta,1);
+assert.equal(raw({going:'Good',groundStrength:0}),raw({}),'Zero ground preference must restore baseline ratings');
+assert.equal(M.weight(sample,2000,{going:'Good',groundStrength:1}),0,'Maximum matching preference excludes nonmatching ground');
+assert(M.weight(sample,2000,{going:'Good',groundStrength:.2})>M.weight(sample,2000,{going:'Good',groundStrength:.8}),'Sensitivity changes evidence smoothly');
 console.log('PASS: neutral scenario, handicap direction and zero coefficient, draw bias, manual lengths, ground reweighting, sparse-ground flag and unchanged results.');

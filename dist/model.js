@@ -46,7 +46,8 @@
   function ground(s){return /heavy/i.test(s)?'Heavy':/soft/i.test(s)?'Soft':/good|firm/i.test(s)?'Good':'Unknown'}
   function weight(edge,distance,scenario={}){
     const days=(Date.parse(TODAY)-Date.parse(edge.race.date))/86400000;
-    const goingFactor=!scenario.going||scenario.going==='all'?1:ground(edge.race.going)===scenario.going?1:.3;
+    const strength=Number.isFinite(scenario.groundStrength)?Math.max(0,Math.min(1,scenario.groundStrength)):.7;
+    const goingFactor=!scenario.going||scenario.going==='all'?1:ground(edge.race.going)===scenario.going?1:1-strength;
     const trackFactor=scenario.preferTrack&&!/^flemington$/i.test(edge.race.track) ? .5 : 1;
     return Math.pow(.5,days/45)*Math.exp(-Math.abs(Math.log(distance/edge.race.distance))/.7)/Math.max(1,edge.race.results.size-1)*goingFactor*trackFactor;
   }
@@ -81,7 +82,7 @@
       const relevantRuns=[...connectedRuns].filter(key=>{const r=graph.races.get(key);return (Date.parse(TODAY)-Date.parse(r.date))/86400000<=90&&Math.abs(Math.log(race.distance/r.distance))<.5}).length;
       const goingRuns=h.history.filter(r=>ground(r.going)===scenario.going).length;
       const trackRuns=h.history.filter(r=>/^flemington$/i.test(r.track)).length;
-      const conditionSparse=scenario.going&&scenario.going!=='all'&&goingRuns<2||scenario.preferTrack&&trackRuns===0;
+      const conditionSparse=scenario.going&&scenario.going!=='all'&&(scenario.groundStrength??.7)>0&&goingRuns<2||scenario.preferTrack&&trackRuns===0;
       const evidence=conditionSparse?'Sparse':relevantRuns>=3&&direct>=2?'Supported':relevantRuns>=2?'Limited':'Sparse';
       const manualBonus=Math.max(-5,Math.min(5,Number(overrides[h.name]?.bonus)||0));
       const drawBonus=maxBarrier>minBarrier?(Number(scenario.drawBias)||0)*(2*(h.barrier-minBarrier)/(maxBarrier-minBarrier)-1):0;

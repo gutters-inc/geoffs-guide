@@ -9,11 +9,17 @@ const errors=[];
 const context=vm.createContext({window,document,console,location:{hash:''},history:{replaceState(){}},fetch:async(url)=>({ok:true,json:async()=>url==='media.json'?JSON.parse(fs.readFileSync('dist/media.json','utf8')):data}),setTimeout,Date,Map,Set,Error});
 vm.runInContext(fs.readFileSync('dist/model.js','utf8'),context);context.FormModel=window.FormModel;
 vm.runInContext(fs.readFileSync('dist/views.js','utf8'),context);
+vm.runInContext(fs.readFileSync('dist/ux.js','utf8'),context);
 vm.runInContext(fs.readFileSync('dist/app.js','utf8'),context);
 setTimeout(()=>{
  try{
   assert.equal(document.getElementById('loading').hidden,true);
   assert.equal(document.getElementById('raceName').textContent,'Crown Oaks');
+  assert(!document.getElementById('formPanel').hidden);assert(document.getElementById('connectionsPanel').hidden);
+  assert.equal(document.getElementById('formPanel').querySelector('.comparison'),null);
+  assert(document.getElementById('connectionsPanel').querySelector('.comparison'));
+  assert(document.getElementById('connectionsPanel').querySelector('#matrixVisual'));
+  assert(document.getElementById('kgInput').disabled);assert(document.getElementById('groundStrength').disabled);
   assert(document.getElementById('verdict').textContent.includes('De Armas'));
   for(let n=1;n<=9;n++){
    vm.runInContext(`chooseRace(${n})`,context);
@@ -36,11 +42,41 @@ setTimeout(()=>{
   assert(document.getElementById('scenarioStatus').textContent.includes('active'));
   const kg=document.querySelector('[data-weight="DE ARMAS"]');kg.value='57';kg.onchange();assert(document.getElementById('handicapInput').checked);
   const going=document.getElementById('goingInput');going.value='Heavy';going.onchange({target:going});assert(document.getElementById('scenarioStatus').textContent.includes('Heavy'));
-  document.getElementById('matrixView').onclick();assert(document.querySelectorAll('.matrix-cell').length>10);
+  assert(document.querySelectorAll('.matrix-cell').length>10);
   const cell=document.querySelector('[data-match-a="DE ARMAS"][data-match-b="ICELADY"]');cell.onclick();assert(!document.body.classList.contains('simple-mode'));assert(document.getElementById('pathResult').textContent.includes('Icelady'));
   document.getElementById('simpleMode').onclick();assert(document.body.classList.contains('simple-mode'));
-  document.getElementById('lanesView').onclick();document.getElementById('resetScenario').onclick();assert.equal(vm.runInContext('ranked.find(h=>h.name==="DE ARMAS").score',context),before);
+  document.getElementById('chartRange').value='full';document.getElementById('chartRange').onchange();document.getElementById('resetScenario').onclick();assert.equal(vm.runInContext('ranked.find(h=>h.name==="DE ARMAS").score',context),before);
   assert(document.querySelectorAll('.race-silk').length>20);assert(document.querySelector('img[alt="De Armas"]'));
-  console.log('PASS: all nine races, runner details, network modes, comparisons, simple/explore toggle, photo/silks, lanes, matrix drill-down, ground, weight, custom edge and reset. DOM logic only; visual browser QA unavailable.');
+  // Small edits are live, retain the input node, and show their actual impact.
+  const live=document.querySelector('[data-bonus="DE ARMAS"]');live.value='0.1';live.oninput();
+  assert(vm.runInContext('ranked.find(h=>h.name==="DE ARMAS").score',context)>before);
+  assert.equal(document.querySelector('[data-bonus="DE ARMAS"]'),live,'Recalculation must not recreate a focused input');
+  assert(document.getElementById('lastChange').textContent.includes('extra edge'));
+  assert(document.querySelector('[data-runner-impact="DE ARMAS"]').textContent.includes('+'));
+  const valid=vm.runInContext('ranked.find(h=>h.name==="DE ARMAS").score',context);live.value='6';live.oninput();
+  assert.equal(vm.runInContext('ranked.find(h=>h.name==="DE ARMAS").score',context),valid);
+  assert.equal(live.getAttribute('aria-invalid'),'true');assert(document.querySelector('[data-bonus-error="DE ARMAS"]').textContent.includes('Last valid'));
+  live.value='0.2';live.oninput();assert(!live.hasAttribute('aria-invalid'));
+  document.getElementById('resetScenario').onclick();
+  const draw=document.getElementById('drawInput');draw.value='0.1';draw.oninput();assert(document.getElementById('drawOutput').textContent.includes('Outside +0.1L'));
+  assert(document.getElementById('impactSummary').textContent.includes('BIGGEST GAIN'));
+  document.getElementById('resetScenario').onclick();
+  going.value='Soft';going.oninput();assert(!document.getElementById('groundStrength').disabled);
+  const strength=document.getElementById('groundStrength');strength.value='0';strength.oninput();assert.equal(vm.runInContext('ranked.find(h=>h.name==="DE ARMAS").score',context),before);
+  assert(document.getElementById('lastChange').textContent.includes('Matching-ground strength'));
+  document.getElementById('resetScenario').onclick();
+  document.getElementById('simpleMode').onkeydown({key:'End',preventDefault(){}});
+  assert(!document.getElementById('connectionsPanel').hidden);assert(document.getElementById('formPanel').hidden);
+  assert.equal(document.getElementById('exploreMode').getAttribute('aria-selected'),'true');
+  assert.equal(document.getElementById('simpleMode').getAttribute('tabindex'),'-1');
+  document.getElementById('tryIndirect').onclick();assert(document.getElementById('exampleStatus').textContent.includes('links'));
+  document.getElementById('simpleMode').onclick();
+  document.querySelector('[data-inspect="DE ARMAS"]').onclick();assert(document.getElementById('runnerDialog').hasAttribute('open'));
+  assert(!document.getElementById('formPanel').hidden,'Runner details should not change tabs');
+  document.getElementById('closeRunner').onclick();assert(!document.getElementById('runnerDialog').hasAttribute('open'));
+  document.getElementById('chartRange').value='field';document.getElementById('chartRange').onchange();
+  assert(document.getElementById('visualDescription').textContent.includes('Focused on this field'));
+  assert.equal(vm.runInContext('ranked.find(h=>h.name==="DE ARMAS").score',context),before,'Chart zoom must not change ratings');
+  console.log('PASS: all nine races, shared-runner histories, separate accessible tabs, indirect example, runner dialog, real-time small edits, retained input nodes, validation, sensitivity dependencies, focused chart, matrix drill-down and reset. DOM logic only; visual browser QA unavailable.');
  }catch(e){console.error(e);process.exitCode=1}
 },100);
