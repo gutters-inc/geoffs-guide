@@ -1,0 +1,95 @@
+{
+  "asOf": "2026-11-05",
+  "method": "Maximum absolute rating-point movement among eligible runners, changing one control at a time. Crowd changes are measured after recent-form weighting, so their incremental effect is isolated. Original form remains the 45-day benchmark.",
+  "races": [
+    {
+      "race": 1,
+      "recentForm": 15.985,
+      "softGround": 11.525,
+      "insideGateSmall": 2.754,
+      "tipsLow": 0.147,
+      "tipsStandard": 0.293,
+      "tipsHigh": 0.44
+    },
+    {
+      "race": 2,
+      "recentForm": 21.099,
+      "softGround": 10.457,
+      "insideGateSmall": 2.379,
+      "tipsLow": 0.255,
+      "tipsStandard": 0.511,
+      "tipsHigh": 0.766
+    },
+    {
+      "race": 3,
+      "recentForm": 9.316,
+      "softGround": 7.253,
+      "insideGateSmall": 2.159,
+      "tipsLow": 0.109,
+      "tipsStandard": 0.218,
+      "tipsHigh": 0.328
+    },
+    {
+      "race": 4,
+      "recentForm": 4.964,
+      "softGround": 8.335,
+      "insideGateSmall": 2.793,
+      "tipsLow": 0.244,
+      "tipsStandard": 0.488,
+      "tipsHigh": 0.731
+    },
+    {
+      "race": 5,
+      "recentForm": 14.656,
+      "softGround": 9.553,
+      "insideGateSmall": 2.809,
+      "tipsLow": 0.298,
+      "tipsStandard": 0.595,
+      "tipsHigh": 0.892
+    },
+    {
+      "race": 6,
+      "recentForm": 10.723,
+      "softGround": 10.875,
+      "insideGateSmall": 2.565,
+      "tipsLow": 0.066,
+      "tipsStandard": 0.133,
+      "tipsHigh": 0.199
+    },
+    {
+      "race": 7,
+      "recentForm": 3.591,
+      "softGround": 4.232,
+      "insideGateSmall": 2.809,
+      "tipsLow": 0.372,
+      "tipsStandard": 0.745,
+      "tipsHigh": 1.119
+    },
+    {
+      "race": 8,
+      "recentForm": 3.931,
+      "softGround": 8.626,
+      "insideGateSmall": 2.811,
+      "tipsLow": 0.189,
+      "tipsStandard": 0.379,
+      "tipsHigh": 0.568
+    },
+    {
+      "race": 9,
+      "recentForm": 21.076,
+      "softGround": 11.758,
+      "insideGateSmall": 2.719,
+      "tipsLow": 0.234,
+      "tipsStandard": 0.469,
+      "tipsHigh": 0.704
+    }
+  ],
+  "summary": {
+    "maximumStandardTipPoints": 0.745,
+    "maximumHighTipPoints": 1.119,
+    "historicalFormHalfLifeDays": 21,
+    "originalHalfLifeDays": 45,
+    "tipHalfLifeDays": 2,
+    "maximumTipRawBoost": 0.15
+  }
+}

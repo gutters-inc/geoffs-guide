@@ -1,7 +1,7 @@
 let lastAction='',lastEditRows=null,editKey=null,pendingFrame=null,dialogReturnFocus=null;
 const signedChange=n=>Math.abs(n)<.005?'0.00':`${n>0?'+':'−'}${Math.abs(n).toFixed(Math.abs(n)<1?2:1)}`;
 const ratingMap=rows=>new Map(rows.filter(h=>h.eligible).map((h,i)=>[h.name,{...h,rank:i+1}]));
-function scenarioActive(){return scenario.going!=='all'&&scenario.groundStrength>0||scenario.preferTrack||scenario.handicap||!!scenario.drawBias||!!scenario.crowdEnabled&&typeof currentCrowd==='function'&&currentCrowd().guideCount>0||race.horses.some(h=>Number(scenario.overrides[h.name]?.bonus))}
+function scenarioActive(){return !!scenario.preferRecent||scenario.going!=='all'&&scenario.groundStrength>0||scenario.preferTrack||scenario.handicap||!!scenario.drawBias||!!scenario.crowdEnabled&&typeof currentCrowd==='function'&&currentCrowd().guideCount>0||race.horses.some(h=>Number(scenario.overrides[h.name]?.bonus))}
 function syncRoute(){if(race)history.replaceState(null,'',`#race-${race.number}${experience==='form'?'':'/'+experience}`)}
 function setExperience(value,sync=true){
   const previous=experience;
@@ -35,7 +35,7 @@ function renderConnectionsMeta(){
 }
 function renderScenarioControls(){
   for(const [id,key] of [['goingInput','going'],['drawInput','drawBias'],['kgInput','kgFactor'],['groundStrength','groundStrength']]){const el=document.getElementById(id),value=String(scenario[key]);if(![...el.options].some(o=>o.value===value)){const option=document.createElement('option');option.value=value;option.textContent=key==='drawBias'?`Current gate assumption · ${Number(value).toFixed(2)}L`: `Saved setting · ${value}`;el.appendChild(option)}el.value=value;}
-  document.getElementById('trackInput').checked=scenario.preferTrack;document.getElementById('handicapInput').checked=scenario.handicap;
+  document.getElementById('recencyInput').checked=!!scenario.preferRecent;document.getElementById('trackInput').checked=scenario.preferTrack;document.getElementById('handicapInput').checked=scenario.handicap;
   editKey=null;lastAction='';lastEditRows=null;renderControlState();renderAdjustmentRows();renderScenarioStatus();renderCrowdControls();
 }
 function renderControlState(){
@@ -54,6 +54,7 @@ function renderControlState(){
 }
 function renderScenarioStatus(){
   const labels=[];
+  if(scenario.preferRecent)labels.push('Recent results preferred · 21-day half-life');
   if(scenario.going!=='all')labels.push(`${scenario.going} ground · ${Math.round(scenario.groundStrength*100)}% preference`);
   if(scenario.preferTrack)labels.push('Flemington form preferred');
   if(scenario.handicap)labels.push(`Weights · ${Number(scenario.kgFactor).toFixed(2)}L/kg`);
@@ -142,10 +143,10 @@ for(const [id,tab] of [['simpleMode','form'],['raceDayMode','race-day'],['valueM
   const b=document.getElementById(id);b.onclick=()=>setExperience(tab);
   b.onkeydown=e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();const tabs=['form','race-day','value','connections'],target=e.key==='Home'?'form':e.key==='End'?'connections':tabs[(tabs.indexOf(experience)+(e.key==='ArrowRight'?1:3))%4];setExperience(target);document.getElementById({form:'simpleMode','race-day':'raceDayMode',value:'valueMode',connections:'exploreMode'}[target]).focus?.()}};
 }
-const controlBindings=[['goingInput','going','Ground preference'],['groundStrength','groundStrength','Matching-ground strength'],['drawInput','drawBias','Draw advantage'],['trackInput','preferTrack','Flemington preference'],['handicapInput','handicap','Carried-weight adjustment'],['kgInput','kgFactor','Weight sensitivity'],['crowdInput','crowdEnabled','Published-tip crowd boost'],['crowdStrength','crowdStrength','Crowd influence']];
+const controlBindings=[['recencyInput','preferRecent','Recent race evidence'],['goingInput','going','Ground preference'],['groundStrength','groundStrength','Matching-ground strength'],['drawInput','drawBias','Draw advantage'],['trackInput','preferTrack','Flemington preference'],['handicapInput','handicap','Carried-weight adjustment'],['kgInput','kgFactor','Weight sensitivity'],['crowdInput','crowdEnabled','Published-tip crowd boost'],['crowdStrength','crowdStrength','Crowd influence']];
 for(const [id,key,label] of controlBindings){
   const el=document.getElementById(id),read=commit=>{if(typeof livePrefs!=='undefined'){if(key==='going')livePrefs.followTrack=false;if(key==='drawBias')livePrefs.learnDraw=false;saveLivePrefs()}beginEdit(id);scenario[key]=el.type==='checkbox'?el.checked:key==='going'?el.value:Number(el.value);updateScenario(label,commit)};
   el.oninput=()=>read(false);el.onchange=()=>read(true);
 }
 document.getElementById('chartRange').onchange=renderFormVisual;
-document.getElementById('resetScenario').onclick=()=>{if(pendingFrame!==null&&typeof cancelAnimationFrame==='function')cancelAnimationFrame(pendingFrame);pendingFrame=null;scenario=defaults();if(typeof livePrefs!=='undefined'){livePrefs.followTrack=false;livePrefs.learnDraw=false;saveLivePrefs()}saveScenario();renderScenarioControls();applyScenario();document.getElementById('impactAnnouncement').textContent='All scenario assumptions reset. Baseline ratings restored.'};
+document.getElementById('resetScenario').onclick=()=>{if(pendingFrame!==null&&typeof cancelAnimationFrame==='function')cancelAnimationFrame(pendingFrame);pendingFrame=null;scenario=defaults();if(typeof livePrefs!=='undefined'){livePrefs.followTrack=true;livePrefs.learnDraw=false;saveLivePrefs();syncLiveForRace()}saveScenario();renderScenarioControls();applyScenario();document.getElementById('impactAnnouncement').textContent='Recommended settings restored. Recent evidence and fresh reported going are preferred; the original form is unchanged.'};

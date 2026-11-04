@@ -51,7 +51,7 @@ setTimeout(()=>{
   document.querySelector('[data-ladder-horse="DE ARMAS"]').onclick();assert(document.getElementById('runnerDialog').hasAttribute('open'));document.getElementById('closeRunner').onclick();assert(!document.getElementById('runnerDialog').hasAttribute('open'));
   document.getElementById('previousRace').onclick();assert.equal(document.getElementById('mobileRaceSelect').value,'7');document.getElementById('nextRace').onclick();assert.equal(document.getElementById('mobileRaceSelect').value,'8');
   assert(document.getElementById('scenarioSettings').hasAttribute('open'));
-  assert.equal(document.querySelectorAll('.control-group').length,4);
+  assert.equal(document.querySelectorAll('.control-group').length,5);
   const stamp=new Date().toISOString();
   context.liveFixture={date:'2026-11-05',checked:stamp,errors:[],races:[{number:8,checked:stamp,condition:'Soft6',status:'pending',distance:2500,source:'https://www.tabtouch.com.au/racing/2026-11-05/mr/8',winners:[],runners:data.races[7].horses.map(h=>({...h,scratched:h.name==='DE ARMAS'?true:h.scratched}))}]};
   vm.runInContext('livePrefs.followTrack=true;acceptLiveMeeting(liveFixture)',context);
@@ -61,7 +61,7 @@ setTimeout(()=>{
   const groundSelect=document.getElementById('goingInput');groundSelect.value='Heavy';groundSelect.onchange();
   assert.equal(vm.runInContext('scenario.going',context),'Heavy');assert.equal(vm.runInContext('livePrefs.followTrack',context),false);
   vm.runInContext('acceptLiveMeeting(liveFixture)',context);assert.equal(vm.runInContext('scenario.going',context),'Heavy');
-  document.getElementById('resetScenario').onclick();assert.equal(vm.runInContext('scenario.going',context),'all');assert.equal(vm.runInContext('livePrefs.followTrack',context),false);
+  document.getElementById('resetScenario').onclick();assert.equal(vm.runInContext('scenario.going',context),'Soft');assert.equal(vm.runInContext('livePrefs.followTrack',context),true);
   assert(document.getElementById('horseDetail').textContent.includes('Race-day context'));
   // The baseline tab stays fixed while Race-day changes.
   document.getElementById('simpleMode').onclick();
@@ -106,12 +106,21 @@ setTimeout(()=>{
   const beforeExclude=vm.runInContext('currentCrowd().guideCount',context);
   const voice=document.querySelector('[data-crowd-guide="timms"]');voice.checked=false;voice.onchange();
   assert.equal(vm.runInContext('currentCrowd().guideCount',context),beforeExclude-1);
-  const strength=document.getElementById('crowdStrength');strength.value='0.75';strength.onchange();
-  assert.equal(vm.runInContext('scenario.crowdStrength',context),0.75);
+  const strength=document.getElementById('crowdStrength');strength.value='0.15';strength.onchange();
+  assert.equal(vm.runInContext('scenario.crowdStrength',context),0.15);
   crowdCheck.checked=false;crowdCheck.onchange();
   assert.equal(vm.runInContext('ranked.find(h=>h.name==="SEQUINNED").raw',context),unboosted);
   assert.equal(document.getElementById('crowdStrength').disabled,true);
   document.getElementById('resetScenario').onclick();assert.equal(vm.runInContext('scenario.crowdEnabled',context),false);
+  assert.equal(vm.runInContext('scenario.preferRecent',context),true);
+  const recentBefore=vm.runInContext('JSON.stringify(ranked.map(h=>[h.name,h.score]))',context);
+  const recentControl=document.getElementById('recencyInput');recentControl.checked=false;recentControl.onchange();
+  assert.notEqual(vm.runInContext('JSON.stringify(ranked.map(h=>[h.name,h.score]))',context),recentBefore);
+  recentControl.checked=true;recentControl.onchange();
+  const weatherBefore=vm.runInContext('JSON.stringify(ranked.map(h=>[h.name,h.score]))',context);
+  vm.runInContext('liveWeather={checked:new Date().toISOString(),time:"2026-11-05T12:00",temperature:16,rain:8,wind:20};renderLive()',context);
+  assert.equal(vm.runInContext('JSON.stringify(ranked.map(h=>[h.name,h.score]))',context),weatherBefore,'Rain alone must not invent a track rating or rating change');
+
 
 
 

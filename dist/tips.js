@@ -56,14 +56,14 @@ function renderTips(){
   renderTipSummary();
 }
 
-function currentCrowd(){return M.crowd(editorial?.sources||[],race,{strength:Number(scenario.crowdStrength??.5),excludedGuides:scenario.excludedGuides||[]})}
+function currentCrowd(){return M.crowd(editorial?.sources||[],race,{strength:Number(scenario.crowdStrength??.1),excludedGuides:scenario.excludedGuides||[],asOf:new Date().toISOString().slice(0,10)})}
 function scenarioWithCrowd(){return {...scenario,crowdBonuses:scenario.crowdEnabled?currentCrowd().bonuses:{}}}
 function renderCrowdControls(){
   if(!race)return;
   const crowd=currentCrowd(),on=!!scenario.crowdEnabled;
   document.getElementById('crowdInput').checked=on;
-  document.getElementById('crowdStrength').value=String(scenario.crowdStrength??.5);document.getElementById('crowdStrength').disabled=!on;
-  document.getElementById('crowdStatus').textContent=on?(crowd.guideCount?`${crowd.guideCount} active first picks across ${crowd.groupCount} groups. Boosts are shared by support, capped at ${Number(scenario.crowdStrength??.5).toFixed(2)} lengths for unanimous support.`:'No eligible first picks in the included sample. No crowd boost is applied.'):'Off · the adjusted order uses form and your other selected assumptions.';
+  document.getElementById('crowdStrength').value=String(scenario.crowdStrength??.1);document.getElementById('crowdStrength').disabled=!on;
+  document.getElementById('crowdStatus').textContent=on?(crowd.guideCount?`${crowd.guideCount} active first picks across ${crowd.groupCount} groups. Older tips fade every 2 days. At most ${Number(scenario.crowdStrength??.1).toFixed(2)}L for fresh, unanimous support; race evidence comes first.`:'No eligible first picks in the included sample. No crowd boost is applied.'):'Off · the adjusted order uses form and your other selected assumptions.';
   const excluded=new Set(scenario.excludedGuides||[]);
   document.getElementById('crowdGuides').innerHTML=(editorial?.sources||[]).filter(hasRace).map(s=>{const h=activeTip(s),pick=s.picks[String(race.number)],noBet=pick===null;return `<label class="crowd-guide"><input type="checkbox" data-crowd-guide="${esc(s.id)}" ${!excluded.has(s.id)&&h?'checked':''} ${!h||!on?'disabled':''}/><span><b>${esc(s.name)}</b><small>${esc(s.outlet)} · ${h?esc(h.display):noBet?'No bet':pick?'Tip excluded · scratched or emergency':'No eligible tip'}</small></span></label>`}).join('');
   document.querySelectorAll('[data-crowd-guide]').forEach(input=>input.onchange=()=>{beginEdit('crowd-'+input.dataset.crowdGuide);const ids=new Set(scenario.excludedGuides||[]);if(input.checked)ids.delete(input.dataset.crowdGuide);else ids.add(input.dataset.crowdGuide);scenario.excludedGuides=[...ids];updateScenario('Included racing guides',true)});

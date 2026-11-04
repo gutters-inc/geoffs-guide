@@ -57,15 +57,36 @@ console.log('PASS: neutral scenario, handicap direction and zero coefficient, dr
 
 // Shared groups and duplicate guide identities cannot create extra crowd votes.
 const voices=[{id:'one',name:'One',group:'Shared',picks:{1:'A'}},{id:'two',name:'Two',group:'Shared',picks:{1:'A'}},{id:'three',name:'Three',group:'Other',picks:{1:'B'}},{id:'abstain',name:'Abstain',picks:{1:null}}];
-const consensus=M.crowd([...voices,voices[0]],race,{strength:.5});
+for(const voice of voices)voice.date='2026-11-05';
+const consensus=M.crowd([...voices,voices[0]],race,{strength:.1});
 assert.equal(consensus.guideCount,3);assert.equal(consensus.groupCount,2);
-assert.equal(consensus.bonuses.A,.25);assert.equal(consensus.bonuses.B,.25);
+assert.equal(consensus.bonuses.A,.05);assert.equal(consensus.bonuses.B,.05);
 assert.equal(consensus.bonuses.C,undefined);
 const withVotes=M.rate(g,race,{crowdBonuses:consensus.bonuses});
-assert.equal(withVotes.find(h=>h.name==='A').crowdBonus,.25);
+assert.equal(withVotes.find(h=>h.name==='A').crowdBonus,.05);
 assert.equal(M.rate(g,race,{crowdBonuses:{D:.5}}).find(h=>h.name==='D').crowdBonus,0,'Missing form must not acquire an average plus a crowd bonus');
 assert.equal(M.crowd(voices,race,{excludedGuides:['one','two','three']}).guideCount,0);
 const scratchedRace={...race,horses:race.horses.map(h=>({...h,scratched:h.name==='A'}))};
 assert.equal(M.crowd(voices,scratchedRace).bonuses.A,undefined);
-assert.equal(M.crowd(voices,race,{strength:10}).bonuses.A,.375);
+assert.equal(M.crowd(voices,race,{strength:10}).bonuses.A,.075);
 console.log('PASS: crowd deduplication, group discounting, exclusions, missing-form protection and bounded boosts.');
+
+// Recent conflicting race evidence outranks stale published opinion.
+const recencyRace={number:1,distance:2000,horses:[horse('A',[run('2026-11-01','A',1,0),run('2026-09-20','B',2,4)]),horse('B',[run('2026-11-01','A',2,2),run('2026-09-20','B',1,0)])]};
+recencyRace.horses[1].number=2;
+const recencyGraph=M.build({races:[recencyRace]});
+assert.equal(M.rate(recencyGraph,recencyRace)[0].name,'B');
+assert.equal(M.rate(recencyGraph,recencyRace,{preferRecent:true})[0].name,'A');
+const staleTip=[{id:'tip',name:'Tip',date:'2026-11-01',picks:{1:'B'}}];
+const oldSupport=M.crowd(staleTip,recencyRace,{strength:.15,asOf:'2026-11-05'});
+assert.equal(oldSupport.bonuses.B,.0375);
+assert.equal(M.rate(recencyGraph,recencyRace,{preferRecent:true,crowdBonuses:oldSupport.bonuses})[0].name,'A');
+const freshTip=M.crowd([{...staleTip[0],date:'2026-11-05'}],recencyRace,{strength:.15,asOf:'2026-11-05'});
+assert.equal(freshTip.bonuses.B,.15);
+assert.equal(M.rate(recencyGraph,recencyRace,{preferRecent:true,crowdBonuses:freshTip.bonuses})[0].name,'A');
+assert.equal(M.crowd([{...staleTip[0],date:'2026-11-06'}],recencyRace,{asOf:'2026-11-05'}).guideCount,0);
+assert.equal(M.crowd([{...staleTip[0],date:undefined}],recencyRace,{strength:.1,asOf:'2026-11-05'}).bonuses.B,.05);
+const evidence=M.rate(recencyGraph,recencyRace,{preferRecent:true}),boosted=M.rate(recencyGraph,recencyRace,{preferRecent:true,crowdBonuses:freshTip.bonuses});
+for(const h of boosted)assert(h.crowdBonus<=.15&&h.crowdBonus>=0);
+assert(evidence[0].raw-evidence[1].raw>.15);
+console.log('PASS: newer conflicting results lead; fresh/old/unknown/future tips respect the evidence-first cap.');

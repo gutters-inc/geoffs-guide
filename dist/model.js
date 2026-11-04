@@ -49,7 +49,7 @@
     const strength=Number.isFinite(scenario.groundStrength)?Math.max(0,Math.min(1,scenario.groundStrength)):.7;
     const goingFactor=!scenario.going||scenario.going==='all'?1:ground(edge.race.going)===scenario.going?1:1-strength;
     const trackFactor=scenario.preferTrack&&!/^flemington$/i.test(edge.race.track) ? .5 : 1;
-    return Math.pow(.5,days/45)*Math.exp(-Math.abs(Math.log(distance/edge.race.distance))/.7)/Math.max(1,edge.race.results.size-1)*goingFactor*trackFactor;
+    return Math.pow(.5,days/(scenario.preferRecent?21:45))*Math.exp(-Math.abs(Math.log(distance/edge.race.distance))/.7)/Math.max(1,edge.race.results.size-1)*goingFactor*trackFactor;
   }
   function crowd(sources,race,options={}){
     const key=s=>String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,''),excluded=new Set(options.excludedGuides||[]),seen=new Set(),groups=new Map(),support={},bonuses={};
@@ -57,10 +57,13 @@
       if(!source.id||seen.has(source.id)||excluded.has(source.id))continue;seen.add(source.id);
       const pick=source.picks?.[String(race.number)],h=pick&&race.horses.find(h=>key(h.name)===key(pick));
       if(!h||h.scratched||h.emergency)continue;
-      const group=source.group||source.id;if(!groups.has(group))groups.set(group,[]);groups.get(group).push({source,h});
+      const stamp=source.sourceDates?.[String(race.number)]||source.date,asOf=Date.parse((options.asOf||TODAY).slice(0,10)),published=Date.parse(stamp);
+      if(Number.isFinite(published)&&published>asOf)continue;
+      const age=Number.isFinite(published)?Math.max(0,(asOf-published)/86400000):null,freshness=age===null?.5:Math.pow(.5,age/2);
+      const group=source.group||source.id;if(!groups.has(group))groups.set(group,[]);groups.get(group).push({source,h,freshness});
     }
-    let guideCount=0;for(const voters of groups.values())for(const {source,h} of voters){guideCount++;if(!support[h.name])support[h.name]={weight:0,guides:[]};support[h.name].weight+=1/voters.length;support[h.name].guides.push(source.name)}
-    const max=Number.isFinite(options.strength)?Math.max(0,Math.min(.75,options.strength)):.5;
+    let guideCount=0;for(const voters of groups.values())for(const {source,h,freshness} of voters){guideCount++;if(!support[h.name])support[h.name]={weight:0,guides:[]};support[h.name].weight+=freshness/voters.length;support[h.name].guides.push(source.name)}
+    const max=Number.isFinite(options.strength)?Math.max(0,Math.min(.15,options.strength)):.1;
     for(const [name,s] of Object.entries(support))bonuses[name]=groups.size?max*s.weight/groups.size:0;
     return {bonuses,support,guideCount,groupCount:groups.size};
   }
@@ -99,9 +102,10 @@
       const evidence=conditionSparse?'Sparse':relevantRuns>=3&&direct>=2?'Supported':relevantRuns>=2?'Limited':'Sparse';
       const manualBonus=Math.max(-5,Math.min(5,Number(overrides[h.name]?.bonus)||0));
       const drawBonus=maxBarrier>minBarrier?(Number(scenario.drawBias)||0)*(2*(h.barrier-minBarrier)/(maxBarrier-minBarrier)-1):0;
-      const crowdBonus=!h.scratched&&!h.emergency&&connectedRuns.size?Math.max(0,Math.min(.75,Number(scenario.crowdBonuses?.[h.name])||0)):0;
-      const raw=(ratings.get(h.name)||0)+manualBonus+drawBonus+crowdBonus;
-      return {...h,raw,score:50+45*Math.tanh(raw/4),direct,runs:connectedRuns.size,relevantRuns,evidence,component:graph.components.get(h.name),eligible:!h.scratched&&!h.emergency,edges,goingRuns,trackRuns,manualBonus,drawBonus,crowdBonus,scenarioWeight:targets.get(h.name)};
+      const crowdBonus=!h.scratched&&!h.emergency&&connectedRuns.size?Math.max(0,Math.min(.15,Number(scenario.crowdBonuses?.[h.name])||0)):0;
+      const evidenceRaw=(ratings.get(h.name)||0)+manualBonus+drawBonus;
+      const raw=evidenceRaw+crowdBonus;
+      return {...h,raw,score:50+45*Math.tanh(raw/4),direct,runs:connectedRuns.size,relevantRuns,evidence,component:graph.components.get(h.name),eligible:!h.scratched&&!h.emergency,edges,goingRuns,trackRuns,manualBonus,drawBonus,evidenceRaw,crowdBonus,scenarioWeight:targets.get(h.name)};
     }).sort((a,b)=>Number(b.eligible)-Number(a.eligible)||b.raw-a.raw||a.number-b.number);
   }
   function path(graph,from,to,max=3){
