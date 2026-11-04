@@ -5,7 +5,7 @@ Object.defineProperty(window.HTMLSelectElement.prototype,'value',{get(){return t
 const data=JSON.parse(fs.readFileSync('dist/data.json')),editorialData=JSON.parse(fs.readFileSync('dist/editorial.json'));
 const saved=new Map(),location={hash:''};
 const context=vm.createContext({window,document,console,location,history:{replaceState(_,__,hash){location.hash=hash}},localStorage:{getItem:k=>saved.get(k)||null,setItem:(k,v)=>saved.set(k,v)},fetch:async(url)=>({ok:true,json:async()=>url==='data.json'?data:JSON.parse(fs.readFileSync('dist/'+url))}),setTimeout,Date,Map,Set,Error});
-for(const f of ['model','views','ux','mobile','tips','ladder','live-model','live','app']){vm.runInContext(fs.readFileSync(`dist/${f}.js`,'utf8'),context);if(f==='model')context.FormModel=window.FormModel;if(f==='live-model')context.LiveForm=window.LiveForm}
+for(const f of ['model','views','ux','mobile','tips','ladder','live-model','live','race-day','app']){vm.runInContext(fs.readFileSync(`dist/${f}.js`,'utf8'),context);if(f==='model')context.FormModel=window.FormModel;if(f==='live-model')context.LiveForm=window.LiveForm}
 setTimeout(()=>{
  try{
   assert(document.getElementById('loading').hidden);assert.equal(document.getElementById('raceName').textContent,'Crown Oaks');
@@ -63,7 +63,37 @@ setTimeout(()=>{
   vm.runInContext('acceptLiveMeeting(liveFixture)',context);assert.equal(vm.runInContext('scenario.going',context),'Heavy');
   document.getElementById('resetScenario').onclick();assert.equal(vm.runInContext('scenario.going',context),'all');assert.equal(vm.runInContext('livePrefs.followTrack',context),false);
   assert(document.getElementById('horseDetail').textContent.includes('Race-day context'));
+  // The baseline tab stays fixed while Race-day changes.
+  document.getElementById('simpleMode').onclick();
+  assert(document.getElementById('raceDayPanel').hidden);
+  assert.equal(document.querySelector('#formPanel .live-panel'),null);
+  assert.equal(document.querySelector('#formPanel .scenario-panel'),null);
+  const fixedBefore=vm.runInContext('JSON.stringify(baseline.map(h=>[h.name,h.score,h.eligible,h.jockey]))',context);
+  const cardsBefore=document.getElementById('contenderCards').innerHTML;
+  const orderBefore=document.getElementById('rankings').innerHTML;
+  vm.runInContext('scenario.overrides["PROXIMA DEA"]={bonus:5};applyScenario()',context);
+  assert.equal(vm.runInContext('JSON.stringify(baseline.map(h=>[h.name,h.score,h.eligible,h.jockey]))',context),fixedBefore);
+  assert.equal(document.getElementById('contenderCards').innerHTML,cardsBefore);
+  assert.equal(document.getElementById('rankings').innerHTML,orderBefore);
+  assert.equal(vm.runInContext('baseline.find(h=>h.name==="DE ARMAS").eligible',context),true);
+  assert.equal(vm.runInContext('ranked.find(h=>h.name==="DE ARMAS").eligible',context),false);
+  document.getElementById('raceDayMode').onclick();
+  assert(!document.getElementById('raceDayPanel').hidden);assert(document.getElementById('formPanel').hidden);
+  assert(location.hash.endsWith('/race-day'));
+  assert(document.getElementById('raceDayMoves').textContent.includes('ORIGINAL'));
+  assert(document.getElementById('raceDayMoves').textContent.includes('ADJUSTED'));
+  assert(document.getElementById('raceDayMoves').textContent.includes('personal adjustment'));
+  document.getElementById('showDayField').onclick();
+  assert.equal(document.querySelectorAll('.move-card').length,data.races[7].horses.length);
+  assert(document.getElementById('raceDayMoves').textContent.includes('Scratched'));
+  document.getElementById('simpleMode').onclick();
+  vm.runInContext('liveMeeting=null;liveWeather=null;liveBusy=false;renderLive()',context);
+  assert(document.getElementById('liveCells').hidden);
+  assert(!document.getElementById('liveEmpty').hidden);
+  assert(document.getElementById('liveEmpty').textContent.includes('not confirmed'));
+  assert(document.querySelectorAll('.page-tabs [role="tab"]').length===4);
 
-  console.log('PASS: all nine mobile fields, 12 source identities, tips-only layout, no-bet/scratched exclusions, price UI removal, ladder evidence/expansion, preserved scenario controls, comparisons, navigation and runner sheet. DOM logic only; rendered browser QA unavailable.');
+
+  console.log('PASS: all nine mobile fields, 12 source identities, tips-only layout, no-bet/scratched exclusions, price UI removal, ladder evidence/expansion, fixed baseline / separate Race-day moves, preserved scenario controls, comparisons, navigation and runner sheet. DOM logic only; rendered browser QA unavailable.');
  }catch(e){console.error(e);process.exitCode=1}
 },100);

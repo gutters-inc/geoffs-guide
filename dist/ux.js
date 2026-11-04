@@ -5,13 +5,15 @@ function scenarioActive(){return scenario.going!=='all'&&scenario.groundStrength
 function syncRoute(){if(race)history.replaceState(null,'',`#race-${race.number}${experience==='form'?'':'/'+experience}`)}
 function setExperience(value,sync=true){
   const previous=experience;
-  experience=['form','simple'].includes(value)?'form':value==='value'?'value':'connections';
+  experience=['form','simple'].includes(value)?'form':value==='value'?'value':value==='race-day'?'race-day':'connections';
   document.body.classList.toggle('simple-mode',experience==='form');
-  document.getElementById('formPanel').hidden=experience!=='form';document.getElementById('connectionsPanel').hidden=experience!=='connections';document.getElementById('valuePanel').hidden=experience!=='value';
-  for(const [id,tab] of [['simpleMode','form'],['valueMode','value'],['exploreMode','connections']]){
+  document.getElementById('raceDayPanel').hidden=experience!=='race-day';document.getElementById('formPanel').hidden=experience!=='form';document.getElementById('connectionsPanel').hidden=experience!=='connections';document.getElementById('valuePanel').hidden=experience!=='value';
+  for(const [id,tab] of [['simpleMode','form'],['raceDayMode','race-day'],['valueMode','value'],['exploreMode','connections']]){
     const b=document.getElementById(id),on=experience===tab;b.classList.toggle('active',on);b.setAttribute('aria-selected',String(on));b.setAttribute('tabindex',on?'0':'-1');
   }
+  if(race){if(typeof renderRaceFacts==='function')renderRaceFacts();renderDetail();if(typeof renderRaceDay==='function')renderRaceDay()}
   if(sync)syncRoute();
+  if(race&&experience==='race-day'&&typeof refreshLive==='function'&&!liveFresh(liveRace()))refreshLive();
   if(sync&&previous!==experience&&typeof window.scrollTo==='function')window.scrollTo({top:0,behavior:'instant'});
 }
 function inspectRunner(name){
@@ -58,7 +60,7 @@ function renderScenarioStatus(){
   if(scenario.drawBias)labels.push(`${scenario.drawBias<0?'Inside':'Outside'} +${Math.abs(scenario.drawBias).toFixed(1)}L`);
   const n=race.horses.filter(h=>!h.scratched&&!h.emergency&&(Number(scenario.overrides[h.name]?.bonus)||scenario.handicap&&Number.isFinite(scenario.overrides[h.name]?.weight)&&scenario.overrides[h.name].weight!==h.weight)).length;
   if(n)labels.push(`${n} custom runner ${n===1?'adjustment':'adjustments'}`);
-  document.getElementById('scenarioStatus').innerHTML=`<span class="scenario-dot ${scenarioActive()?'':'baseline-dot'}"></span><b>${scenarioActive()?'Your scenario is active':'Baseline form'}</b><span>${esc(labels.length?labels.join(' · '):'No adjustments applied. Start with the ground or carried weight.')}</span>`;
+  document.getElementById('scenarioStatus').innerHTML=`<span class="scenario-dot ${scenarioActive()?'':'baseline-dot'}"></span><b>${scenarioActive()?'Your scenario is active':'No active assumptions'}</b><span>${esc(labels.length?labels.join(' · '):'No adjustments applied. Start with the ground or carried weight.')}</span>`;
 }
 function renderAdjustmentRows(){
   document.getElementById('adjustmentRows').innerHTML=race.horses.map(h=>{
@@ -99,7 +101,7 @@ function updateScenario(action,commit){
 }
 function applyScenario(){
   saveScenario();ranked=M.rate(graph,race,scenario);
-  renderVerdict();renderRankings();renderDetail();renderNewViews();renderScenarioStatus();renderControlState();renderAdjustmentFeedback();renderImpact();renderTipSummary();renderLadder();if(typeof renderLive==='function')renderLive();
+  renderVerdict();renderRankings();renderDetail();renderNewViews();renderScenarioStatus();renderControlState();renderAdjustmentFeedback();renderImpact();renderTipSummary();renderLadder();if(typeof renderLive==='function')renderLive();if(typeof renderRaceDay==='function')renderRaceDay();
 }
 function renderImpact(){
   const current=ratingMap(ranked),base=ratingMap(baseline),leader=active()[0];if(!leader)return;
@@ -135,9 +137,9 @@ document.getElementById('closeRunner').onclick=closeRunner;
 document.getElementById('traceRunner').onclick=()=>traceHorse(selected);
 document.getElementById('runnerDialog').addEventListener('click',e=>{if(e.target===document.getElementById('runnerDialog'))closeRunner()});
 document.getElementById('runnerDialog').addEventListener('cancel',e=>{e.preventDefault();closeRunner()});
-for(const [id,tab] of [['simpleMode','form'],['valueMode','value'],['exploreMode','connections']]){
+for(const [id,tab] of [['simpleMode','form'],['raceDayMode','race-day'],['valueMode','value'],['exploreMode','connections']]){
   const b=document.getElementById(id);b.onclick=()=>setExperience(tab);
-  b.onkeydown=e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();const tabs=['form','value','connections'],target=e.key==='Home'?'form':e.key==='End'?'connections':tabs[(tabs.indexOf(experience)+(e.key==='ArrowRight'?1:2))%3];setExperience(target);document.getElementById({form:'simpleMode',value:'valueMode',connections:'exploreMode'}[target]).focus?.()}};
+  b.onkeydown=e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();const tabs=['form','race-day','value','connections'],target=e.key==='Home'?'form':e.key==='End'?'connections':tabs[(tabs.indexOf(experience)+(e.key==='ArrowRight'?1:3))%4];setExperience(target);document.getElementById({form:'simpleMode','race-day':'raceDayMode',value:'valueMode',connections:'exploreMode'}[target]).focus?.()}};
 }
 const controlBindings=[['goingInput','going','Ground preference'],['groundStrength','groundStrength','Matching-ground strength'],['drawInput','drawBias','Draw advantage'],['trackInput','preferTrack','Flemington preference'],['handicapInput','handicap','Carried-weight adjustment'],['kgInput','kgFactor','Weight sensitivity']];
 for(const [id,key,label] of controlBindings){

@@ -5,7 +5,7 @@ Object.defineProperty(window.HTMLSelectElement.prototype,'value',{get(){return t
 const data=JSON.parse(fs.readFileSync('dist/data.json')),editorialData=JSON.parse(fs.readFileSync('dist/editorial.json'));
 const saved=new Map(),location={hash:''};
 const context=vm.createContext({window,document,console,location,history:{replaceState(_,__,hash){location.hash=hash}},localStorage:{getItem:k=>saved.get(k)||null,setItem:(k,v)=>saved.set(k,v)},fetch:async(url)=>({ok:true,json:async()=>url==='data.json'?data:JSON.parse(fs.readFileSync('dist/'+url))}),setTimeout,Date,Map,Set,Error});
-for(const f of ['model','views','ux','mobile','tips','ladder','app']){vm.runInContext(fs.readFileSync(`dist/${f}.js`,'utf8'),context);if(f==='model')context.FormModel=window.FormModel}
+for(const f of ['model','views','ux','mobile','tips','ladder','race-day','app']){vm.runInContext(fs.readFileSync(`dist/${f}.js`,'utf8'),context);if(f==='model')context.FormModel=window.FormModel}
 setTimeout(()=>{
  try{
   assert(document.getElementById('loading').hidden);assert.equal(document.getElementById('raceName').textContent,'Crown Oaks');
