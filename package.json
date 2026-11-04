@@ -1,1 +1,12 @@
-{"name":"oaks-form-connections","private":true,"version":"1.0.0","scripts":{"test":"node model.test.cjs && node ui.test.cjs"},"devDependencies":{"linkedom":"^0.18.12"}}
+{
+  "name": "oaks-form-connections",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "test": "node model.test.cjs && node live.test.mjs && node live-ui.test.cjs",
+    "build": "node scripts/build.mjs"
+  },
+  "devDependencies": {
+    "linkedom": "^0.18.12"
+  }
+}

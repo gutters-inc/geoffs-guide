@@ -1,6 +1,6 @@
 # Oaks Day Form Connections
 
-Buildless static site in `dist/`. The published data is a fixed pre-race snapshot of Flemington on 5 November 2026, sourced from TABtouch's nine race form pages. It is not a live field or odds feed.
+Phone-first UI sources in `dist/`, with a self-contained Worker built by `npm run build`. The published data is a fixed pre-race snapshot of Flemington on 5 November 2026, sourced from TABtouch's nine race form pages. Historical starts remain a fixed snapshot. A separate live module refreshes reported going, existing-runner changes and official results. Prices are not displayed.
 
 The client builds shared-race edges and weighted pairwise margin ratings locally. See the site's method panel for weighting, assumptions, coverage and limitations. Emergencies and scratchings do not enter the verdict. Unconnected groups receive an explicit comparison warning, and sparse or neutral leaders receive no reliable pick.
 
@@ -16,7 +16,7 @@ Scenario settings are stored in browser localStorage. Ground and venue choices r
 
 Install Python `beautifulsoup4`, then run `python collect.py`. This retrieves all nine published form pages and writes `dist/data.json`. Cached raw pages are kept locally in ignored `raw/`; `python collect.py --cached` reparses the same snapshot and preserves its timestamp. Winner abbreviations are resolved only when their prefix uniquely matches a known full name. Trials and future starts are excluded. A winner's displayed winning margin is kept separately from its zero beaten margin.
 
-Review new source fields, scratchings and data before republishing. There is no scheduled updater or API dependency in production.
+Review new source fields, scratchings and data before republishing. The Worker checks TABtouch and Open-Meteo on demand. No scheduled updater or API key is required.
 
 ## UX and control feedback
 
@@ -37,3 +37,13 @@ The user chooses one **go-to guide**. This preference is saved only in localStor
 The graph and head-to-head matrix have been removed. `ladder.js` shows a vertical mobile **Form ladder**, six horses initially, with the rest expandable. Every adjacent pair has an explanation based on actual direct meetings, a common-rival path, contradictory results or missing connections. Direct reversals and disconnected groups are explicit. A two-link margin comparison is a clue from different races, never a predicted winning margin. Scenario controls update the ladder. A collapsed two-horse inspector retains original race evidence for further checking.
 
 The user’s supplied screenshot remains byte-for-byte as `assets/geoff-source.jpg`; CSS crops the original portrait. Branding and the existing public URL remain Geoffs Guide. Mobile-only is a continuing constraint. No direct Grok access or relevant verified X post was available; published guide quotations are not presented as social posts.
+
+## Live conditions module
+
+`worker/live.mjs` is the fixed-source server integration; it exposes GET `/api/meeting` (nine fixed Flemington 5 November 2026 races) and `/api/weather` (Open-Meteo near Flemington). It is not an open proxy. Racing responses cache for 90 seconds (partial responses 30 seconds), weather for 10 minutes. Per-request upstream timeouts are 15 seconds, with three concurrent race fetches. No credentials or visitor location are used. Open-Meteo modelled weather is attributed under CC BY 4.0 and does not determine reported track going.
+
+`live-model.js` contains pure same-day aggregation. `live.js` refreshes on opening, every three minutes while visible and when the tab returns; it labels failures and last checks. Fresh, recognised race-specific going can automatically reweight historical form. Ground edits and reset switch to manual mode; preferences remain local to the browser. Existing-runner scratchings, jockey, weight and barrier can update, but emergencies are not automatically promoted without a confirmed final field. Historic starts, graph edges and published tip selections are never rewritten.
+
+Official results require both a published placing and “Dividends official” in the race page; provisional results do not influence learning. Earlier official jockey wins/rides (fractional wins for dead heats) are context only. Optional gate learning requires at least three earlier official races on matching going and the same straight (up to 1200m) or turning course. It compares inside-half winner share with inside-half starter share per race, sums excess, divides by sample count + 8, and caps the resulting edge at 0.35 lengths at each end. This is explicitly an uncalibrated gate heuristic, not actual racing-lane bias or a probability. It is off by default. Manual draw edits disable learning. No later race may inform an earlier one. Ground-specific runner records use the recent source starts and are descriptive, not calibrated suitability measures.
+
+Build embeds all UI/media bytes into `dist/server/index.js`; production uses the Worker manifest (no `static` field). Generated server and copied manifest are ignored. Package `.openai/hosting.json` plus `dist/server/index.js` only. The public Site identity and URL are preserved. `npm test` covers model, parser, live aggregation and integrated DOM interactions. Rendered mobile browser QA remains unavailable because the prescribed managed browser helper is absent.

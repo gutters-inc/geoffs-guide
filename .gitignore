@@ -2,3 +2,6 @@ raw/
 node_modules/
 *.tgz
 __pycache__/
+
+dist/server/
+dist/.openai/

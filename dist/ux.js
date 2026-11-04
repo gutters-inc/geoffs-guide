@@ -41,14 +41,14 @@ function renderControlState(){
   document.getElementById('groundStrength').disabled=!groundOn;document.getElementById('kgInput').disabled=!scenario.handicap;
   document.getElementById('kgOutput').textContent=Number(scenario.kgFactor).toFixed(2)+'L / kg';
   document.getElementById('groundOutput').textContent=Math.round(scenario.groundStrength*100)+'%';
-  document.getElementById('groundStrengthHint').textContent=groundOn?`Matching runs keep full influence; other ground keeps ${Math.round((1-scenario.groundStrength)*100)}%.`:'Choose a track condition to enable.';
+  document.getElementById('groundStrengthHint').textContent=groundOn?`Matching runs count fully. Other ground counts ${Math.round((1-scenario.groundStrength)*100)}%. At 0%, all ground counts equally.`:'Choose Good, Soft or Heavy first. 0% treats all past ground equally; 100% uses only matching ground.';
   const matching=active().filter(h=>h.goingRuns>0).length;
   document.getElementById('groundHint').textContent=groundOn?`${matching} of ${active().length} runners have an available ${scenario.going.toLowerCase()}-ground start.`:'All available ground contributes to the baseline.';
   document.getElementById('weightHint').textContent=scenario.handicap?`A 1kg reduction is worth ${Number(scenario.kgFactor).toFixed(2)}L in your assumption, before model fitting.`:'Off · turn on carried-weight adjustment to enable.';
   document.getElementById('trackHint').textContent=scenario.preferTrack?'Flemington runs: full influence. Other tracks: 50%.':'Off · every track keeps its normal influence.';
   const bias=Number(scenario.drawBias);document.getElementById('drawOutput').textContent=bias?`${bias<0?'Inside':'Outside'} +${Math.abs(bias).toFixed(1)}L`:'Neutral · no draw edge';
   document.getElementById('drawInput').setAttribute('aria-valuetext',document.getElementById('drawOutput').textContent);
-  document.getElementById('drawHint').textContent=bias?`${Math.abs(bias).toFixed(1)}L advantage at the ${bias<0?'inside':'outside'} end; the same penalty at the other end.`:'← Inside favoured · neutral · outside favoured →';
+  document.getElementById('drawHint').textContent=bias?`${Math.abs(bias).toFixed(1)}L advantage at the ${bias<0?'inside':'outside'} end; the same penalty at the other end.`:'Start at “No edge”. Use the presets for a small 0.25-length assumption, or fine-tune below.';
 }
 function renderScenarioStatus(){
   const labels=[];
@@ -99,7 +99,7 @@ function updateScenario(action,commit){
 }
 function applyScenario(){
   saveScenario();ranked=M.rate(graph,race,scenario);
-  renderVerdict();renderRankings();renderDetail();renderNewViews();renderScenarioStatus();renderControlState();renderAdjustmentFeedback();renderImpact();renderTipSummary();renderLadder();
+  renderVerdict();renderRankings();renderDetail();renderNewViews();renderScenarioStatus();renderControlState();renderAdjustmentFeedback();renderImpact();renderTipSummary();renderLadder();if(typeof renderLive==='function')renderLive();
 }
 function renderImpact(){
   const current=ratingMap(ranked),base=ratingMap(baseline),leader=active()[0];if(!leader)return;
@@ -141,8 +141,8 @@ for(const [id,tab] of [['simpleMode','form'],['valueMode','value'],['exploreMode
 }
 const controlBindings=[['goingInput','going','Ground preference'],['groundStrength','groundStrength','Matching-ground strength'],['drawInput','drawBias','Draw advantage'],['trackInput','preferTrack','Flemington preference'],['handicapInput','handicap','Carried-weight adjustment'],['kgInput','kgFactor','Weight sensitivity']];
 for(const [id,key,label] of controlBindings){
-  const el=document.getElementById(id),read=commit=>{beginEdit(id);scenario[key]=el.type==='checkbox'?el.checked:key==='going'?el.value:Number(el.value);updateScenario(label,commit)};
+  const el=document.getElementById(id),read=commit=>{if(typeof livePrefs!=='undefined'){if(key==='going')livePrefs.followTrack=false;if(key==='drawBias')livePrefs.learnDraw=false;saveLivePrefs()}beginEdit(id);scenario[key]=el.type==='checkbox'?el.checked:key==='going'?el.value:Number(el.value);updateScenario(label,commit)};
   el.oninput=()=>read(false);el.onchange=()=>read(true);
 }
 document.getElementById('chartRange').onchange=renderFormVisual;
-document.getElementById('resetScenario').onclick=()=>{if(pendingFrame!==null&&typeof cancelAnimationFrame==='function')cancelAnimationFrame(pendingFrame);pendingFrame=null;scenario=defaults();saveScenario();renderScenarioControls();applyScenario();document.getElementById('impactAnnouncement').textContent='All scenario assumptions reset. Baseline ratings restored.'};
+document.getElementById('resetScenario').onclick=()=>{if(pendingFrame!==null&&typeof cancelAnimationFrame==='function')cancelAnimationFrame(pendingFrame);pendingFrame=null;scenario=defaults();if(typeof livePrefs!=='undefined'){livePrefs.followTrack=false;livePrefs.learnDraw=false;saveLivePrefs()}saveScenario();renderScenarioControls();applyScenario();document.getElementById('impactAnnouncement').textContent='All scenario assumptions reset. Baseline ratings restored.'};
