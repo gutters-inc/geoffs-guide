@@ -6,11 +6,12 @@ const document=window.document;
 Object.defineProperty(window.HTMLSelectElement.prototype,'value',{get(){return this._value??this.options[0]?.value??''},set(v){this._value=String(v)},configurable:true});
 const data=JSON.parse(fs.readFileSync('dist/data.json','utf8'));
 const errors=[];
-const context=vm.createContext({window,document,console,location:{hash:''},history:{replaceState(){}},fetch:async(url)=>({ok:true,json:async()=>url==='media.json'?JSON.parse(fs.readFileSync('dist/media.json','utf8')):data}),setTimeout,Date,Map,Set,Error});
+const context=vm.createContext({window,document,console,location:{hash:''},history:{replaceState(){}},fetch:async(url)=>({ok:true,json:async()=>url==='media.json'?JSON.parse(fs.readFileSync('dist/media.json','utf8')):url==='editorial.json'?JSON.parse(fs.readFileSync('dist/editorial.json','utf8')):data}),setTimeout,Date,Map,Set,Error});
 vm.runInContext(fs.readFileSync('dist/model.js','utf8'),context);context.FormModel=window.FormModel;
 vm.runInContext(fs.readFileSync('dist/views.js','utf8'),context);
 vm.runInContext(fs.readFileSync('dist/ux.js','utf8'),context);
 vm.runInContext(fs.readFileSync('dist/mobile.js','utf8'),context);
+vm.runInContext(fs.readFileSync('dist/value.js','utf8'),context);
 vm.runInContext(fs.readFileSync('dist/app.js','utf8'),context);
 setTimeout(()=>{
  try{
@@ -89,6 +90,21 @@ setTimeout(()=>{
   assert(document.querySelector('.full-network #graph'));assert(document.querySelector('.full-matrix .h2h-matrix'));
   const rival=document.querySelector('[data-mobile-rival="ICELADY"]');rival.onclick();assert(document.getElementById('pathResult').textContent.includes('Icelady'));
   const match=document.querySelector('[data-mobile-match]');match.onclick();assert(document.getElementById('pathResult').textContent.length>20);
+  // Value is a separate tab: opinions, source prices and user assumptions stay distinct.
+  document.getElementById('valueMode').onclick();assert(!document.getElementById('valuePanel').hidden);assert(document.getElementById('formPanel').hidden);assert(document.getElementById('connectionsPanel').hidden);
+  assert.equal(document.getElementById('valueMode').getAttribute('aria-selected'),'true');
+  assert(document.title.includes('Geoffs Guide'));assert(document.querySelector('img[alt="Geoff"]'));
+  assert(document.querySelectorAll('.tip-card').length===4);assert(document.querySelectorAll('.published-quote').length===4);
+  assert(document.getElementById('offerStatus').textContent.includes('No public Oaks-specific'));
+  assert(document.querySelectorAll('.offer-card').length===4);
+  assert(document.getElementById('valueCalculation').textContent.includes('NO ASSESSMENT YET'));
+  const offered=document.getElementById('offeredOdds'),chance=document.getElementById('fairChance');offered.value='3.1';chance.value='35';chance.oninput();
+  assert(document.getElementById('valueCalculation').textContent.includes('Value at this price'));assert(document.getElementById('valueCalculation').textContent.includes('+8.5%'));
+  chance.value='20';chance.oninput();assert(document.getElementById('valueCalculation').textContent.includes('price is too short'));
+  chance.value='101';chance.oninput();assert(document.getElementById('valueCalculation').textContent.includes('Check your inputs'));
+  vm.runInContext('chooseRace(4)',context);assert(document.getElementById('staleTipNotes').textContent.includes('Cilacap scratched'));
+  vm.runInContext('chooseRace(1)',context);assert(document.getElementById('tipCards').textContent.includes('now excluded'));
+  assert.equal(vm.runInContext('valueMath(2,50).roi',context),0);assert.equal(vm.runInContext('valueMath(1,50)',context),null);
   console.log('PASS: all nine races, shared-runner histories, separate accessible tabs, indirect example, runner dialog, real-time small edits, retained input nodes, validation, sensitivity dependencies, focused chart, matrix drill-down and reset. DOM logic only; visual browser QA unavailable.');
  }catch(e){console.error(e);process.exitCode=1}
 },100);

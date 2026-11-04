@@ -1,0 +1,231 @@
+{
+  "checked": "2026-11-04T06:53:23.057015+00:00",
+  "meetingDate": "2026-11-05",
+  "region": "Victoria, Australia (assumed)",
+  "sources": [
+    {
+      "id": "timms",
+      "name": "Jared Timms",
+      "outlet": "TAB NZ Punters Lounge",
+      "group": "Entain",
+      "date": "2026-11-04",
+      "url": "https://www.tab.co.nz/punters/2026/11/2026-crown-oaks-day-tips-preview-flemington-thursday-5th-november/",
+      "quote": "I’m eager to have the Wakeful Stakes winner De Armas on top",
+      "quoteRace": 8,
+      "quoteType": "Published first-person column",
+      "picks": {
+        "1": "AUTUMN SLIDE",
+        "2": "YOURE NOT THE KING",
+        "3": "PINSTRIPED",
+        "4": "SASS APPEAL",
+        "5": "PERISHER",
+        "6": "SPIRITED DEFENCE",
+        "7": "SEQUINNED",
+        "8": "DE ARMAS",
+        "9": "BEV'S NINE"
+      }
+    },
+    {
+      "id": "cook",
+      "name": "Ryan Cook",
+      "outlet": "Neds Blog",
+      "group": "Entain",
+      "date": "2026-11-03",
+      "url": "https://www.neds.com.au/blog/2026/11/2026-vrc-oaks-day-tips-preview/",
+      "quote": "All eyes on the unbeaten PROXIMA DEA (1), with the only real knock being the wide gate.",
+      "quoteRace": 8,
+      "quoteType": "Published column",
+      "picks": {
+        "1": "SHES GOT THE CASH",
+        "2": "YOURE NOT THE KING",
+        "3": "TAVI TIME",
+        "4": "SASS APPEAL",
+        "5": "PERISHER",
+        "6": "BEL MEZYAAN",
+        "7": "SEQUINNED",
+        "8": "PROXIMA DEA",
+        "9": "REY MAGNERIO"
+      }
+    },
+    {
+      "id": "page",
+      "name": "Adam Page",
+      "outlet": "Just Horse Racing",
+      "group": "Just Horse Racing",
+      "date": "2026-11-04",
+      "url": "https://www.justhorseracing.com.au/tips/flemington-horse-racing-tips-and-best-bets-vrc-crown-oaks-day-thursday-5-11-2026/913456",
+      "quote": "I think 2500m is okay for her and is hard to beat.",
+      "quoteRace": 8,
+      "quoteType": "Published first-person column",
+      "picks": {
+        "1": "GRAND OMAHA",
+        "2": "KEITEL",
+        "3": "ENCAP",
+        "4": "SASS APPEAL",
+        "5": "PERISHER",
+        "6": "OUR JUSTIFY",
+        "7": "SEQUINNED",
+        "8": "DE ARMAS",
+        "9": "CAVALRY GIRL"
+      }
+    },
+    {
+      "id": "cody",
+      "name": "Cody Lane",
+      "outlet": "The Great Tip Off",
+      "group": "GTO",
+      "date": "2026-11-04",
+      "url": "https://thegreattipoff.com/news/horse-racing-tips-for-the-victorian-oaks-2026",
+      "quote": "At $2.30, there isn't enough value for Cody to recommend backing her.",
+      "quoteRace": 8,
+      "quoteType": "Article’s editorial wording about Cody’s assessment",
+      "picks": {
+        "8": "PROXIMA DEA"
+      },
+      "note": "Top selection Proxima Dea; published value preference Quick Finish at $11 each-way."
+    },
+    {
+      "id": "gately",
+      "name": "David Gately",
+      "outlet": "The Great Tip Off report",
+      "group": "GTO",
+      "date": "2026-11-04",
+      "url": "https://thegreattipoff.com/news/david-gately-horse-racing-tips-for-oaks-day-51126",
+      "quote": "The standout Bet of the Day at Flemington.",
+      "quoteRace": 7,
+      "quoteType": "The Great Tip Off’s report of Gately’s selections, not a spoken quotation",
+      "picks": {
+        "7": "SEQUINNED"
+      },
+      "note": "Published best value was R4 Cilacap at $14. The guide’s field snapshot marks Cilacap scratched; excluded from active value ideas."
+    }
+  ],
+  "watchlist": [
+    {
+      "race": 1,
+      "horse": "SHES GOT THE CASH",
+      "source": "cook",
+      "type": "Published each-way idea",
+      "quotedOdds": 16,
+      "reason": "Ryan Cook’s longer-priced selection. Check fitness first-up and the current place terms."
+    },
+    {
+      "race": 2,
+      "horse": "KEITEL",
+      "source": "page",
+      "type": "Published long-shot selection",
+      "quotedOdds": 10,
+      "reason": "Adam Page’s alternative to the favourite. A bigger price alone does not establish an edge."
+    },
+    {
+      "race": 3,
+      "horse": "PINSTRIPED",
+      "source": "timms",
+      "type": "Published value / each-way selection",
+      "quotedOdds": 17,
+      "reason": "Jared Timms’s designated value pick. Check whether the available price compensates for recent below-best form."
+    },
+    {
+      "race": 6,
+      "horse": "SPIRITED DEFENCE",
+      "source": "timms",
+      "type": "Published each-way idea",
+      "quotedOdds": 11,
+      "reason": "Jared Timms’s each-way selection. Inspect the step up to a mile and current place terms."
+    },
+    {
+      "race": 8,
+      "horse": "QUICK FINISH",
+      "source": "cody",
+      "type": "Published best-value selection",
+      "quotedOdds": 11,
+      "reason": "Cody Lane prefers the price on the Derby placegetter, despite rating Proxima Dea most likely to win."
+    },
+    {
+      "race": 8,
+      "horse": "DE ARMAS",
+      "source": "timms",
+      "type": "Form / market comparison",
+      "quotedOdds": 3.1,
+      "reason": "Supported by two published columns and the form model. Her fair win chance still needs an independent assessment."
+    },
+    {
+      "race": 9,
+      "horse": "I'M FOXING",
+      "source": "page",
+      "type": "Published long-shot mention",
+      "quotedOdds": 14,
+      "reason": "Adam Page’s outsider. Compare the current price with your assessed chance before calling it value."
+    }
+  ],
+  "offers": [
+    {
+      "book": "Sportsbet",
+      "name": "Bet Return",
+      "kind": "Personalised token",
+      "status": "Account-dependent · Oaks coverage unconfirmed",
+      "summary": "An eligible cash fixed-odds win bet can return a bonus bet for the token’s specified finishing positions.",
+      "terms": [
+        "Cap and qualifying places: shown on your token.",
+        "One per race; cannot combine with Power Play or another promotion.",
+        "Race-specific tokens expire after the race. Bonus bet is not a cash refund."
+      ],
+      "source": "https://helpcentre.sportsbet.com.au/hc/en-us/articles/115013721108-Product-Features-Terms-and-Conditions",
+      "destination": "https://www.sportsbet.com.au/specials"
+    },
+    {
+      "book": "TAB",
+      "name": "Race Saver / Reload",
+      "kind": "Personalised bonus-bet offers",
+      "status": "Account-dependent · Oaks coverage unconfirmed",
+      "summary": "Allocated offers can provide a bonus bet after a qualifying result or non-winning win bet.",
+      "terms": [
+        "Your token defines the cap, qualifying results and races.",
+        "Once per person per race. Thoroughbred win offers require eight runners.",
+        "Bonus-funded, live or cashed-out bets can be excluded. Check the full token terms."
+      ],
+      "source": "https://help.tab.com.au/bonus-bets-promotions/my-offers-bonus-bet-t-cs",
+      "destination": "https://help.tab.com.au/bonus-bets-promotions/my-offers-faqs"
+    },
+    {
+      "book": "TAB",
+      "name": "Pump",
+      "kind": "Personalised price enhancement",
+      "status": "Account-dependent · Oaks coverage unconfirmed",
+      "summary": "An allocated Pump can enhance the odds on an eligible bet, with cash winnings.",
+      "terms": [
+        "Maximum stake and potential payout are offer-specific.",
+        "Check eligible markets and expiry in the offer.",
+        "Cannot combine with another offer. Compare the resulting price, not the badge."
+      ],
+      "source": "https://help.tab.com.au/bonus-bets-promotions/my-offers-faqs",
+      "destination": "https://help.tab.com.au/bonus-bets-promotions/my-offers-faqs"
+    },
+    {
+      "book": "bet365",
+      "name": "Each Way Extra",
+      "kind": "Published betting feature",
+      "status": "Published feature · Oaks availability unconfirmed",
+      "summary": "On selected horse races, choose more or fewer places in exchange for different odds.",
+      "terms": [
+        "More places can mean a shorter price; compare both win and place terms.",
+        "Scratchings may alter available terms.",
+        "No universal Oaks stake cap or coverage verified."
+      ],
+      "source": "https://extra.bet365.com.au/features/au/each-way-extra",
+      "destination": "https://www.bet365.com.au/promos/en-au/horse-racing"
+    }
+  ],
+  "offerNote": "No public Oaks-specific promotion for 5 November 2026 was verified. These are published features or personalised offers to check in your own account; no eligibility or bonus value is assumed.",
+  "socialNote": "No direct Grok connection or relevant verified X post was available. Quotes are from the linked published columns and reports.",
+  "otherBooks": [
+    {
+      "name": "Ladbrokes Australia",
+      "url": "https://www.ladbrokes.com.au/"
+    },
+    {
+      "name": "Neds",
+      "url": "https://www.neds.com.au/"
+    }
+  ]
+}

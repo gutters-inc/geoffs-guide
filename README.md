@@ -27,3 +27,13 @@ The focused form chart uses a labelled field-specific scale by default; the full
 ## Mobile-only product constraint
 
 The user confirmed this guide is used only on mobile. Keep the phone layout at every viewport, with a 520px maximum reading column. `mobile.css` supplies safe-area-aware bottom tabs, a sticky native race picker, 48px touch targets, 16px input text, stacked ranking/adjustment cards and a bottom-sheet runner dialog. `mobile.js` provides readable connection and head-to-head lists; the wide map and full matrix are optional, locally scrollable details. Preserve this constraint in future changes.
+
+## Geoffs Guide editorial and value view
+
+The user’s supplied screenshot is preserved byte-for-byte as `assets/geoff-source.jpg`; a CSS circular viewport displays the original portrait without regenerating the face. Branding is Geoffs Guide. The public URL and Site identity remain unchanged.
+
+`editorial.json` records dated source-linked tips, short exact quotes, attributed publication wording and published-value ideas. It distinguishes publisher prices from the refreshed TABtouch win-price snapshots in `data.json`. Scratchings and emergencies are excluded from actionable ideas and source-agreement counts. Neds/TAB NZ shared ownership is disclosed. No relevant verified X posts or direct Grok access were available; no social quotes or endorsements are fabricated.
+
+The Value tab calculates fair decimal odds and expected ROI only from a user-entered win probability and offered price. Form ratings are never converted to win chances. It is a single-win comparison, excluding deductions, commission, tax, place terms and bonus-bet value.
+
+Promotions are clearly labelled as published features or account-dependent offers with unconfirmed Oaks coverage. No date-specific universal Oaks offer was verified; limits and eligibility must come from the customer’s actual token. Research assumes Victoria unless the user says otherwise; the location selector does not claim to validate bookmaker access.

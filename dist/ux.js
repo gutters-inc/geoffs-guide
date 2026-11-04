@@ -2,13 +2,13 @@ let lastAction='',lastEditRows=null,editKey=null,pendingFrame=null,dialogReturnF
 const signedChange=n=>Math.abs(n)<.005?'0.00':`${n>0?'+':'−'}${Math.abs(n).toFixed(Math.abs(n)<1?2:1)}`;
 const ratingMap=rows=>new Map(rows.filter(h=>h.eligible).map((h,i)=>[h.name,{...h,rank:i+1}]));
 function scenarioActive(){return scenario.going!=='all'&&scenario.groundStrength>0||scenario.preferTrack||scenario.handicap||!!scenario.drawBias||race.horses.some(h=>Number(scenario.overrides[h.name]?.bonus))}
-function syncRoute(){if(race)history.replaceState(null,'',`#race-${race.number}${experience==='connections'?'/connections':''}`)}
+function syncRoute(){if(race)history.replaceState(null,'',`#race-${race.number}${experience==='form'?'':'/'+experience}`)}
 function setExperience(value,sync=true){
   const previous=experience;
-  experience=['form','simple'].includes(value)?'form':'connections';
+  experience=['form','simple'].includes(value)?'form':value==='value'?'value':'connections';
   document.body.classList.toggle('simple-mode',experience==='form');
-  document.getElementById('formPanel').hidden=experience!=='form';document.getElementById('connectionsPanel').hidden=experience!=='connections';
-  for(const [id,tab] of [['simpleMode','form'],['exploreMode','connections']]){
+  document.getElementById('formPanel').hidden=experience!=='form';document.getElementById('connectionsPanel').hidden=experience!=='connections';document.getElementById('valuePanel').hidden=experience!=='value';
+  for(const [id,tab] of [['simpleMode','form'],['valueMode','value'],['exploreMode','connections']]){
     const b=document.getElementById(id),on=experience===tab;b.classList.toggle('active',on);b.setAttribute('aria-selected',String(on));b.setAttribute('tabindex',on?'0':'-1');
   }
   if(sync)syncRoute();
@@ -99,7 +99,7 @@ function updateScenario(action,commit){
 }
 function applyScenario(){
   saveScenario();ranked=M.rate(graph,race,scenario);
-  renderVerdict();renderRankings();renderDetail();renderNewViews();renderScenarioStatus();renderControlState();renderAdjustmentFeedback();renderImpact();
+  renderVerdict();renderRankings();renderDetail();renderNewViews();renderScenarioStatus();renderControlState();renderAdjustmentFeedback();renderImpact();renderValueSummary();
 }
 function renderImpact(){
   const current=ratingMap(ranked),base=ratingMap(baseline),leader=active()[0];if(!leader)return;
@@ -135,9 +135,9 @@ document.getElementById('closeRunner').onclick=closeRunner;
 document.getElementById('traceRunner').onclick=()=>traceHorse(selected);
 document.getElementById('runnerDialog').addEventListener('click',e=>{if(e.target===document.getElementById('runnerDialog'))closeRunner()});
 document.getElementById('runnerDialog').addEventListener('cancel',e=>{e.preventDefault();closeRunner()});
-for(const [id,tab] of [['simpleMode','form'],['exploreMode','connections']]){
+for(const [id,tab] of [['simpleMode','form'],['valueMode','value'],['exploreMode','connections']]){
   const b=document.getElementById(id);b.onclick=()=>setExperience(tab);
-  b.onkeydown=e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();const target=e.key==='Home'?'form':e.key==='End'?'connections':experience==='form'?'connections':'form';setExperience(target);document.getElementById(target==='form'?'simpleMode':'exploreMode').focus?.()}};
+  b.onkeydown=e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();const tabs=['form','value','connections'],target=e.key==='Home'?'form':e.key==='End'?'connections':tabs[(tabs.indexOf(experience)+(e.key==='ArrowRight'?1:2))%3];setExperience(target);document.getElementById({form:'simpleMode',value:'valueMode',connections:'exploreMode'}[target]).focus?.()}};
 }
 const controlBindings=[['goingInput','going','Ground preference'],['groundStrength','groundStrength','Matching-ground strength'],['drawInput','drawBias','Draw advantage'],['trackInput','preferTrack','Flemington preference'],['handicapInput','handicap','Carried-weight adjustment'],['kgInput','kgFactor','Weight sensitivity']];
 for(const [id,key,label] of controlBindings){

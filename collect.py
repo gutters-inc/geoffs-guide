@@ -1,4 +1,4 @@
-import sys, json, re, urllib.request, concurrent.futures, datetime, pathlib
+import sys, json, re, urllib.request, concurrent.futures, datetime, pathlib, http.client
 sys.path.insert(0, '/tmp/oaks-deps')
 from bs4 import BeautifulSoup
 ROOT=pathlib.Path(__file__).parent
@@ -8,7 +8,14 @@ def clean(s):
     return re.sub(r'\s*\((?:[A-Z]{2,3}|EM\d+)\)', '',s.upper()).strip()
 def get(n):
     url=f'https://www.tabtouch.com.au/racing/2026-11-05/mr/{n}'
-    raw=(ROOT/'raw'/f'race{n}.html').read_text() if '--cached' in sys.argv else urllib.request.urlopen(url,timeout=60).read().decode()
+    if '--cached' in sys.argv:raw=(ROOT/'raw'/f'race{n}.html').read_text()
+    else:
+        for attempt in range(3):
+            try:
+                raw=urllib.request.urlopen(url,timeout=45).read().decode()
+                break
+            except (OSError,http.client.IncompleteRead):
+                if attempt==2:raise
     (ROOT/'raw').mkdir(exist_ok=True)
     (ROOT/'raw'/f'race{n}.html').write_text(raw)
     model=json.JSONDecoder().raw_decode(raw.split('var model = ',1)[1])[0]
@@ -31,8 +38,9 @@ def get(n):
                     winner_weight=re.search(r'\s(\d+(?:\.\d+)?)kg(?:\s|$)',c[15])
                     hist.append(dict(pos=pos,total=total,track=c[1],date=date,distance=distance,grade=c[5],raceTime=c[12],going=c[6],weight=c[9],winner=winner,winnerWeight=float(winner_weight[1]) if winner_weight else None,margin=0 if pos==1 else margin,winMargin=margin if pos==1 else None))
                 except (ValueError,IndexError):pass
-        horses.append(dict(number=h['number'],name=clean(h['name']),display=clean(h['name']).title(),barrier=h['barrier'],weight=h['weight'],jockey=h['rider'].title(),trainer=h['trainer'],form=h['last4Starts'],scratched=h.get('isFobScratched',False) or h.get('isToteOff',False),emergency='(EM' in h['name'],history=hist))
-    return dict(number=n,name=names[n-1],time=times[n-1],distance=model['raceInfo']['distance'],going=model['raceInfo']['condition'],source=url,horses=horses)
+        price=float(h.get('fixedWinDiv') or 0) if re.match(r'^\d+(?:\.\d+)?$',str(h.get('fixedWinDiv') or '')) else 0
+        horses.append(dict(number=h['number'],name=clean(h['name']),display=clean(h['name']).title(),barrier=h['barrier'],weight=h['weight'],jockey=h['rider'].title(),trainer=h['trainer'],form=h['last4Starts'],odds=price if price>1 else None,scratched=h.get('isFobScratched',False) or h.get('isToteOff',False),emergency='(EM' in h['name'],history=hist))
+    return dict(number=n,name=names[n-1],time=times[n-1],distance=model['raceInfo']['distance'],going=model['raceInfo']['condition'],source=url,oddsTimestamp=model['raceInfo'].get('timestamp'),horses=horses)
 with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
     races=sorted(pool.map(get,range(1,10)),key=lambda x:x['number'])
 known={h['name'] for r in races for h in r['horses']}

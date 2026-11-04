@@ -19,7 +19,7 @@ function chooseRace(n){
   const options=ranked.map(h=>`<option value="${esc(h.name)}">${h.number}. ${esc(h.display)}${h.scratched?' · SCR':h.emergency?' · Emergency':''}</option>`).join('');
   $('horseA').innerHTML=options;$('horseB').innerHTML=options;
   $('horseA').value=selected;$('horseB').value=active()[1]?.name||selected;
-  renderVerdict();renderRankings();renderDetail();renderPath();renderScenarioControls();renderNewViews();renderImpact();renderConnectionsMeta();renderMatrix();syncMobileRace();renderMobileNetwork();
+  renderVerdict();renderRankings();renderDetail();renderPath();renderScenarioControls();renderNewViews();renderImpact();renderConnectionsMeta();renderMatrix();syncMobileRace();renderMobileNetwork();renderValue();
   syncRoute();
 }
 function renderVerdict(){
@@ -109,7 +109,7 @@ function renderGraph(){
 $('horseA').onchange=()=>{selected=$('horseA').value;renderDetail();renderRankings();renderPath()};$('horseB').onchange=renderPath;$('maxHops').onchange=renderPath;
 $('swap').onclick=()=>{const a=$('horseA').value;$('horseA').value=$('horseB').value;$('horseB').value=a;selected=$('horseA').value;renderDetail();renderRankings();renderPath()};
 for(const [id,value] of [['allView','all'],['focusView','focus']])$(id).onclick=()=>{mode=value;$('allView').classList.toggle('active',mode==='all');$('focusView').classList.toggle('active',mode==='focus');renderGraph()};
-Promise.all([fetch('data.json').then(r=>{if(!r.ok)throw Error('Could not load form data');return r.json()}),fetch('media.json').then(r=>r.ok?r.json():{}).catch(()=>({}))]).then(([d,photos])=>{media=photos;
+Promise.all([fetch('data.json').then(r=>{if(!r.ok)throw Error('Could not load form data');return r.json()}),fetch('media.json').then(r=>r.ok?r.json():{}).catch(()=>({})),fetch('editorial.json').then(r=>r.ok?r.json():null).catch(()=>null)]).then(([d,photos,research])=>{media=photos;editorial=research;
   data=d;graph=M.build(data);$('dataTimestamp').textContent=`Retrieved ${new Date(d.retrieved).toLocaleString('en-AU',{timeZone:'Australia/Melbourne',dateStyle:'long',timeStyle:'short'})} Melbourne time. This is a fixed snapshot; verify late scratchings and conditions with the published form.`;
-  const n=+(location.hash.match(/race-(\d)/)?.[1]||8);setExperience(location.hash.includes('/connections')?'connections':'form',false);chooseRace(n>=1&&n<=9?n:8);$('loading').hidden=true;
+  const n=+(location.hash.match(/race-(\d)/)?.[1]||8);setExperience(location.hash.includes('/connections')?'connections':location.hash.includes('/value')?'value':'form',false);chooseRace(n>=1&&n<=9?n:8);$('loading').hidden=true;
 }).catch(e=>{$('loading').innerHTML=`<div>Unable to load the form guide.<br><br><button onclick="location.reload()">Try again</button><p>${esc(e.message)}</p></div>`});
