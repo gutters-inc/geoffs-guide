@@ -13,6 +13,13 @@ html,body{max-width:100%;overflow-x:hidden}
 .official-race-result .result-verdict{margin-top:9px;padding-top:9px;border-top:1px solid #45454b;font-weight:750}
 .official-race-result .result-hit{color:#bfe8b7}
 .official-race-result .result-miss{color:#f0c5c5}
+.official-race-result.result-winner{background:#123e2a;border-left-color:#74d68f;box-shadow:0 7px 22px #123e2a33}
+.official-race-result.result-top-three{background:#222016;border-left-color:#e4bb4e;box-shadow:0 7px 22px #3b310f26}
+.official-race-result .result-verdict b,.official-race-result .result-verdict span,.official-race-result .result-verdict small{display:block}
+.official-race-result .result-verdict b{font-size:10px;letter-spacing:.9px;margin-bottom:4px}
+.official-race-result .result-verdict span{font-size:18px;line-height:1.25;color:#fff}
+.official-race-result .result-verdict small{font-size:10px;line-height:1.45;color:#d8d8dc;margin-top:4px;font-weight:500}
+.official-race-result .result-winner{color:#9df0b2}.official-race-result .result-top-three{color:#f3cf70}
 .mail-result>span{flex:1}
 .mail-result em{display:block;font-style:normal;font-size:8px;letter-spacing:.7px;font-weight:800;color:var(--muted);margin-bottom:2px}
 .mail-result strong{display:block;font-size:13px;line-height:1.4}
@@ -30,6 +37,13 @@ html,body{max-width:100%;overflow-x:hidden}
 .form-result-card>header{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;padding-bottom:14px;border-bottom:1px solid #e7e7e9}
 .form-result-card>header span,.miss-review>span{font-size:9px;letter-spacing:1px;font-weight:800;color:var(--red-dark)}
 .form-result-card>header strong{font-size:22px;line-height:1.1;text-align:right}
+.form-result-card.result-winner{border-top-color:#2f9c5d}.form-result-card.result-top-three{border-top-color:#c39420}
+.result-celebration{margin:14px 0;padding:16px;border-radius:5px;background:#f3f3f5;border-left:5px solid #74747c}
+.result-winner .result-celebration{background:#eaf8ee;border-left-color:#2f9c5d}.result-top-three .result-celebration{background:#fff7dc;border-left-color:#c39420}
+.result-celebration>span{display:block;font-size:9px;letter-spacing:1px;font-weight:900;color:#555}
+.result-winner .result-celebration>span{color:#18723d}.result-top-three .result-celebration>span{color:#8b6510}
+.result-celebration>strong{display:block;font-size:23px;line-height:1.15;margin-top:5px;letter-spacing:-.5px}
+.result-celebration p{font-size:11px;line-height:1.5;color:#555;margin-top:5px}
 .form-finish{list-style:none;padding:0;margin:14px 0 7px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
 .form-finish li{display:grid;grid-template-columns:38px 1fr;gap:2px 9px;align-items:center;padding:9px 10px;background:#f5f5f6;border-radius:4px}
 .form-finish li b{grid-row:1/3;color:var(--red-dark);font-size:11px}
