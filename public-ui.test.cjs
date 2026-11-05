@@ -14,7 +14,7 @@ async function boot({hash='',failure='',delay=false}={}){
  const app=await boot();const {context,document,location}=app;assert(document.getElementById('loading').hidden);assert.equal(document.querySelectorAll('[role="tab"]').length,4);
  assert.equal(document.querySelectorAll('input').length,0);assert.equal(document.querySelectorAll('select').length,1);assert.equal(document.querySelectorAll('.scenario-panel,.impact-dashboard,.moves-panel,.visual-card,.live-panel').length,0);
  assert.equal(document.querySelector('[data-trust]'),null);assert.equal(document.querySelector('.upload-photo'),null);
- assert.equal(document.querySelectorAll('link[rel="stylesheet"]').length,1);assert.equal(document.querySelector('link[rel="stylesheet"]').getAttribute('href'),'ig.css');assert.equal(document.querySelector('.intro'),null);assert(fs.readFileSync('dist/ig.css','utf8').includes('#e61e1e'));
+ assert.equal(document.querySelectorAll('link[rel="stylesheet"]').length,1);assert.equal(document.querySelector('link[rel="stylesheet"]').getAttribute('href'),'results.css');assert.equal(document.querySelector('.intro'),null);assert(fs.readFileSync('dist/ig.css','utf8').includes('#e61e1e'));assert(fs.readFileSync('dist/results.css','utf8').includes('.official-race-result'));
  assert.equal(vm.runInContext("selectionConfidence(null).level",context),'withheld');
  assert.equal(vm.runInContext("selectionConfidence({evidence:'Sparse',score:99}).level",context),'low');
  assert.equal(vm.runInContext("selectionConfidence({evidence:'Supported'}).level",context),'moderate');
@@ -47,7 +47,7 @@ async function boot({hash='',failure='',delay=false}={}){
  assert(app.requests.every(r=>!r.options?.method||r.options.method==='GET'));assert(app.requests.every(r=>!['/api/meeting','/api/weather'].includes(r.url)));
  // Saved result/abandonment states must not manufacture a new prediction.
  const completed=structuredClone(edition),r=completed.meeting.races.find(r=>r.number===1);r.status='official';r.winners=[r.runners.find(h=>!h.scratched&&!h.emergency)];completed.selections['1'].status='official';completed.selections['1'].frozen=true;
- context.savedResult=completed;vm.runInContext('acceptSavedMail(savedResult);chooseRace(1)',context);assert(document.getElementById('lateMailComparison').textContent.includes('Winner:'));
+ context.savedResult=completed;vm.runInContext('acceptSavedMail(savedResult);chooseRace(1)',context);assert(document.getElementById('lateMailComparison').textContent.includes('Winner:'));assert(document.querySelector('.official-race-result'));assert(document.getElementById('lateMailComparison').textContent.includes('Saved pre-race tip:'));assert(document.querySelector('#lateMailResults .mail-result-official'));
  assert(anchored>0,'Navigation should return to race content, not the cover');
  const prior=edition.selections['1'].revisedTip?.name;assert.equal(vm.runInContext('lateMail.selections[1].revisedTip?.name',context),prior);
  completed.meeting.races.find(r=>r.number===2).status='abandoned';completed.selections['2'].status='abandoned';context.savedResult=completed;vm.runInContext('acceptSavedMail(savedResult);chooseRace(2)',context);assert(document.getElementById('lateMailBadge').textContent.includes('ABANDONED'));

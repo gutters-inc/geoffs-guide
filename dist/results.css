@@ -1,0 +1,16 @@
+@import url('ig.css');
+
+.official-race-result{margin:14px 0;padding:14px;background:#171717;color:#fff;border-left:5px solid var(--red);border-radius:5px}
+.official-race-result>span{display:block;font-size:9px;letter-spacing:1px;font-weight:800;color:#d2d2d7}
+.official-race-result>div{margin:8px 0 11px}
+.official-race-result>div small{display:block;font-size:10px;color:#d2d2d7}
+.official-race-result>div strong{display:block;font-size:24px;line-height:1.15;letter-spacing:-.6px;margin-top:3px}
+.official-race-result p{font-size:11px;line-height:1.55;color:#e6e6e9}
+.official-race-result .result-verdict{margin-top:9px;padding-top:9px;border-top:1px solid #45454b;font-weight:750}
+.official-race-result .result-hit{color:#bfe8b7}
+.official-race-result .result-miss{color:#f0c5c5}
+.mail-result>span{flex:1}
+.mail-result em{display:block;font-style:normal;font-size:8px;letter-spacing:.7px;font-weight:800;color:var(--muted);margin-bottom:2px}
+.mail-result strong{display:block;font-size:13px;line-height:1.4}
+.mail-result-official{margin:5px 0;padding:11px 9px;background:#f3f3f5;border-left:3px solid var(--red);border-top:0;border-radius:3px}
+.mail-result-official>b,.mail-result-official em{color:var(--red-dark)}

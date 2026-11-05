@@ -13,7 +13,7 @@ Public code ignores old browser factor preferences. Race history and the origina
 
 ## Managed factors
 
-Edit **`config/factors.json`** to manage shared revision policy; there is no public tuning panel. The build validates and embeds it server-side. Defaults: 21-day recent-evidence half-life, reported going with 70% matching-ground preference, at least three comparable earlier official races for the gate signal (cap 0.35L), and a Low crowd tie-breaker (max 0.05 raw units). Published tips also decay with a two-day half-life, unknown dates get half weight and future dates are excluded. Shared ownership/outlet groups share a vote. Missing connected form gets no crowd bonus. These heuristics are not calibrated probabilities; no gear or jockey win-count performance bonus is invented.
+Edit **`config/factors.json`** to manage shared revision policy; there is no public tuning panel. The build validates and embeds it server-side. Defaults: 21-day recent-evidence half-life, reported going with 70% matching-ground preference, at least three comparable earlier official races for the gate signal (cap 0.35L), and a modest crowd tie-breaker (max 0.10 raw units). Published tips also decay with a two-day half-life, unknown dates get half weight and future dates are excluded. Shared ownership/outlet groups share a vote. Missing connected form gets no crowd bonus. These heuristics are not calibrated probabilities; no gear or jockey win-count performance bonus is invented.
 
 The original guide always retains its unadjusted 45-day evidence half-life. Form and Ladder are original-history views. Late mail is the separate server-prepared revision.
 
