@@ -43,7 +43,7 @@ let alertTimer=null;
 const alertStorageKey=n=>`gg-alert-${lateMail?.runKey||'edition'}-r${n}`;
 async function alertRegistration(){
  if(typeof navigator==='undefined'||!navigator.serviceWorker)return null;
- try{return await navigator.serviceWorker.register('/sw.js')}catch{return null}
+ try{await navigator.serviceWorker.register('/sw.js');return await navigator.serviceWorker.ready}catch{return null}
 }
 function updateAlertStatus(message){const el=$('raceAlertStatus');if(el)el.textContent=message||''}
 async function showRaceAlert(n){
@@ -101,7 +101,11 @@ function initSavedMail(){loadSavedMail();if(typeof setInterval==='function')setI
 document.getElementById('openLateMail').onclick=()=>{setExperience('race-day');document.getElementById('lateMailPanel').scrollIntoView?.({behavior:'smooth',block:'start'})};
 document.getElementById('enableRaceAlerts').onclick=async()=>{
  if(typeof Notification==='undefined'){updateAlertStatus('Browser alerts are unavailable on this device.');return}
+ const ios=/iPad|iPhone|iPod/.test(navigator.userAgent||''),installed=window.matchMedia?.('(display-mode: standalone)').matches||navigator.standalone===true;
+ if(ios&&!installed){updateAlertStatus('On iPhone: Share → Add to Home Screen, then open Geoffs Guide and enable alerts.');return}
  const permission=await Notification.requestPermission();
  if(permission!=='granted'){updateAlertStatus('Alerts were not enabled. You can change notification permission in browser settings.');return}
- await alertRegistration();updateAlertStatus('Alerts enabled while this Site is open or running in the background.');scheduleRaceAlert();
+ const reg=await alertRegistration();if(!reg){updateAlertStatus('Alert setup failed on this browser.');return}
+ await reg.showNotification('Geoffs Guide alerts are working',{body:'Test successful. Race late mail will appear here when this Site is active.',tag:'geoffs-guide-test',data:{url:location.href}});
+ updateAlertStatus('Test alert sent. Keep the installed Site available for its scheduled race alert.');scheduleRaceAlert();
 };
