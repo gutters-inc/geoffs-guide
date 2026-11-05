@@ -43,3 +43,7 @@ The browser reads the saved edition automatically, with a clearly dated packaged
 `NODE_PATH=/tmp/oaks-qa/node_modules npm test` runs model, source-parser, durable writer and public interaction checks. `npm run build` validates factors and packages the Worker. `node scripts/check-sensitivity.cjs` writes the engineering sensitivity report. `scripts/seed-late-mail.mjs` prepares a packaged fallback from the independently checked local source pages.
 
 The public UI suite covers all nine races across four tabs, all 149 runner sheets, no public factor controls, keyboard/deep links, source assumptions, immutable baseline and saved/fallback/missing/delayed editions. Managed rendered-browser QA remains unavailable because `cua_repl.js` is absent. Do not install a browser or invent an alternate preview route; report that visual limit honestly.
+
+## Compact IG-inspired colour system
+
+`dist/ig.css` is the single public stylesheet. It uses IG’s current red #E61E1E, charcoal #171717, white and cool grey #EDF0F2, verified against IG’s public CSS. Geoffs Guide keeps its own name, portrait and identity; no IG logo or affiliation claim is used. The former cover is condensed into a masthead; runner ranks and silks lead compact row cards. Source photos and credits are preserved. Public control removal, four-tab navigation, factor policy and background schedules are unchanged.
