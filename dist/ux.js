@@ -9,7 +9,7 @@ function setExperience(value,sync=true){
   document.getElementById(panel).hidden=experience!==tab;const b=document.getElementById(id);b.classList.toggle('active',experience===tab);b.setAttribute('aria-selected',String(experience===tab));b.setAttribute('tabindex',experience===tab?'0':'-1');
  }
  if(race){renderRaceFacts();renderDetail();renderLateMail()}
- if(sync)syncRoute();if(sync&&previous!==experience)window.scrollTo?.({top:0,behavior:'instant'});
+ if(sync)syncRoute();if(sync&&previous!==experience)document.getElementById('raceStart')?.scrollIntoView?.({block:'start',behavior:'instant'});
 }
 function inspectRunner(name){dialogReturnFocus=document.activeElement;selected=name;renderDetail();const d=document.getElementById('runnerDialog');if(!d.open){if(typeof d.showModal==='function')d.showModal();else d.setAttribute('open','')}}
 function closeRunner(){const d=document.getElementById('runnerDialog');if(typeof d.close==='function')d.close();else d.removeAttribute('open');let target=dialogReturnFocus;if(target&&!target.isConnected){const name=target.dataset?.inspect||target.dataset?.horse||target.dataset?.ladderHorse;target=[...document.querySelectorAll('[data-inspect],[data-horse],[data-ladder-horse]')].find(b=>(b.dataset.inspect||b.dataset.horse||b.dataset.ladderHorse)===name)}target?.focus?.()}

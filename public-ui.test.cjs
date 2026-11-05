@@ -29,6 +29,7 @@ async function boot({hash='',failure='',delay=false}={}){
   for(const h of original.races[n-1].horses){vm.runInContext(`inspectRunner(${JSON.stringify(h.name)})`,context);assert(document.getElementById('horseDetail').textContent.includes(require('./dist/model.js').title(h.name)));assert(document.getElementById('runnerDialog').hasAttribute('open'));document.getElementById('closeRunner').onclick();assert(!document.getElementById('runnerDialog').hasAttribute('open'))}
  }
  // Pass 2: mobile navigation, route preservation, keyboard and freshness.
+ let anchored=0;document.getElementById('raceStart').scrollIntoView=()=>{anchored++};
  vm.runInContext('chooseRace(1)',context);assert(document.getElementById('previousRace').disabled);document.getElementById('nextRace').onclick();assert.equal(document.getElementById('mobileRaceSelect').value,'2');
  const picker=document.getElementById('mobileRaceSelect');picker.value='9';picker.onchange({target:picker});assert(document.getElementById('nextRace').disabled);
  document.getElementById('simpleMode').onkeydown({key:'Home',preventDefault(){}});document.getElementById('simpleMode').onkeydown({key:'ArrowRight',preventDefault(){}});assert(!document.getElementById('raceDayPanel').hidden);assert(location.hash.includes('/race-day'));
@@ -36,10 +37,12 @@ async function boot({hash='',failure='',delay=false}={}){
  const stamp=document.getElementById('homeLastUpdated').textContent;document.getElementById('simpleMode').onclick();document.getElementById('openLateMail').onclick();assert(!document.getElementById('raceDayPanel').hidden);assert.equal(document.getElementById('homeLastUpdated').textContent,stamp);
  vm.runInContext('chooseRace(3)',context);assert(document.getElementById('lateMailComparison').textContent.includes('No firm revised tip'));assert(document.getElementById('lateMailGear').textContent.includes('Blinkers'));assert(document.getElementById('lateMailFactors').textContent.includes('Soft5'));assert(document.getElementById('lateMailOpinions').textContent.includes('scratched'));
  const originalRanks=vm.runInContext('JSON.stringify(baseline.map(h=>[h.name,h.score]))',context);vm.runInContext('acceptSavedMail(lateMail)',context);assert.equal(vm.runInContext('JSON.stringify(baseline.map(h=>[h.name,h.score]))',context),originalRanks);
+ const retimed=structuredClone(edition);retimed.meeting.races.find(r=>r.number===3).startAt='2026-11-05T11:25:00+08:00';context.retimed=retimed;vm.runInContext('acceptSavedMail(retimed)',context);assert(document.getElementById('raceMeta').textContent.includes('14:25'));assert(document.getElementById('lateMailFactors').textContent.includes('Race report checked'));
  assert(app.requests.every(r=>!r.options?.method||r.options.method==='GET'));assert(app.requests.every(r=>!['/api/meeting','/api/weather'].includes(r.url)));
  // Saved result/abandonment states must not manufacture a new prediction.
  const completed=structuredClone(edition),r=completed.meeting.races.find(r=>r.number===1);r.status='official';r.winners=[r.runners.find(h=>!h.scratched&&!h.emergency)];completed.selections['1'].status='official';completed.selections['1'].frozen=true;
  context.savedResult=completed;vm.runInContext('acceptSavedMail(savedResult);chooseRace(1)',context);assert(document.getElementById('lateMailComparison').textContent.includes('Winner:'));
+ assert(anchored>0,'Navigation should return to race content, not the cover');
  const prior=edition.selections['1'].revisedTip?.name;assert.equal(vm.runInContext('lateMail.selections[1].revisedTip?.name',context),prior);
  completed.meeting.races.find(r=>r.number===2).status='abandoned';completed.selections['2'].status='abandoned';context.savedResult=completed;vm.runInContext('acceptSavedMail(savedResult);chooseRace(2)',context);assert(document.getElementById('lateMailBadge').textContent.includes('ABANDONED'));
  // Pass 3: failed saved store, total failure, delayed load and direct links.
