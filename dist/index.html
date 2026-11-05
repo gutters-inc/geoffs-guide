@@ -30,7 +30,7 @@
     <div class="roundup-hero-copy">
       <span class="roundup-chip">R9 result interim at publication</span>
       <h1 id="roundupTitle">Geoff landed three — and found seven top-three finishes.</h1>
-      <p>The honest end-of-day card: the hits, the misses and the saved selections exactly as published.</p>
+      <p>The honest end-of-day card: the hits, the misses and the selections shown before each race.</p>
       <div class="roundup-scoreline"><div><b>3/9</b><span>top-pick winners</span></div><div><b>7/9</b><span>top-pick top threes</span></div></div>
       <div class="roundup-returns">
         <article><span>$10 win · 9 races</span><b>+$140.00</b><small>$230.00 returned · $90 staked</small></article>
@@ -41,7 +41,7 @@
     </div>
   </div>
   <div class="roundup-section" id="roundupResults">
-    <div class="roundup-heading"><div><span>THE CARD</span><h2>Race-by-race</h2></div><p>Frozen tips are never rewritten after the jump.</p></div>
+    <div class="roundup-heading"><div><span>THE CARD</span><h2>Race-by-race</h2></div><p>Each result is compared with the tip shown before the race.</p></div>
     <div class="roundup-result-grid" id="roundupResultGrid"></div>
   </div>
   <div class="roundup-section" id="roundupLeaderboards">
@@ -106,6 +106,11 @@
 </svg>Ladder<small>Why this order</small>
 <span id="connectionsBadge">
 </span>
+</button>
+<button aria-controls="resultsPanel" aria-selected="false" id="resultsMode" role="tab" tabindex="-1">
+<svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<path d="M5 20V10h4v10M10 20V5h4v15M15 20v-7h4v7M4 20h16"/>
+</svg><span id="resultsTabLabel">Results</span><small>Meeting scorecard</small>
 </button>
 </nav>
 </div>
@@ -241,6 +246,9 @@
 <button aria-expanded="false" class="show-ladder" id="showFullLadder">Show the rest of the field ↓</button>
 <p class="ladder-footnote">This is a model’s form order, not a predicted finishing order. A shared-race link is evidence, not proof. Different trips, conditions, fitness and weights can reverse results. Separate form groups cannot be ranked reliably against each other.</p>
 </section>
+<section aria-labelledby="resultsMode" hidden="" id="resultsPanel" role="tabpanel">
+<div class="results-loading" id="resultsLoading">Loading the meeting scorecard…</div>
+</section>
 <details class="method-details" id="method">
 <summary>How this guide works </summary>
 <div class="simple-method">
@@ -257,8 +265,8 @@
 <p>Follow the form. See the reasoning.</p>
 <span>FLEMINGTON / OAKS DAY 2026</span>
 <p class="release-summary">
-<b>Latest release · 5 Nov 2026, 6:25pm AEDT</b>
-<br/>Completed-day roundup, returns, leaderboards and transparent tip scorecard.</p>
+<b>Latest release · 5 Nov 2026, 9:50pm AEDT</b>
+<br/>The form remains the default archive; the meeting roundup now has its own Results tab.</p>
 <a class="release-link" href="release-notes.html">See all release notes ↗</a>
 </footer>
 </main>

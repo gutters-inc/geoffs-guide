@@ -11,7 +11,7 @@ async function boot({hash='',failure='',delay=false}={}){
 }
 (async()=>{
  // Pass 1: every race, every tab, field expansion and all listed runner sheets.
- const app=await boot();const {context,document,location}=app;assert(document.getElementById('loading').hidden);assert.equal(document.querySelectorAll('[role="tab"]').length,4);
+ const app=await boot();const {context,document,location}=app;assert(document.getElementById('loading').hidden);assert.equal(document.querySelectorAll('[role="tab"]').length,5);
  assert.equal(document.querySelectorAll('input').length,0);assert.equal(document.querySelectorAll('select').length,1);assert.equal(document.querySelectorAll('.scenario-panel,.impact-dashboard,.moves-panel,.visual-card,.live-panel').length,0);
  assert.equal(document.querySelector('[data-trust]'),null);assert.equal(document.querySelector('.upload-photo'),null);
  assert.equal(document.querySelectorAll('link[rel="stylesheet"]').length,1);assert.match(document.querySelector('link[rel="stylesheet"]').getAttribute('href'),/^results\.css(?:\?v=\d+)?$/);assert.equal(document.querySelector('.intro'),null);assert(fs.readFileSync('dist/ig.css','utf8').includes('#e61e1e'));assert(fs.readFileSync('dist/results.css','utf8').includes('.official-race-result'));
@@ -23,8 +23,8 @@ async function boot({hash='',failure='',delay=false}={}){
  assert(document.querySelector('img[alt="Geoff"]'));assert(document.getElementById('homeLastUpdated').textContent.includes('LAST UPDATED'));
  for(let n=1;n<=9;n++){
   vm.runInContext(`chooseRace(${n})`,context);const frozen=vm.runInContext('JSON.stringify(baseline.map(h=>[h.name,h.score]))',context);
-  for(const [tab,panel] of [['simpleMode','formPanel'],['raceDayMode','raceDayPanel'],['valueMode','valuePanel'],['exploreMode','connectionsPanel']]){
-   document.getElementById(tab).onclick();assert(!document.getElementById(panel).hidden);assert.equal(['formPanel','raceDayPanel','valuePanel','connectionsPanel'].filter(id=>!document.getElementById(id).hidden).length,1);
+  for(const [tab,panel] of [['simpleMode','formPanel'],['raceDayMode','raceDayPanel'],['valueMode','valuePanel'],['exploreMode','connectionsPanel'],['resultsMode','resultsPanel']]){
+   document.getElementById(tab).onclick();assert(!document.getElementById(panel).hidden);assert.equal(['formPanel','raceDayPanel','valuePanel','connectionsPanel','resultsPanel'].filter(id=>!document.getElementById(id).hidden).length,1);
    assert.equal(document.getElementById(tab).getAttribute('aria-selected'),'true');assert.equal(vm.runInContext('JSON.stringify(baseline.map(h=>[h.name,h.score]))',context),frozen);
   }
   assert.equal(document.querySelectorAll('.contender-card').length,3);assert.equal(document.querySelectorAll('.field-runner').length,original.races[n-1].horses.length);
@@ -39,7 +39,7 @@ async function boot({hash='',failure='',delay=false}={}){
  vm.runInContext('chooseRace(1)',context);assert(document.getElementById('previousRace').disabled);document.getElementById('nextRace').onclick();assert.equal(document.getElementById('mobileRaceSelect').value,'2');
  const picker=document.getElementById('mobileRaceSelect');picker.value='9';picker.onchange({target:picker});assert(document.getElementById('nextRace').disabled);
  document.getElementById('simpleMode').onkeydown({key:'Home',preventDefault(){}});document.getElementById('simpleMode').onkeydown({key:'ArrowRight',preventDefault(){}});assert(!document.getElementById('raceDayPanel').hidden);assert(location.hash.includes('/race-day'));
- document.getElementById('raceDayMode').onkeydown({key:'End',preventDefault(){}});assert(!document.getElementById('connectionsPanel').hidden);
+ document.getElementById('raceDayMode').onkeydown({key:'End',preventDefault(){}});assert(!document.getElementById('resultsPanel').hidden);
  const stamp=document.getElementById('homeLastUpdated').textContent;document.getElementById('simpleMode').onclick();document.getElementById('openLateMail').onclick();assert(!document.getElementById('raceDayPanel').hidden);assert.equal(document.getElementById('homeLastUpdated').textContent,stamp);
  vm.runInContext('chooseRace(3)',context);assert(document.getElementById('lateMailComparison').textContent.includes('Top pick remains'));assert(document.getElementById('lateMailComparison').textContent.includes('confidence remains low'));assert(document.getElementById('lateMailGear').textContent.includes('Blinkers'));assert(document.getElementById('lateMailFactors').textContent.includes('Soft5'));assert(document.getElementById('lateMailOpinions').textContent.includes('scratched'));
  const originalRanks=vm.runInContext('JSON.stringify(baseline.map(h=>[h.name,h.score]))',context);vm.runInContext('acceptSavedMail(lateMail)',context);assert.equal(vm.runInContext('JSON.stringify(baseline.map(h=>[h.name,h.score]))',context),originalRanks);
@@ -57,6 +57,6 @@ async function boot({hash='',failure='',delay=false}={}){
  // Pass 3: failed saved store, total failure, delayed load and direct links.
  for(const failure of ['api','all']){const a=await boot({failure,hash:'#race-3/race-day'});assert(a.document.getElementById('loading').hidden);assert(!a.document.getElementById('raceDayPanel').hidden);if(failure==='api')assert(a.document.getElementById('lateMailStamp').textContent.includes('fallback'));else assert(a.document.getElementById('lateMailStamp').textContent.includes('No saved check'));a.document.getElementById('valueMode').onclick();assert(a.document.querySelectorAll('.guide-card').length>0)}
  const delayed=await boot({delay:true});vm.runInContext('chooseRace(2)',delayed.context);delayed.document.getElementById('raceDayMode').onclick();delayed.release();await new Promise(r=>setTimeout(r,30));assert.equal(delayed.document.getElementById('mobileRaceSelect').value,'2');assert(delayed.document.getElementById('lateMailComparison').textContent.includes('Misty Whisper'));
- for(const hash of ['#race-2/late-mail','#race-5/tips','#race-8/connections']){const a=await boot({hash});assert(a.document.getElementById('loading').hidden);assert.equal(['formPanel','raceDayPanel','valuePanel','connectionsPanel'].filter(id=>!a.document.getElementById(id).hidden).length,1)}
+ for(const hash of ['#race-2/late-mail','#race-5/tips','#race-8/connections','#race-9/results']){const a=await boot({hash});assert(a.document.getElementById('loading').hidden);assert.equal(['formPanel','raceDayPanel','valuePanel','connectionsPanel','resultsPanel'].filter(id=>!a.document.getElementById(id).hidden).length,1)}
  console.log('PASS: 36 race/tab journeys, 149 runner sheets, one race picker/no factor controls, source details, keyboard/deep links, immutable form and saved/fallback/missing/delayed editions. DOM checks; rendered mobile browser unavailable.');
 })().catch(e=>{console.error(e);process.exitCode=1});

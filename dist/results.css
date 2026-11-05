@@ -1,6 +1,20 @@
 @import url('ig.css');
 @import url('roundup.css?v=31');
 
+.results-mode .mobile-race-picker,.results-mode .race-heading{display:none}
+#resultsPanel{min-width:0}
+.results-loading,.results-empty{margin:20px 0;padding:28px;border:1px solid #dedee1;border-radius:8px;background:#fff;color:#606069}
+.results-empty span{display:block;font-size:9px;font-weight:900;letter-spacing:1.2px;color:var(--red-dark)}
+.results-empty h2{margin:9px 0 5px;color:var(--ink);font-size:24px}
+.results-empty p{margin:0;font-size:11px;line-height:1.6}
+@media(max-width:640px){
+ .page-tabs{gap:5px;overflow-x:auto;scrollbar-width:none}
+ .page-tabs::-webkit-scrollbar{display:none}
+ .page-tabs>button{flex:0 0 72px;min-width:72px;text-align:center;font-size:11px;padding-left:2px;padding-right:2px}
+ .page-tabs small{display:none}
+ .page-tabs .nav-icon{margin-left:auto;margin-right:auto}
+}
+
 html,body{max-width:100%;overflow-x:hidden}
 .mobile-race-picker,.race-heading,.home-updated{max-width:100vw}
 .mobile-race-picker select{min-width:0;max-width:100%}
