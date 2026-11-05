@@ -51,7 +51,7 @@
     "Read back /api/late-mail and verify the update timestamp/runKey. Partial or failed checks must be reported; the previous verified edition is retained on total source failure. A duplicate successful slot is idempotent.",
     "Give the user an update with late changes, reported going, official winners, revised vs baseline selection and reasons, source links and saved update time. Call a provisional leader provisional. No bet placement or API-key-backed generator is involved.",
     "If advertised start times change, preserve this same linked automation and adjust only remaining check dates using its task control; do not create duplicates. Send updated automation times in the next authorised payload to keep the page plan accurate.",
-    "During the final wrap, if the last result is not official, add one follow-up 15 minutes later to this same automation, with no checks after 19:00 AEDT. Report any still-unconfirmed result honestly."
+    "If final results remain provisional, report them as unconfirmed. Do not add unsupported sub-hour follow-ups. Each linked task must remain at most hourly; preserve its assigned race slots and the other task\u2019s remaining checks."
   ],
   "schedule": {
     "date": "2026-11-05",

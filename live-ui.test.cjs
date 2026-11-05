@@ -92,6 +92,14 @@ setTimeout(()=>{
   assert(!document.getElementById('liveEmpty').hidden);
   assert(document.getElementById('liveEmpty').textContent.includes('not confirmed'));
   assert(document.querySelectorAll('.page-tabs [role="tab"]').length===4);
+  vm.runInContext('chooseRace(3);renderLateMail()',context);
+  assert(document.getElementById('homeLastUpdated').textContent.includes('LAST UPDATED'));
+  assert(document.getElementById('lateMailComparison').textContent.includes('No reliable revised tip'));
+  assert(document.getElementById('lateMailComparison').textContent.includes('not a recommendation'));
+  assert(document.getElementById('lateMailFactors').textContent.includes('Soft5'));
+  assert(document.getElementById('lateMailGear').textContent.includes('Blinkers'));
+  assert(document.getElementById('lateMailOpinions').textContent.includes('scratched'));
+
   // Dropdowns replace every slider; crowd support changes only adjusted ratings.
   assert.equal(document.querySelector('input[type="range"]'),null);
   for(const id of ['drawInput','groundStrength','kgInput'])assert.equal(document.getElementById(id).tagName,'SELECT');
