@@ -30,4 +30,6 @@ response=await lateMailResponse(post('2026-11-05-initial'),env,{},services);asse
 const fail={meeting:async()=>({races:[],errors:[{number:1}]}),weather:async()=>{throw Error('Down')}};
 assert.equal((await lateMailResponse(post('2026-11-05-r1-pre-1250'),env,{},fail)).status,502);
 const retained=await(await lateMailResponse(new Request('https://test/api/late-mail'),env,{},services)).json();assert.equal(retained.updated,saved.updated);assert.equal(retained.lastAttempt.success,false);
+const managed=JSON.parse(fs.readFileSync('config/factors.json'));const changedPolicy=buildLateMail({original,editorial,gearBase,feed:seed.meeting,notes:[],runKey:'2026-11-05-initial',now:morning},M,LM,{...managed,preferRecent:false,followReportedGoing:false,useComparableResults:false,crowdMaximum:0});
+assert(changedPolicy.selections[1].why.some(t=>t.includes('45-day')));assert.equal(changedPolicy.selections[1].drawBias,0);assert.equal(JSON.stringify(original),before);
 console.log('PASS: saved revisions, source facts, gear provenance, pre-race freeze, protected durable write/readback, idempotency and failed-source retention.');

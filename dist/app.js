@@ -1,83 +1,26 @@
-const $=id=>document.getElementById(id), M=FormModel;
-const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $=id=>document.getElementById(id),M=FormModel;
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=n=>Number(n).toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
 const shortDate=d=>new Date(d+'T00:00:00Z').toLocaleDateString('en-AU',{day:'numeric',month:'short',timeZone:'UTC'});
-let data,originalData,graph,race,ranked,selected,chain=null;
-const display=n=>graph.nodes.get(n)?.display||M.title(n);
-const active=()=>ranked.filter(h=>h.eligible);
-const componentCount=()=>new Set(active().map(h=>h.component)).size;
-function openMethod(){ $('method').open=true;$('method').scrollIntoView({behavior:'smooth',block:'start'}) }
-$('methodButton').onclick=openMethod;$('ratingHelp').onclick=openMethod;
-function chooseRace(n){
-  if(pendingFrame!==null&&typeof cancelAnimationFrame==='function')cancelAnimationFrame(pendingFrame);pendingFrame=null;
-  race=data.races.find(r=>r.number===n);if(typeof syncLiveForRace==='function')syncLiveForRace();baseline=M.rate(graph,originalData.races.find(r=>r.number===race.number));ranked=M.rate(graph,race,scenarioWithCrowd());selected=active()[0]?.name||ranked[0]?.name;
-  $('raceTabs').innerHTML=data.races.map(r=>`<button class="race-tab ${r.number===n?'active':''}" aria-pressed="${r.number===n}" data-race="${r.number}"><span class="tab-number">R${r.number} ${r.number===n?'<span>↗</span>':''}</span><span class="tab-name">${esc(r.name)}</span><span class="tab-time">${r.time} AEDT</span></button>`).join('');
-  document.querySelectorAll('[data-race]').forEach(b=>b.onclick=()=>chooseRace(+b.dataset.race));
-  $('raceMeta').textContent=`RACE ${n.toString().padStart(2,'0')} / ${race.time} AEDT`;$('raceName').textContent=race.name;
-  $('raceFacts').innerHTML=`<div class="fact"><b>${race.distance.toLocaleString()}m</b><span>DISTANCE</span></div><div class="fact"><b>${active().length} + ${ranked.filter(h=>h.emergency&&!h.scratched).length} EM</b><span>LISTED FIELD</span></div><div class="fact"><b>${esc(race.going)}</b><span>SOURCE GOING</span></div>`;
-  $('sourceLink').href=race.source;
-  const options=ranked.map(h=>`<option value="${esc(h.name)}">${h.number}. ${esc(h.display)}${h.scratched?' · SCR':h.emergency?' · Emergency':''}</option>`).join('');
-  $('horseA').innerHTML=options;$('horseB').innerHTML=options;
-  $('horseA').value=selected;$('horseB').value=active()[1]?.name||selected;
-  renderVerdict();renderRankings();renderDetail();renderPath();renderScenarioControls();renderNewViews();renderImpact();renderConnectionsMeta();syncMobileRace();renderTips();ladderExpanded=false;renderLadder();if(typeof renderLive==='function')renderLive();
-  syncRoute();if(typeof renderRaceDay==='function'){dayExpanded=false;renderRaceDay();renderRaceFacts();if(typeof renderLateMail==='function')renderLateMail()}
+let data,originalData,graph,race,ranked,selected;
+const display=n=>graph.nodes.get(n)?.display||M.title(n),active=()=>baseline.filter(h=>h.eligible);
+function openMethod(){$('method').open=true;$('method').scrollIntoView?.({behavior:'smooth',block:'start'})}
+$('methodButton').onclick=openMethod;
+function renderRaceFacts(){
+ if(!race)return;const original=originalData.races.find(r=>r.number===race.number),report=lateMail?.meeting?.races.find(r=>r.number===race.number),isForm=experience==='form',going=isForm?original.going:report?.condition||'Not confirmed';
+ $('raceFacts').innerHTML=`<div class="fact"><b>${race.distance.toLocaleString()}m</b><span>DISTANCE</span></div><div class="fact"><b>${isForm?baseline.filter(h=>h.eligible).length:race.horses.filter(h=>!h.scratched&&!h.emergency).length}</b><span>${isForm?'ORIGINAL FIELD':'LATEST FIELD'}</span></div><div class="fact"><b>${esc(going)}</b><span>${isForm?'ORIGINAL GOING':'SAVED GOING'}</span></div>`;
 }
-function renderVerdict(){
-  const active=()=>baseline.filter(h=>h.eligible),scenario=defaults(),scenarioActive=()=>false,componentCount=()=>new Set(active().map(h=>h.component)).size;
-  const h=active()[0];
-  if(!h){$('verdict').innerHTML='<h3>No confirmed runners</h3>';$('pickReasons').textContent='Check the published field.';return}
-  const disconnected=componentCount()>1;
-  const noData=h.runs===0;
-  const weak=h.relevantRuns<2||h.raw<=0||(scenario.going!=='all'&&scenario.groundStrength>0&&h.goingRuns===0);
-  $('verdict').innerHTML=`<span class="pick-tag">${noData?'NO USABLE EVIDENCE':weak?'NO RELIABLE PICK':disconnected?'PROVISIONAL FORM LEADER':'TOP ON CONNECTION FORM'} ↗</span><h3>${weak?'Too little to call':esc(h.display)}</h3>${scenarioActive()?'<div class="scenario-verdict-tag">YOUR SCENARIO IS APPLIED</div>':''}<div class="pick-subtitle">${weak?`Highest provisional score: ${esc(h.display)}<br>`:''}No. ${h.number} · Barrier ${h.barrier} · ${scenario.handicap?h.scenarioWeight:h.weight}kg<br>${esc(h.jockey)} / ${esc(h.trainer)}</div><div class="rating-row"><strong>${h.runs?h.score.toFixed(1):'—'}</strong><span>/ 95<br>FORM RATING</span></div><div class="evidence-tag">${h.evidence.toUpperCase()} EVIDENCE · ${h.relevantRuns} relevant connected runs</div>${disconnected?'<p class="group-warning">The field spans separate network groups. Scores between those groups are not directly comparable.</p>':''}`;
-  const wins=M.wins(graph,h.name,race.distance), reasons=[];
-  const used=new Set();
-  for(const w of wins){if(used.has(w.edge.race.key))continue;used.add(w.edge.race.key);
-    reasons.push(`<div class="reason"><span>0${reasons.length+1}</span><div>Finished ${fmt(w.delta)}L ahead of <b>${esc(display(w.other))}</b>.<small>${esc(w.edge.race.track)} · ${shortDate(w.edge.race.date)} · ${w.edge.race.distance}m</small></div></div>`);if(reasons.length===2)break;
-  }
-  const challenger=active()[1];
-  if(challenger){const p=M.path(graph,h.name,challenger.name,3);
-    reasons.push(`<div class="reason"><span>0${reasons.length+1}</span><div>${p?`Connected to ${esc(challenger.display)} in ${p.length} ${p.length===1?'step':'steps'}.`:`No chain of up to 3 links to ${esc(challenger.display)}.`}<small>${p?'Explore the chain below; each result is evidence, not proof.':'Treat the comparison as uncertain.'}</small></div></div>`);
-  }
-  if(!wins.length)reasons.unshift('<div class="reason"><span>01</span><div>No positive head-to-head margin found in the available history.<small>A neutral score does not establish winning form.</small></div></div>');
-  $('pickReasons').innerHTML=reasons.join('');
+function chooseRace(n){
+ race=data.races.find(r=>r.number===Number(n))||data.races[0];baseline=M.rate(graph,originalData.races.find(r=>r.number===race.number));ranked=baseline;selected=baseline.find(h=>h.eligible)?.name||baseline[0]?.name;ladderExpanded=false;
+ $('raceTabs').innerHTML=data.races.map(r=>`<button class="race-tab" data-race="${r.number}" aria-pressed="${r.number===race.number}">R${r.number} · ${esc(r.name)}</button>`).join('');document.querySelectorAll('[data-race]').forEach(b=>b.onclick=()=>chooseRace(Number(b.dataset.race)));
+ $('raceMeta').textContent=`RACE ${race.number} · ${race.time} AEDT`;$('raceName').textContent=race.name;renderRaceFacts();renderSimple();renderRankings();renderDetail();renderTips();renderLadder();renderLateMail();syncMobileRace();syncRoute();
 }
 function renderRankings(){
-  const ranked=baseline,scenarioActive=()=>false,active=()=>baseline.filter(h=>h.eligible),componentCount=()=>new Set(active().map(h=>h.component)).size;
-  let rank=0;const baseRatings=ratingMap(baseline);
-  $('rankings').innerHTML=ranked.map(h=>`<tr class="${h.name===selected?'selected ':''}${h.eligible&&rank===0?'top':''}"><td>${h.eligible?String(++rank).padStart(2,'0'):'—'}</td><td><button class="horse-link ${h.scratched?'scratch':''}" data-horse="${esc(h.name)}">${silk(h)}<span>${h.number}. ${esc(h.display)}</span></button><small>${h.scratched?'SCRATCHED':h.emergency?'EMERGENCY · excluded from verdict':`Barrier ${h.barrier} · ${h.weight}kg · ${esc(h.form||'—')}`}</small>${sentimentHTML(h)}</td><td><div class="rating-cell"><b>${h.runs?h.score.toFixed(1):'—'}</b>${h.eligible&&scenarioActive()?`<span class="rank-score-delta ${(h.score-(baseRatings.get(h.name)?.score??h.score))>=0?'positive':'negative'}">${signedChange(h.score-(baseRatings.get(h.name)?.score??h.score))} pts</span>`:''}<span class="rating-track"><i style="width:${h.runs?h.score:0}%"></i></span></div></td><td>${h.direct} / ${Math.max(0,active().length-(h.eligible?1:0))}</td><td><span class="badge ${h.evidence==='Sparse'?'sparse':''}">${h.evidence}</span></td></tr>`).join('');
-  document.querySelectorAll('[data-horse]').forEach(b=>b.onclick=()=>inspectRunner(b.dataset.horse));
-  $('rankingNote').innerHTML=`${componentCount()>1?`<div class="group-warning">${componentCount()} separate network groups in this field. Ranking across groups is provisional; a disconnected horse is not proven inferior.</div>`:''}Each rival is counted once, even if they met repeatedly. Emergencies and scratchings are excluded from the verdict. Click any runner to inspect its history.`;
+ $('fieldCount').textContent=`${baseline.length} listed`;$('rankings').innerHTML=baseline.map((h,i)=>{const current=currentRunner(h),status=current?.scratched&&!h.scratched?'Late scratching':h.scratched?'Scratched in original form':h.emergency?'Emergency':'',position=h.eligible?baseline.filter(x=>x.eligible).findIndex(x=>x.name===h.name)+1:'—';return `<button class="field-runner ${status?'field-flagged':''}" data-horse="${esc(h.name)}"><span class="field-position">${position}</span>${silk(h)}<span><b>${h.number}. ${esc(h.display)}</b><small>${status||esc(h.jockey)}</small></span><i>↗</i></button>`}).join('');document.querySelectorAll('[data-horse]').forEach(b=>b.onclick=()=>inspectRunner(b.dataset.horse));$('rankingNote').textContent='Original order. Late changes are flagged; the saved revision is in Late mail.';
 }
-function selectHorse(n){selected=n;if([...$('horseA').options].some(o=>o.value===n)){$('horseA').value=n;if($('horseB').value===n)$('horseB').value=active().find(h=>h.name!==n)?.name||n}renderRankings();renderDetail();renderPath();renderFormVisual();renderLadder()}
-function windowScenario(){return scenario}
 function renderDetail(){
-  const scenario=experience==='form'?defaults():windowScenario();
-  const h=(experience==='form'?baseline:ranked).find(h=>h.name===selected)||graph.nodes.get(selected)?.horse;
-  if(!h){$('horseDetail').innerHTML=`<h3>${esc(display(selected))}</h3><p class="section-description">Historical common rival. Only results evidenced by today’s runners’ form are included.</p>`;return}
-  $('horseDetail').innerHTML=`${horsePhoto(h,'detail')}${silk(h,'large')}<h3 id="runnerName">${esc(h.display)}</h3>${h.emergency?'<span class="status-tag">EMERGENCY · NOT IN VERDICT</span>':''}${h.scratched?'<span class="status-tag">SCRATCHED</span>':''}${sentimentHTML(h)}${experience!=='form'&&typeof liveRunnerHTML==='function'?liveRunnerHTML(h):''}<div class="horse-detail-grid"><div><span>JOCKEY</span><b>${esc(h.jockey)}</b></div><div><span>TRAINER</span><b>${esc(h.trainer)}</b></div><div><span>BARRIER / WEIGHT</span><b>${h.barrier} / ${scenario.handicap?(h.scenarioWeight??h.weight):h.weight}kg</b></div><div><span>RECENT FORM</span><b>${esc(h.form||'—')}</b></div></div><div class="history-title">AVAILABLE RECENT STARTS</div>${h.history.length?h.history.map(r=>`<div class="history-item"><span class="history-pos">${r.pos}<small>/${r.total}</small></span><div><strong>${esc(r.track)} · ${r.distance}m</strong><small>${shortDate(r.date)} 2026 · ${esc(r.going)} · ${esc(r.grade)}</small><span class="deficit">${r.pos===1?`Won${r.winMargin?' by '+fmt(r.winMargin)+'L':''}`:`${fmt(r.margin)}L behind ${esc(M.title(r.winner))}`}</span></div></div>`).join(''):'<p class="section-description">No usable recent race starts in the source. Trials are excluded.</p>'}`;
+ if(!race||!selected)return;const h=baseline.find(h=>h.name===selected)||graph.nodes.get(selected)?.horse;if(!h){$('horseDetail').innerHTML='<p>Only shared-race evidence is available for this runner.</p>';return}
+ const current=currentRunner(h),status=current?.scratched?'Scratched in the latest saved report':h.emergency?'Emergency · field not confirmed':'';
+ $('horseDetail').innerHTML=`${horsePhoto(h,'detail')}<div class="detail-name">${silk(h,'large')}<h3>${esc(h.display)}</h3></div>${status?`<p class="runner-status">${esc(status)}</p>`:''}<div class="horse-detail-grid"><div><span>JOCKEY</span><b>${esc(current?.jockey?M.title(current.jockey):h.jockey)}</b></div><div><span>TRAINER</span><b>${esc(h.trainer)}</b></div><div><span>BARRIER / WEIGHT</span><b>${h.barrier} / ${h.weight}kg</b></div><div><span>RECENT FORM</span><b>${esc(h.form||'—')}</b></div></div>${sentimentHTML(h)}<h4 class="history-title">Recent races</h4>${h.history.length?h.history.slice(0,5).map(r=>`<div class="history-item"><span class="history-pos">${r.pos}<small>/${r.total}</small></span><div><strong>${esc(r.track)} · ${r.distance}m</strong><small>${shortDate(r.date)} · ${esc(r.going)}</small><span class="deficit">${r.pos===1?'Won':`${fmt(r.margin)}L behind ${esc(M.title(r.winner))}`}</span></div></div>`).join(''):'<p class="simple-note">No usable recent starts in the published sample.</p>'}`;
 }
-function renderPath(){
-  const a=$('horseA').value,b=$('horseB').value,max=+$('maxHops').value;
-  chain=M.path(graph,a,b,max);
-  if(a===b){$('pathResult').innerHTML='<div class="no-path">Choose two different horses to explore their connection.</div>';return}
-  if(!chain){$('pathResult').innerHTML=`<div class="no-path">No connection within ${max} ${max===1?'link':'links'} in the available history.<br>${graph.components.get(a)!==graph.components.get(b)?'These horses sit in separate network groups.':'Try allowing more links.'} Missing connections do not mean the horses have never met.</div>`;return}
-  const names=[a,...chain.map(s=>s.to)], allForward=chain.every(s=>s.delta>0),allReverse=chain.every(s=>s.delta<0);
-  const readings=allForward?`The results in this chain favour ${display(a)} over ${display(b)}.`:allReverse?`The results in this chain favour ${display(b)} over ${display(a)}.`:'This chain has mixed directions. It connects the horses but does not establish a consistent form advantage.';
-  $('pathResult').innerHTML=`<div class="path-summary"><b>${chain.length} ${chain.length===1?'degree':'degrees'} of separation.</b> ${esc(readings)}</div><div class="path-chain">${names.map((name,i)=>{
-    const node=`<div class="path-horse"><strong>${esc(display(name))}</strong><span>${race.horses.some(h=>h.name===name)?'IN THIS FIELD':'COMMON RIVAL'}</span></div>`;
-    if(i===chain.length)return node;
-    const s=chain[i],r=s.edge.race;
-    const ahead=s.delta>0?name:s.to,behind=s.delta>0?s.to:name;
-    const otherEdges=graph.adjacency.get(name)?.get(s.to)||[],reversal=otherEdges.some(e=>(e.a===name?e.delta:-e.delta)*s.delta<0);
-    return node+`<div class="path-step"><strong>${s.delta===0?'Dead heat / level margin':`${esc(display(ahead))} ahead of ${esc(display(behind))}<br>by ${fmt(Math.abs(s.delta))}L`}</strong><span class="arrow">→</span><small>${esc(r.track)} · ${shortDate(r.date)} · ${r.distance}m</small><small>${s.edge.a===name?s.edge.aPos:s.edge.bPos}${ordinal(s.edge.a===name?s.edge.aPos:s.edge.bPos)} vs ${s.edge.a===name?s.edge.bPos:s.edge.aPos}${ordinal(s.edge.a===name?s.edge.bPos:s.edge.aPos)}${reversal?' · Result reversed in another meeting':''}</small></div>`;
-  }).join('')}</div><p class="path-note">Shortest available chain; most recent race shown for each link. Margins are the difference in beaten margins. ${allForward||allReverse?'This is a form inference, not a guarantee. ':''}Different trips, weights and conditions limit comparisons. The rating uses all available matchups, including reversals.</p>`;
-  
-}
-function ordinal(n){return n%100>=11&&n%100<=13?'th':({1:'st',2:'nd',3:'rd'}[n%10]||'th')}
-$('horseA').onchange=()=>{selected=$('horseA').value;renderDetail();renderRankings();renderPath()};$('horseB').onchange=renderPath;$('maxHops').onchange=renderPath;
-$('swap').onclick=()=>{const a=$('horseA').value;$('horseA').value=$('horseB').value;$('horseB').value=a;selected=$('horseA').value;renderDetail();renderRankings();renderPath()};
-Promise.all([fetch('data.json').then(r=>{if(!r.ok)throw Error('Could not load form data');return r.json()}),fetch('media.json').then(r=>r.ok?r.json():{}).catch(()=>({})),fetch('editorial.json').then(r=>r.ok?r.json():null).catch(()=>null)]).then(([d,photos,research])=>{media=photos;editorial=research;
-  originalData=JSON.parse(JSON.stringify(d));data=d;graph=M.build(data);$('dataTimestamp').textContent=`Retrieved ${new Date(d.retrieved).toLocaleString('en-AU',{timeZone:'Australia/Melbourne',dateStyle:'long',timeStyle:'short'})} Melbourne time. Historical starts are a fixed snapshot. Live track, runner changes and official results are checked in the Race-day tab.`;
-  const n=+(location.hash.match(/race-(\d)/)?.[1]||8);setExperience(location.hash.includes('/race-day')?'race-day':location.hash.includes('/connections')?'connections':location.hash.includes('/value')?'value':'form',false);chooseRace(n>=1&&n<=9?n:8);$('loading').hidden=true;if(typeof initLive==='function')initLive();
-}).catch(e=>{$('loading').innerHTML=`<div>Unable to load the form guide.<br><br><button onclick="location.reload()">Try again</button><p>${esc(e.message)}</p></div>`});
+Promise.all([fetch('data.json').then(r=>{if(!r.ok)throw Error('Form unavailable');return r.json()}),fetch('media.json').then(r=>r.ok?r.json():{}).catch(()=>({})),fetch('editorial.json').then(r=>r.ok?r.json():null).catch(()=>null)]).then(([d,photos,research])=>{data=d;for(const r of d.races)for(const h of r.horses)h.display=M.title(h.name);originalData=JSON.parse(JSON.stringify(d));media=photos;editorial=research;graph=M.build(originalData);$('dataTimestamp').textContent=`Original form saved ${new Date(d.retrieved).toLocaleString('en-AU',{timeZone:'Australia/Melbourne',dateStyle:'medium',timeStyle:'short'})} AEDT. Late mail has its own saved update time.`;setExperience(location.hash.includes('/connections')?'connections':location.hash.includes('/race-day')||location.hash.includes('/late-mail')?'race-day':location.hash.includes('/value')||location.hash.includes('/tips')?'value':'form',false);chooseRace(Number(location.hash.match(/race-(\d)/)?.[1]||8));$('loading').hidden=true;initSavedMail()}).catch(e=>{$('loading').innerHTML='<div>Form could not be loaded.<br><button onclick="location.reload()">Try again</button></div>'});

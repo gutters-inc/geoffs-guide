@@ -24,7 +24,7 @@ function tipContext(s,pick){
   if(!hasRace(s))return '';
   if(pick===null)return '<div class="tip-context"><b>The call</b><p>No bet. This is an abstention, not a tip against any runner.</p></div>';
   const note=s.tipNotes?.[String(race.number)]||{},why=note.why||s.rationale?.[String(race.number)];
-  return `<div class="tip-context"><b>Why this tip</b><p>${esc(why||'Selection published without a supporting explanation in our sample.')}</p><dl><dt>Track assumption</dt><dd>${esc(note.ground||s.meetingGround||'Not stated in this guide.')}</dd><dt>Run / position</dt><dd>${esc(note.run||'Not stated in this guide.')}</dd></dl><small>Author’s view when published; not confirmed race-day conditions.</small></div>`;
+  return `<div class="tip-context"><p>${esc(why||'No supporting explanation published in this sample.')}</p><details class="tip-assumptions"><summary>Track &amp; run assumptions <span>+</span></summary><dl><dt>Track assumption</dt><dd>${esc(note.ground||s.meetingGround||'Not stated in this guide.')}</dd><dt>Run / position</dt><dd>${esc(note.run||'Not stated in this guide.')}</dd></dl><small>As published; check Late mail for changes.</small></details></div>`;
 }
 function renderTipSummary(){
   if(!race||!editorial)return;
@@ -42,7 +42,7 @@ function renderTips(){
   if(!editorial?.sources){document.getElementById('guideCards').innerHTML='<p class="tips-empty">Published guides are unavailable right now. The form views still work.</p>';return}
   const sources=editorial.sources;
   const total=sources.reduce((n,s)=>n+Object.values(s.picks||{}).filter(Boolean).length,0),covering=sources.filter(hasRace);
-  document.getElementById('tipsCoverage').innerHTML=`<span>${sources.length} guide identities</span><span>${total} published lead selections</span><span>${covering.length} cover this race</span>`;
+  document.getElementById('tipsCoverage').innerHTML=`<span>${covering.length} published guides for this race</span>`;
   const visible=covering;
   document.getElementById('guideCards').innerHTML=visible.map(s=>{
     const covers=hasRace(s),pick=covers?s.picks[String(race.number)]:undefined,h=pick?findRunner(pick):null,excluded=h&&(h.scratched||h.emergency);
@@ -54,17 +54,4 @@ function renderTips(){
   document.getElementById('tipsSourceNote').textContent=editorial.coverageNote;
   document.getElementById('socialCoverage').textContent=editorial.socialNote;
   renderTipSummary();
-}
-
-function currentCrowd(){return M.crowd(editorial?.sources||[],race,{strength:Number(scenario.crowdStrength??.1),excludedGuides:scenario.excludedGuides||[],asOf:new Date().toISOString().slice(0,10)})}
-function scenarioWithCrowd(){return {...scenario,crowdBonuses:scenario.crowdEnabled?currentCrowd().bonuses:{}}}
-function renderCrowdControls(){
-  if(!race)return;
-  const crowd=currentCrowd(),on=!!scenario.crowdEnabled;
-  document.getElementById('crowdInput').checked=on;
-  document.getElementById('crowdStrength').value=String(scenario.crowdStrength??.1);document.getElementById('crowdStrength').disabled=!on;
-  document.getElementById('crowdStatus').textContent=on?(crowd.guideCount?`${crowd.guideCount} active first picks across ${crowd.groupCount} groups. Older tips fade every 2 days. At most ${Number(scenario.crowdStrength??.1).toFixed(2)}L for fresh, unanimous support; race evidence comes first.`:'No eligible first picks in the included sample. No crowd boost is applied.'):'Off · the adjusted order uses form and your other selected assumptions.';
-  const excluded=new Set(scenario.excludedGuides||[]);
-  document.getElementById('crowdGuides').innerHTML=(editorial?.sources||[]).filter(hasRace).map(s=>{const h=activeTip(s),pick=s.picks[String(race.number)],noBet=pick===null;return `<label class="crowd-guide"><input type="checkbox" data-crowd-guide="${esc(s.id)}" ${!excluded.has(s.id)&&h?'checked':''} ${!h||!on?'disabled':''}/><span><b>${esc(s.name)}</b><small>${esc(s.outlet)} · ${h?esc(h.display):noBet?'No bet':pick?'Tip excluded · scratched or emergency':'No eligible tip'}</small></span></label>`}).join('');
-  document.querySelectorAll('[data-crowd-guide]').forEach(input=>input.onchange=()=>{beginEdit('crowd-'+input.dataset.crowdGuide);const ids=new Set(scenario.excludedGuides||[]);if(input.checked)ids.delete(input.dataset.crowdGuide);else ids.add(input.dataset.crowdGuide);scenario.excludedGuides=[...ids];updateScenario('Included racing guides',true)});
 }

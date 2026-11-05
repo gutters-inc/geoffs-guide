@@ -1,0 +1,10 @@
+{
+  "preferRecent": true,
+  "recentHalfLifeDays": 21,
+  "followReportedGoing": true,
+  "groundStrength": 0.7,
+  "useComparableResults": true,
+  "minimumComparableResults": 3,
+  "drawCap": 0.35,
+  "crowdMaximum": 0.05
+}

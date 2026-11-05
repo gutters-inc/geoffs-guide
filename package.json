@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "test": "node model.test.cjs && node live.test.mjs && node late-mail.test.mjs && node live-ui.test.cjs",
+    "test": "node model.test.cjs && node live.test.mjs && node late-mail.test.mjs && node public-ui.test.cjs",
     "build": "node scripts/build.mjs"
   },
   "devDependencies": {

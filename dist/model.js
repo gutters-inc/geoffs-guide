@@ -1,7 +1,7 @@
 (function(root){
   const TODAY='2026-11-05';
   const norm=s=>s.toUpperCase().replace(/\s*\((?:[A-Z]{2,3}|EM\d+)\)/g,'').trim();
-  const title=s=>s.toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());
+  const title=s=>s.toLowerCase().replace(/\b\w/g,c=>c.toUpperCase()).replace(/(['’])([SMTD])\b/g,(_,a,b)=>a+b.toLowerCase());
   function build(data){
     const nodes=new Map(), races=new Map();
     for(const r of data.races)for(const h of r.horses){
@@ -49,7 +49,7 @@
     const strength=Number.isFinite(scenario.groundStrength)?Math.max(0,Math.min(1,scenario.groundStrength)):.7;
     const goingFactor=!scenario.going||scenario.going==='all'?1:ground(edge.race.going)===scenario.going?1:1-strength;
     const trackFactor=scenario.preferTrack&&!/^flemington$/i.test(edge.race.track) ? .5 : 1;
-    return Math.pow(.5,days/(scenario.preferRecent?21:45))*Math.exp(-Math.abs(Math.log(distance/edge.race.distance))/.7)/Math.max(1,edge.race.results.size-1)*goingFactor*trackFactor;
+    return Math.pow(.5,days/(scenario.preferRecent?Math.max(7,Math.min(90,Number(scenario.recentHalfLifeDays)||21)):45))*Math.exp(-Math.abs(Math.log(distance/edge.race.distance))/.7)/Math.max(1,edge.race.results.size-1)*goingFactor*trackFactor;
   }
   function crowd(sources,race,options={}){
     const key=s=>String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,''),excluded=new Set(options.excludedGuides||[]),seen=new Set(),groups=new Map(),support={},bonuses={};
