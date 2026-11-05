@@ -4,3 +4,5 @@
 
 /* Mobile navigation: distinct icons with a persistent selected-state cue. */
 .page-tabs>button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:65px;padding:7px 3px 9px;line-height:1.2}.nav-icon{display:block;width:23px;height:23px;flex-shrink:0}.page-tabs>button.active{background:#e61e1e20}.page-tabs>button.active .nav-icon{color:#ff6868}.page-tabs>button.active:after{left:25%;right:25%;height:3px}body{padding-bottom:calc(80px + env(safe-area-inset-bottom))}
+
+.selection-confidence{margin:8px 0;padding:8px 10px;background:var(--soft);border-left:3px solid #797984}.selection-confidence>span{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:750}.selection-confidence i{width:7px;height:7px;border-radius:50%;background:#797984}.selection-confidence small{display:block;margin-top:3px;font-size:10px;color:var(--muted);line-height:1.5}.selection-confidence.low{border-color:var(--red)}.selection-confidence.low i{background:var(--red)}.selection-confidence.moderate{border-color:var(--ink)}.selection-confidence.moderate i{background:var(--ink)}

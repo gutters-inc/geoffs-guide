@@ -15,6 +15,11 @@ async function boot({hash='',failure='',delay=false}={}){
  assert.equal(document.querySelectorAll('input').length,0);assert.equal(document.querySelectorAll('select').length,1);assert.equal(document.querySelectorAll('.scenario-panel,.impact-dashboard,.moves-panel,.visual-card,.live-panel').length,0);
  assert.equal(document.querySelector('[data-trust]'),null);assert.equal(document.querySelector('.upload-photo'),null);
  assert.equal(document.querySelectorAll('link[rel="stylesheet"]').length,1);assert.equal(document.querySelector('link[rel="stylesheet"]').getAttribute('href'),'ig.css');assert.equal(document.querySelector('.intro'),null);assert(fs.readFileSync('dist/ig.css','utf8').includes('#e61e1e'));
+ assert.equal(vm.runInContext("selectionConfidence(null).level",context),'withheld');
+ assert.equal(vm.runInContext("selectionConfidence({evidence:'Sparse',score:99}).level",context),'low');
+ assert.equal(vm.runInContext("selectionConfidence({evidence:'Supported'}).level",context),'moderate');
+ assert.equal(vm.runInContext("selectionConfidence({evidence:'Supported'},{live:true,checked:'2020-01-01'}).level",context),'low');
+ assert.equal(document.querySelectorAll('#contenderCards .selection-confidence').length,3);
  assert(document.querySelector('img[alt="Geoff"]'));assert(document.getElementById('homeLastUpdated').textContent.includes('LAST UPDATED'));
  for(let n=1;n<=9;n++){
   vm.runInContext(`chooseRace(${n})`,context);const frozen=vm.runInContext('JSON.stringify(baseline.map(h=>[h.name,h.score]))',context);
