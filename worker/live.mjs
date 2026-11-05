@@ -15,10 +15,14 @@ export function parseRace(html,number,now=new Date().toISOString()){
   const text=html.replace(/<script\b[\s\S]*?<\/script>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&nbsp;|&#160;/g,' ').replace(/\s+/g,' ');
   const raw=leg?.starters||m.allStarters;if(!Array.isArray(raw)||!raw.length)throw Error('No runner data');
   const official=/Dividends official\s*:/i.test(text),abandoned=!!(info?.isRaceAbandoned||m.isAbandoned);
-  const runners=raw.map(h=>({number:num(h.number),name:clean(h.name).toUpperCase(),jockey:clean(h.rider||h.associatedName),barrier:num(h.barrier),weight:num(h.weight),scratched:!!(h.isScratched||h.isFobScratched||h.isToteOff),emergency:/\(EM\d+\)/i.test(h.name||''),placing:num(h.placing)}));
+  const declaredGear=number=>{const marker=new RegExp('id=["\']form-starter-'+number+'["\']'),index=html.search(marker);if(index<0)return null;const rest=html.slice(index+1),end=rest.search(/id=["']form-starter-\d+["']/),block=end<0?rest:rest.slice(0,end);const match=block.match(/<dd[^>]*data-form=["']gearChanges["'][^>]*>([\s\S]*?)<\/dd>/i);return match?match[1].replace(/<[^>]+>/g,' ').replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/\s+/g,' ').trim().slice(0,350):null};
+  const preview=String(info?.previewContent||'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' '),selectionNumbers=(preview.match(/Selections:\s*([\d, ]+)/i)?.[1]||'').split(',').map(Number).filter(n=>n>0),author=String(info?.previewContent||'').match(/<h3[^>]*>([^<]+)<\/h3>/i)?.[1]||info?.tipsterName||'TABtouch guide';
+  const sourceClock=info?.startTime?.match(/^(\d{1,2}):(\d{2})/),startAt=sourceClock?`${DATE}T${sourceClock[1].padStart(2,'0')}:${sourceClock[2]}:00+08:00`:null;
+  const runners=raw.map(h=>({number:num(h.number),name:clean(h.name).toUpperCase(),jockey:clean(h.rider||h.associatedName),barrier:num(h.barrier),weight:num(h.weight),scratched:!!(h.isScratched||h.isFobScratched||h.isToteOff),emergency:/\(EM\d+\)/i.test(h.name||''),placing:num(h.placing),riderChanged:!!(h.isRiderChange||h.isRiderChanged),gear:declaredGear(h.number)}));
   const winners=official?runners.filter(h=>h.placing===1&&!h.scratched):[];
   const status=abandoned?'abandoned':official&&winners.length?'official':runners.some(h=>h.placing>0)?'provisional':'pending';
-  return {number,checked:now,source:`https://www.tabtouch.com.au/racing/${DATE}/mr/${number}`,sourceUpdated:info?.timestamp||null,condition:clean(info?.condition||text.match(/Track condition\s+((?:Good|Soft|Heavy|Firm|Synthetic)\s*\d*)/i)?.[1]),weather:clean(info?.weather||text.match(/Weather conditions\s+(.{1,25}?)\s+Track condition/i)?.[1]),distance:num(info?.distance)||num(text.match(/Distance\s+(\d+)m/i)?.[1]),status,winners,runners};
+  const lead=runners.find(h=>h.number===selectionNumbers[0]);
+  return {number,checked:now,startAt,latestTip:lead?{number:lead.number,name:lead.name,author:clean(author),checked:now,published:null}:null,source:`https://www.tabtouch.com.au/racing/${DATE}/mr/${number}`,sourceUpdated:info?.timestamp||null,condition:clean(info?.condition||text.match(/Track condition\s+((?:Good|Soft|Heavy|Firm|Synthetic)\s*\d*)/i)?.[1]),weather:clean(info?.weather||text.match(/Weather conditions\s+(.{1,25}?)\s+Track condition/i)?.[1]),distance:num(info?.distance)||num(text.match(/Distance\s+(\d+)m/i)?.[1]),status,winners,runners};
 }
 async function upstream(url){const r=await fetch(url,{headers:{accept:'text/html,application/json','user-agent':'GeoffsGuide/1.0 (+public race-day companion)'},signal:AbortSignal.timeout(15000)});if(!r.ok)throw Error('Source unavailable');return r}
 export async function meeting(){
@@ -34,10 +38,8 @@ export async function weather(){
 export async function liveResponse(request,ctx){
  const path=new URL(request.url).pathname;if(!['/api/meeting','/api/weather'].includes(path))return null;
  if(request.method!=='GET')return new Response('Method not allowed',{status:405});
- const key=new Request(new URL(path,request.url).href),cache=globalThis.caches?.default;
- const cached=await cache?.match(key);if(cached)return cached;
  try{const body=path==='/api/meeting'?await meeting():await weather(),partial=body.errors?.length>0;
   const response=Response.json(body,{status:path==='/api/meeting'&&!body.races.length?503:200,headers:{'cache-control':`public, max-age=${partial?30:path==='/api/meeting'?90:600}`,'x-content-type-options':'nosniff'}});
-  if(response.ok&&cache)ctx?.waitUntil(cache.put(key,response.clone()));return response;
+  return response;
  }catch{return Response.json({error:'Live source unavailable',checked:new Date().toISOString()},{status:503,headers:{'cache-control':'no-store'}})}
 }

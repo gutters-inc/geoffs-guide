@@ -20,7 +20,7 @@ function chooseRace(n){
   $('horseA').innerHTML=options;$('horseB').innerHTML=options;
   $('horseA').value=selected;$('horseB').value=active()[1]?.name||selected;
   renderVerdict();renderRankings();renderDetail();renderPath();renderScenarioControls();renderNewViews();renderImpact();renderConnectionsMeta();syncMobileRace();renderTips();ladderExpanded=false;renderLadder();if(typeof renderLive==='function')renderLive();
-  syncRoute();if(typeof renderRaceDay==='function'){dayExpanded=false;renderRaceDay();renderRaceFacts()}
+  syncRoute();if(typeof renderRaceDay==='function'){dayExpanded=false;renderRaceDay();renderRaceFacts();if(typeof renderLateMail==='function')renderLateMail()}
 }
 function renderVerdict(){
   const active=()=>baseline.filter(h=>h.eligible),scenario=defaults(),scenarioActive=()=>false,componentCount=()=>new Set(active().map(h=>h.component)).size;

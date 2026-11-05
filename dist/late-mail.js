@@ -1,0 +1,35 @@
+let lateMail=null,mailReadError='';
+const mailDate=t=>t?new Date(t).toLocaleString('en-AU',{timeZone:'Australia/Melbourne',dateStyle:'medium',timeStyle:'short'})+' AEDT':'not yet saved';
+function renderLateMail(){
+ if(!race)return;
+ const home=$('homeLastUpdated');
+ if(!lateMail){home.querySelector('b').textContent='No saved late-mail edition yet';$('lateMailStamp').textContent='Waiting for the first saved check. The original form remains available.';return}
+ const s=lateMail.selections?.[String(race.number)],updated=lateMail.updated;
+ home.querySelector('b').textContent=mailDate(updated);home.querySelector('span').textContent='LAST UPDATED · LATE MAIL';
+ $('lateMailStamp').textContent=`Saved ${mailDate(updated)}${mailReadError?' · showing the saved fallback edition':''}. ${s?.checked?'Race source checked '+mailDate(s.checked)+'.':''}`;
+ const plan=lateMail.automation,next=plan?.times?.find(t=>Date.parse(t)>Date.now());
+ $('lateMailSchedule').textContent=plan?.enabled?(next?`Next background check: ${mailDate(next)}. Checks run 10 minutes before each advertised start, with a final results check.`:'Scheduled pre-race checks complete. The final saved edition is shown.'):mailReadError?'Schedule status unavailable in this fallback edition.':'Background schedule is being prepared. This edition is the verified morning check.';
+ $('lateMailBadge').textContent=s?.status==='official'?'RESULT OFFICIAL':lateMail.runKey?.includes('final')?'RESULTS EDITION':lateMail.runKey?.includes('initial')?'MORNING EDITION':'PRE-RACE EDITION';
+ if(!s){$('lateMailComparison').textContent='No saved revision for this race.';return}
+ const before=s.baselineTip,after=s.revisedTip,changed=before?.name!==after?.name,sourceRace=lateMail.meeting?.races.find(r=>r.number===race.number),winner=sourceRace?.status==='official'?sourceRace.winners:[];
+ $('lateMailComparison').innerHTML=`<div class="mail-picks"><div><span>ORIGINAL FORM</span><b>${before?esc(before.display):'No reliable baseline'}</b><small>${esc(s.baselineGoing||'Going unknown')} · original snapshot</small></div><i>→</i><div class="${changed?'mail-revised':''}"><span>${s.frozen?'SAVED PRE-RACE VIEW':'REVISED FORM VIEW'}</span><b>${after?esc(after.display):'No saved pre-race tip'}</b><small>${after?`${after.reliable?'Form leader':'Provisional leader'} · ${changed?'changed from original':'leader unchanged'}`:'No hindsight tip is generated.'}</small></div></div>${winner.length?`<p class="mail-winner">Winner: <b>${winner.map(w=>esc(M.title(w.name))).join(' / ')}</b> · official dividends</p>`:''}<p class="mail-caveat">This is a saved form-based revision, not a win probability. Personal assumptions below do not rewrite it.</p>`;
+ const factors=(lateMail.changes?.[String(race.number)]||[]).filter(c=>c.type!=='gear');
+ $('lateMailFactors').innerHTML=`<h4>What changed?</h4>${factors.length?factors.map(c=>`<div class="mail-factor"><span>${esc(c.type.toUpperCase())}</span><p>${c.horse?`<b>${esc(c.horse)}</b> · `:''}${c.from!==undefined?`${esc(c.from)} → `:''}${esc(c.to)}<a href="${esc(c.source)}" target="_blank" rel="noopener">Source ↗</a></p></div>`).join(''):'<p class="mail-quiet">No changed runner or track facts found in this saved check. That does not mean the source could be checked continuously.</p>'}`;
+ const gear=(lateMail.changes?.[String(race.number)]||[]).filter(c=>c.type==='gear');
+ $('lateMailGear').innerHTML=gear.length?gear.map(g=>`<article class="mail-gear"><b>${esc(g.horse)}${g.scratched?' · scratched':''}</b><span>${esc(g.to)}</span><small>${g.newSinceBaseline?'Different from original declaration':'Already declared in original form'} · <a href="${esc(g.source)}" target="_blank" rel="noopener">Check wording ↗</a></small></article>`).join(''):'<p class="mail-quiet">No gear declaration available in this saved check.</p>';
+ const opinion=(lateMail.notes||[]).filter(n=>n.race===race.number||n.race===0),guide=s.latestGuideTip,guideRunner=guide&&sourceRace?.runners.find(h=>h.number===guide.number);
+ $('lateMailOpinions').innerHTML=`<h4>Late views &amp; the latest fetched guide</h4>${guide?`<article class="mail-opinion"><b>${esc(guide.author)} · ${esc(M.title(guide.name))}${guideRunner?.scratched?' · scratched':guideRunner?.emergency?' · emergency':''}</b><p>Latest fetched column selection. ${guideRunner?.scratched||guideRunner?.emergency?'Excluded from active tips. No substitute is assumed.':''}</p><small>Publication time not supplied; fetching it again does not make it a new tip. <a href="${esc(s.source)}" target="_blank" rel="noopener">Guide ↗</a></small></article>`:'<p class="mail-quiet">No updated guide selection verified for this race.</p>'}${opinion.map(n=>`<article class="mail-opinion"><span>${esc(n.type.toUpperCase())}${n.horse?' · '+esc(M.title(n.horse)):''}</span><p>${esc(n.summary)}</p><small>${n.published?'Published '+mailDate(n.published):'Publication time not supplied'} · checked ${mailDate(n.checked)} · <a href="${esc(n.url)}" target="_blank" rel="noopener">Read source ↗</a></small></article>`).join('')}`;
+ $('lateMailResults').innerHTML=(lateMail.meeting?.races||[]).map(r=>`<div class="mail-result"><b>R${r.number}</b><span>${r.status==='official'?r.winners.map(w=>esc(M.title(w.name))).join(' / '):r.status==='abandoned'?'Abandoned':r.status==='provisional'?'Provisional · not used':'Awaiting official result'}<small>${esc(r.condition||'Going not checked')} · checked ${mailDate(r.checked)}</small></span></div>`).join('');
+ $('lateMailMethod').innerHTML=`<ul>${s.why.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>${s.warnings?.map(t=>`<p class="mail-warning">${esc(t)}</p>`).join('')||''}${lateMail.lastAttempt?.success===false?`<p class="mail-warning">Latest attempt failed at ${mailDate(lateMail.lastAttempt.at)}. The earlier verified edition has been retained.</p>`:''}`;
+}
+async function loadSavedMail(){
+ if(liveBusy||!race)return;liveBusy=true;renderLive();
+ try{let saved;try{const r=await fetch('/api/late-mail');if(!r.ok)throw Error();saved=await r.json();mailReadError=''}catch{const r=await fetch('late-mail.json');if(!r.ok)throw Error();saved=await r.json();mailReadError='Live saved-store read unavailable'}
+  if(saved.date!==data.date||!saved.updated||!saved.selections||!saved.meeting)throw Error('Invalid saved edition');
+  lateMail=saved;liveError=saved.lastAttempt?.success===false?'The last scheduled attempt failed. The prior verified edition is shown.':'';
+  liveWeather=saved.weather;weatherError=liveWeather?'':'No saved weather report.';
+  acceptLiveMeeting({...saved.meeting,races:saved.meeting.races.map(r=>({...r,savedSnapshot:true}))});
+ }catch{mailReadError='Saved update unavailable';liveError='Saved updates could not be read. The original form and manual assumptions remain available.'}
+ liveBusy=false;renderLive();renderLateMail();
+}
+document.getElementById('openLateMail').onclick=()=>{setExperience('race-day');$('lateMailPanel').scrollIntoView?.({behavior:'smooth',block:'start'})};

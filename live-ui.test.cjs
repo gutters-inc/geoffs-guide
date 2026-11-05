@@ -4,8 +4,8 @@ const {window}=parseHTML(fs.readFileSync('dist/index.html','utf8')),document=win
 Object.defineProperty(window.HTMLSelectElement.prototype,'value',{get(){return this._value??this.options[0]?.value??''},set(v){this._value=String(v)},configurable:true});
 const data=JSON.parse(fs.readFileSync('dist/data.json')),editorialData=JSON.parse(fs.readFileSync('dist/editorial.json'));
 const saved=new Map(),location={hash:''};
-const context=vm.createContext({window,document,console,location,history:{replaceState(_,__,hash){location.hash=hash}},localStorage:{getItem:k=>saved.get(k)||null,setItem:(k,v)=>saved.set(k,v)},fetch:async(url)=>({ok:true,json:async()=>url==='data.json'?data:JSON.parse(fs.readFileSync('dist/'+url))}),setTimeout,Date,Map,Set,Error});
-for(const f of ['model','views','ux','mobile','tips','ladder','live-model','live','race-day','app']){vm.runInContext(fs.readFileSync(`dist/${f}.js`,'utf8'),context);if(f==='model')context.FormModel=window.FormModel;if(f==='live-model')context.LiveForm=window.LiveForm}
+const context=vm.createContext({window,document,console,location,history:{replaceState(_,__,hash){location.hash=hash}},localStorage:{getItem:k=>saved.get(k)||null,setItem:(k,v)=>saved.set(k,v)},fetch:async(url)=>({ok:true,json:async()=>url==='data.json'?data:url==='/api/late-mail'?JSON.parse(fs.readFileSync('dist/late-mail.json')):JSON.parse(fs.readFileSync('dist/'+url))}),setTimeout,Date,Map,Set,Error});
+for(const f of ['model','views','ux','mobile','tips','ladder','live-model','live','race-day','late-mail','app']){vm.runInContext(fs.readFileSync(`dist/${f}.js`,'utf8'),context);if(f==='model')context.FormModel=window.FormModel;if(f==='live-model')context.LiveForm=window.LiveForm}
 setTimeout(()=>{
  try{
   assert(document.getElementById('loading').hidden);assert.equal(document.getElementById('raceName').textContent,'Crown Oaks');

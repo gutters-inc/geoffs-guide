@@ -1,0 +1,129 @@
+{
+  "site": "https://oaks-form-connections-2026.aguthridge.chatgpt.site",
+  "date": "2026-11-05",
+  "timezone": "Australia/Melbourne",
+  "goal": "Prepare and publish saved Late mail ten minutes before the advertised start, update official winners/track changes, and send the user a concise update. Leave the immutable original form unchanged.",
+  "read": "/api/late-mail",
+  "write": {
+    "method": "POST",
+    "path": "/api/late-mail/refresh",
+    "payload": {
+      "runKey": "2026-11-05-rN-pre-HHMM (Melbourne check time) or 2026-11-05-final-HHMM",
+      "notes": [
+        {
+          "race": "integer 0\u20139",
+          "horse": "runner name or empty",
+          "type": "tip / trainer / gear / rider / scratching / track / stewards",
+          "summary": "Source-backed paraphrase, at most 15 words",
+          "url": "https source link",
+          "published": "ISO timestamp or null"
+        }
+      ]
+    }
+  },
+  "access": {
+    "acquire": "Use Sites get_site for this linked Site to obtain its current siwc_bypass_bearer_token. Do not create or rotate tokens.",
+    "send": "Only to this exact Site. OAI-Sites-Authorization: Bearer <token> for platform access, plus Authorization: Bearer <token> for the protected update route. Keep tokens in tool memory and supply them via hidden stdin, never shell arguments, files or output.",
+    "helper": "/late-mail-updater.py accepts JSON via hidden stdin: {token,mode:update|read|status,race,payload}. It writes and reads back the saved edition.",
+    "on401": "Do not bypass authorization or rotate credentials. Report the failed update and retain the old edition."
+  },
+  "research": {
+    "primary": "TABtouch nine fixed race pages, https://www.tabtouch.com.au/racing/2026-11-05/mr/{1..9}. The writer fetches current fields, gear declarations, guide selection, going, source start times and official dividends itself.",
+    "other": [
+      "https://www.racing.com/",
+      "https://www.racingvictoria.com.au/",
+      "https://www.vrc.com.au/",
+      "https://www.justhorseracing.com.au/"
+    ],
+    "check": [
+      "Late scratchings and final-field status; do not promote emergencies without confirmation.",
+      "Declared gear versus newly announced changes; ambiguous source wording stays flagged.",
+      "Rider, barrier and carried-weight changes; vet/stewards reports.",
+      "Current reported going and weather. Rain alone is not a surface rating.",
+      "Latest sourced guide/trainer views. Preserve publication date; re-fetching old mail does not make it new.",
+      "Official results from earlier races, with no provisional-result influence."
+    ],
+    "limits": "Do not fabricate tips, quotes, prices, certainty, independent votes or numerical gear/jockey bonuses. Keep each note <=15 words and all derived paraphrases <=100 words per article. Never copy an article. Unsupported or contradictory claims are omitted or explicitly marked uncertain."
+  },
+  "execution": [
+    "Read the saved edition and determine the upcoming race for this check (or final wrap). Search current late mail, using exact meeting/date/runner matches.",
+    "Send brief new/rechecked source-backed notes with a unique scheduled-slot runKey to the protected writer. The server saves updated source facts, evidence-first revised tips, immutable baseline comparison and pre-race archives in durable storage.",
+    "Read back /api/late-mail and verify the update timestamp/runKey. Partial or failed checks must be reported; the previous verified edition is retained on total source failure. A duplicate successful slot is idempotent.",
+    "Give the user an update with late changes, reported going, official winners, revised vs baseline selection and reasons, source links and saved update time. Call a provisional leader provisional. No bet placement or API-key-backed generator is involved.",
+    "If advertised start times change, preserve this same linked automation and adjust only remaining check dates using its task control; do not create duplicates. Send updated automation times in the next authorised payload to keep the page plan accurate.",
+    "During the final wrap, if the last result is not official, add one follow-up 15 minutes later to this same automation, with no checks after 19:00 AEDT. Report any still-unconfirmed result honestly."
+  ],
+  "schedule": {
+    "date": "2026-11-05",
+    "timezone": "Australia/Melbourne",
+    "checks": [
+      {
+        "race": 1,
+        "jump": "2026-11-05T10:00:00+08:00",
+        "check": "2026-11-05T09:50:00+08:00",
+        "local": "12:50",
+        "runKey": "2026-11-05-r1-pre-1250"
+      },
+      {
+        "race": 2,
+        "jump": "2026-11-05T10:35:00+08:00",
+        "check": "2026-11-05T10:25:00+08:00",
+        "local": "13:25",
+        "runKey": "2026-11-05-r2-pre-1325"
+      },
+      {
+        "race": 3,
+        "jump": "2026-11-05T11:10:00+08:00",
+        "check": "2026-11-05T11:00:00+08:00",
+        "local": "14:00",
+        "runKey": "2026-11-05-r3-pre-1400"
+      },
+      {
+        "race": 4,
+        "jump": "2026-11-05T11:45:00+08:00",
+        "check": "2026-11-05T11:35:00+08:00",
+        "local": "14:35",
+        "runKey": "2026-11-05-r4-pre-1435"
+      },
+      {
+        "race": 5,
+        "jump": "2026-11-05T12:20:00+08:00",
+        "check": "2026-11-05T12:10:00+08:00",
+        "local": "15:10",
+        "runKey": "2026-11-05-r5-pre-1510"
+      },
+      {
+        "race": 6,
+        "jump": "2026-11-05T12:55:00+08:00",
+        "check": "2026-11-05T12:45:00+08:00",
+        "local": "15:45",
+        "runKey": "2026-11-05-r6-pre-1545"
+      },
+      {
+        "race": 7,
+        "jump": "2026-11-05T13:30:00+08:00",
+        "check": "2026-11-05T13:20:00+08:00",
+        "local": "16:20",
+        "runKey": "2026-11-05-r7-pre-1620"
+      },
+      {
+        "race": 8,
+        "jump": "2026-11-05T14:10:00+08:00",
+        "check": "2026-11-05T14:00:00+08:00",
+        "local": "17:00",
+        "runKey": "2026-11-05-r8-pre-1700"
+      },
+      {
+        "race": 9,
+        "jump": "2026-11-05T14:50:00+08:00",
+        "check": "2026-11-05T14:40:00+08:00",
+        "local": "17:40",
+        "runKey": "2026-11-05-r9-pre-1740"
+      }
+    ],
+    "final": {
+      "check": "2026-11-05T18:10:00+11:00",
+      "runKey": "2026-11-05-final-1810"
+    }
+  }
+}

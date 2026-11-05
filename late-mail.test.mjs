@@ -1,0 +1,33 @@
+import assert from 'node:assert/strict';import fs from 'node:fs';import {createRequire} from 'node:module';import {webcrypto} from 'node:crypto';
+import {buildLateMail,validateMailNotes,authorisedMailWriter,lateMailResponse} from './worker/late-mail.mjs';
+import {liveResponse} from './worker/live.mjs';import LM from './scripts/test-live-model.mjs';
+const require=createRequire(import.meta.url),M=require('./dist/model.js');
+const original=JSON.parse(fs.readFileSync('dist/data.json')),editorial=JSON.parse(fs.readFileSync('dist/editorial.json')),gearBase=JSON.parse(fs.readFileSync('dist/gear-baseline.json')),seed=JSON.parse(fs.readFileSync('dist/late-mail.json'));
+const morning='2026-11-05T00:05:00Z',before=JSON.stringify(original),first=buildLateMail({original,editorial,gearBase,feed:seed.meeting,previous:null,notes:[],runKey:'2026-11-05-initial',now:morning},M,LM);
+assert.equal(first.meeting.races.length,9);assert.equal(JSON.stringify(original),before);assert(first.changes[3].some(c=>c.type==='scratching'&&c.horse.toUpperCase()==='JUST FOLK'));assert.equal(first.selections[3].reportedGoing,'Soft5');assert(first.selections[1].revisedTip);assert(first.changes[3].some(c=>c.type==='gear'&&!c.newSinceBaseline));
+const completed=structuredClone(seed.meeting),r1=completed.races.find(r=>r.number===1);r1.status='official';const winner=r1.runners.find(r=>r.number===2);winner.placing=1;r1.winners=[winner];
+const after=buildLateMail({original,editorial,gearBase,feed:completed,previous:first,notes:[],runKey:'2026-11-05-r3-pre',now:'2026-11-05T03:00:00Z'},M,LM);
+assert.deepEqual(after.selections[1].revisedTip,first.selections[1].revisedTip);assert.equal(after.selections[1].revisedAt,first.selections[1].revisedAt);assert(after.selections[1].frozen);assert.equal(after.meeting.races[0].winners[0].number,2);
+const noPrior=buildLateMail({original,editorial,gearBase,feed:completed,notes:[],runKey:'2026-11-05-final',now:'2026-11-05T07:30:00Z'},M,LM);assert.equal(noPrior.selections[1].revisedTip,null);
+assert.throws(()=>validateMailNotes([{race:3,type:'gear',summary:'Test',url:'https://evil.test/a'}],morning));assert.throws(()=>validateMailNotes([{race:3,type:'gear',summary:'Test',url:'https://racing.com/a',published:'2026-11-06T00:00:00Z'}],morning));
+assert.equal(validateMailNotes([{race:3,type:'scratching',summary:'A sourced change.',url:'https://www.racingvictoria.com.au/news/test'}],morning).length,1);
+// Regression: the hosting runtime denies caches.default. No live route may touch it.
+Object.defineProperty(globalThis,'caches',{configurable:true,get(){throw Error('Default cache forbidden')}});
+const originalFetch=globalThis.fetch;globalThis.fetch=async()=>Response.json({current:{time:'2026-11-05T11:00',temperature_2m:16,precipitation:0,wind_speed_10m:12},daily:{time:['2026-11-05'],precipitation_sum:[1],precipitation_probability_max:[30]}});
+assert.equal((await liveResponse(new Request('https://test/api/weather'),{})).status,200);globalThis.fetch=originalFetch;
+// Exercise the protected durable writer, readback, retries and failure retention.
+globalThis.FormModel=M;globalThis.LiveForm=LM;
+globalThis.assets=Object.fromEntries([['/data.json',original],['/editorial.json',editorial],['/gear-baseline.json',gearBase],['/late-mail.json',seed]].map(([key,obj])=>[key,{body:Buffer.from(JSON.stringify(obj)).toString('base64')}]));
+const store=new Map(),bucket={get:async key=>store.has(key)?{json:async()=>JSON.parse(store.get(key))}:null,put:async(key,value)=>{store.set(key,value)}};
+const token='test-only-service-token',digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(token)),hash=Buffer.from(digest).toString('hex'),env={BUCKET:bucket,LATE_MAIL_UPDATER_SHA256:hash};
+assert(!await authorisedMailWriter(new Request('https://test'),env));
+let calls=0;const services={meeting:async()=>{calls++;return seed.meeting},weather:async()=>seed.weather};
+const post=(key,authorized=true)=>new Request('https://test/api/late-mail/refresh',{method:'POST',headers:authorized?{authorization:'Bearer '+token}:{},body:JSON.stringify({runKey:key,notes:[]})});
+assert.equal((await lateMailResponse(post('2026-11-05-initial',false),env,{},services)).status,401);
+let response=await lateMailResponse(post('2026-11-05-initial'),env,{},services);assert.equal(response.status,200);assert(store.has('late-mail/2026-11-05/latest.json'));
+const saved=await(await lateMailResponse(new Request('https://test/api/late-mail'),env,{},services)).json();assert(saved.storageReady);assert(saved.updated);assert.equal(saved.meeting.races.length,9);
+response=await lateMailResponse(post('2026-11-05-initial'),env,{},services);assert((await response.json()).idempotent);assert.equal(calls,1);
+const fail={meeting:async()=>({races:[],errors:[{number:1}]}),weather:async()=>{throw Error('Down')}};
+assert.equal((await lateMailResponse(post('2026-11-05-r1-pre-1250'),env,{},fail)).status,502);
+const retained=await(await lateMailResponse(new Request('https://test/api/late-mail'),env,{},services)).json();assert.equal(retained.updated,saved.updated);assert.equal(retained.lastAttempt.success,false);
+console.log('PASS: saved revisions, source facts, gear provenance, pre-race freeze, protected durable write/readback, idempotency and failed-source retention.');

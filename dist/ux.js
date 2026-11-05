@@ -11,7 +11,7 @@ function setExperience(value,sync=true){
   for(const [id,tab] of [['simpleMode','form'],['raceDayMode','race-day'],['valueMode','value'],['exploreMode','connections']]){
     const b=document.getElementById(id),on=experience===tab;b.classList.toggle('active',on);b.setAttribute('aria-selected',String(on));b.setAttribute('tabindex',on?'0':'-1');
   }
-  if(race){if(typeof renderRaceFacts==='function')renderRaceFacts();renderDetail();if(typeof renderRaceDay==='function')renderRaceDay()}
+  if(race){if(typeof renderLateMail==='function')renderLateMail();if(typeof renderRaceFacts==='function')renderRaceFacts();renderDetail();if(typeof renderRaceDay==='function')renderRaceDay()}
   if(sync)syncRoute();
   if(race&&experience==='race-day'&&typeof refreshLive==='function'&&!liveFresh(liveRace()))refreshLive();
   if(sync&&previous!==experience&&typeof window.scrollTo==='function')window.scrollTo({top:0,behavior:'instant'});
