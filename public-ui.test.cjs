@@ -14,7 +14,7 @@ async function boot({hash='',failure='',delay=false}={}){
  const app=await boot();const {context,document,location}=app;assert(document.getElementById('loading').hidden);assert.equal(document.querySelectorAll('[role="tab"]').length,4);
  assert.equal(document.querySelectorAll('input').length,0);assert.equal(document.querySelectorAll('select').length,1);assert.equal(document.querySelectorAll('.scenario-panel,.impact-dashboard,.moves-panel,.visual-card,.live-panel').length,0);
  assert.equal(document.querySelector('[data-trust]'),null);assert.equal(document.querySelector('.upload-photo'),null);
- assert.equal(document.querySelectorAll('link[rel="stylesheet"]').length,1);assert.equal(document.querySelector('link[rel="stylesheet"]').getAttribute('href'),'results.css');assert.equal(document.querySelector('.intro'),null);assert(fs.readFileSync('dist/ig.css','utf8').includes('#e61e1e'));assert(fs.readFileSync('dist/results.css','utf8').includes('.official-race-result'));
+ assert.equal(document.querySelectorAll('link[rel="stylesheet"]').length,1);assert.match(document.querySelector('link[rel="stylesheet"]').getAttribute('href'),/^results\.css(?:\?v=\d+)?$/);assert.equal(document.querySelector('.intro'),null);assert(fs.readFileSync('dist/ig.css','utf8').includes('#e61e1e'));assert(fs.readFileSync('dist/results.css','utf8').includes('.official-race-result'));
  assert.equal(vm.runInContext("selectionConfidence(null).level",context),'withheld');
  assert.equal(vm.runInContext("selectionConfidence({evidence:'Sparse',score:99}).level",context),'low');
  assert.equal(vm.runInContext("selectionConfidence({evidence:'Supported'}).level",context),'moderate');
