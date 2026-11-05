@@ -1,23 +1,25 @@
-function geoffSharePicks(){
- const s=lateMail?.selections?.[String(race.number)],live=s&&(s.revisedTip?.reliable!==false?s.revisedTip:s.provisionalLeader);
- const ordered=live?[live,...(s.topThree||[]).filter(h=>h.name!==live.name)]:baseline.filter(h=>h.eligible);
- return ordered.slice(0,3).map(h=>h.display);
+function shareRunner(item){return item&&race.horses.find(h=>h.name===item.name)||item}
+function geoffShareState(){
+ const s=lateMail?.selections?.[String(race.number)],report=lateMail?.meeting?.races?.find(r=>r.number===race.number),finished=report?.status==='official';
+ const live=s&&(s.revisedTip?.reliable!==false?s.revisedTip:s.provisionalLeader),ordered=live?[live,...(s.topThree||[]).filter(h=>h.name!==live.name)]:baseline.filter(h=>h.eligible),picks=ordered.slice(0,3).map(shareRunner);
+ const saved=s&&(s.revisedTip?.reliable!==false?s.revisedTip:s.baselineTip),resultRunner=finished&&saved&&report.runners.find(h=>horseKey(h.name)===horseKey(saved.name)),placing=resultRunner?.placing;
+ const mood=!finished?'upcoming':placing===1?'landed':placing===2||placing===3?'money':'off',title={upcoming:'I bet with Geoff',landed:'Geoff landed it',money:'In the money',off:'Off track'}[mood];
+ const sub={upcoming:'Current top three',landed:`${saved?.display} won`,money:`${saved?.display} ran ${placingLabel(placing)}`,off:`${saved?.display||'The saved tip'} missed the placings`}[mood],dividend=placing===1?resultRunner?.winDividend:placing===2||placing===3?resultRunner?.placeDividend:null;
+ return {s,report,finished,picks,saved,resultRunner,placing,mood,title,sub,dividend};
 }
-function geoffShareText(){const picks=geoffSharePicks();return `I bet with Geoff · Flemington R${race.number}\n${picks.map((p,i)=>`${i+1}. ${p}`).join('\n')}\n${location.origin}/#race-${race.number}/form`}
+function sharePrice(h,state){if(state.finished)return state.saved?.name===h.name&&state.dividend?`${state.placing===1?'WIN':'PLACE'} $${Number(state.dividend).toFixed(2)}`:'';return Number.isFinite(h.odds)?`WIN $${Number(h.odds).toFixed(2)}`:''}
+function renderGeoffShare(){
+ const panel=document.getElementById('shareGeoffPanel');if(!panel||!race)return;const state=geoffShareState();
+ panel.className=`share-geoff share-${state.mood}`;panel.innerHTML=`<div class="share-compact-copy"><span>${state.finished?'SHARE THE RESULT':'SHARE THE FORM'}</span><b>${esc(state.title)}</b><small>${esc(state.sub)}${state.dividend?` · ${state.placing===1?'Win':'Place'} dividend $${Number(state.dividend).toFixed(2)}`:''}</small></div><div class="share-silks">${state.picks.map((h,i)=>`<div>${silk(h,'')}<span>${i+1}. ${esc(h.display)}</span>${sharePrice(h,state)?`<small>${sharePrice(h,state)}</small>`:''}</div>`).join('')}</div><div class="share-actions"><button id="shareGeoff" aria-label="Open share sheet"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V3m0 0 5 5m-5-5L7 8M5 13v7h14v-7"/></svg></button><button id="shareWhatsApp" aria-label="Share on WhatsApp"><img alt="" src="https://cdn.simpleicons.org/whatsapp/25D366"/></button><button id="shareInstagram" aria-label="Share on Instagram"><img alt="" src="https://cdn.simpleicons.org/instagram/E4405F"/></button><button id="shareMessage" aria-label="Share by Messages"><img alt="" src="https://cdn.simpleicons.org/imessage/34C759"/></button></div><small class="share-source">${state.finished?(state.dividend?'Official TABtouch tote dividend':'Result official; dividend unavailable'):'Win odds from the original TABtouch market snapshot'}</small><span class="share-status" id="shareStatus"></span>`;
+ document.getElementById('shareGeoff').onclick=shareGeoff;document.getElementById('shareInstagram').onclick=shareGeoff;document.getElementById('shareWhatsApp').onclick=()=>location.href=`https://wa.me/?text=${encodeURIComponent(geoffShareText())}`;document.getElementById('shareMessage').onclick=()=>location.href=`sms:?&body=${encodeURIComponent(geoffShareText())}`;
+}
+function geoffShareText(){const s=geoffShareState();return `${s.title} · Flemington R${race.number}\n${s.picks.map((p,i)=>`${i+1}. ${p.display}${sharePrice(p,s)?` · ${sharePrice(p,s)}`:''}`).join('\n')}\n${location.origin}/#race-${race.number}/form`}
+async function loadShareImage(src){const img=new Image();img.src=src;await img.decode();return img}
+async function drawShareSilk(c,h,x,y){const img=await loadShareImage(`assets/silks-r${race.number}.png`),i=race.horses.findIndex(r=>r.name===h.name),w=img.width/race.horses.length;if(i>=0)c.drawImage(img,i*w,0,w,img.height,x,y,82,82)}
 async function geoffShareCard(){
- const canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1350;const c=canvas.getContext('2d');
- c.fillStyle='#171717';c.fillRect(0,0,1080,1350);c.fillStyle='#e53b35';c.fillRect(0,0,1080,28);
- const img=new Image();img.src='assets/geoff-source.jpg';await img.decode();c.drawImage(img,0,28,430,1322);
- const fade=c.createLinearGradient(300,0,640,0);fade.addColorStop(0,'rgba(23,23,23,0)');fade.addColorStop(1,'#171717');c.fillStyle=fade;c.fillRect(300,28,340,1322);
- c.fillStyle='#e53b35';c.font='800 34px Arial';c.fillText('GEOFFS GUIDE',480,120);c.fillStyle='#fff';c.font='800 76px Arial';c.fillText('I bet with',480,235);c.fillText('Geoff.',480,315);
- c.fillStyle='#aaa';c.font='700 25px Arial';c.fillText(`FLEMINGTON · RACE ${race.number}`,480,400);c.fillStyle='#fff';
- geoffSharePicks().forEach((p,i)=>{c.fillStyle=i===0?'#e53b35':'#fff';c.font='900 33px Arial';c.fillText(`#${i+1}`,480,525+i*155);c.fillStyle='#fff';c.font='800 48px Arial';c.fillText(p,550,525+i*155)});
- c.fillStyle='#aaa';c.font='24px Arial';c.fillText('Form opinion · check late mail before the race',480,1050);c.fillStyle='#fff';c.font='700 25px Arial';c.fillText(location.host,480,1110);
- const blob=await new Promise(r=>canvas.toBlob(r,'image/png'));return new File([blob],`geoffs-guide-r${race.number}.png`,{type:'image/png'});
+ const state=geoffShareState(),canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1350;const c=canvas.getContext('2d');c.fillStyle='#f4f4f5';c.fillRect(0,0,1080,1350);c.fillStyle='#171717';c.fillRect(0,0,1080,360);c.fillStyle=state.mood==='landed'?'#2f9c5d':state.mood==='money'?'#c39420':state.mood==='off'?'#777':'#e53b35';c.fillRect(0,0,1080,24);
+ const geoff=await loadShareImage('assets/geoff-source.jpg');c.drawImage(geoff,0,24,340,336);c.fillStyle='#fff';c.font='800 31px Arial';c.fillText('GEOFFS GUIDE',400,100);c.font='900 60px Arial';c.fillText(state.title,400,195);c.fillStyle='#bbb';c.font='700 27px Arial';c.fillText(`FLEMINGTON · RACE ${race.number}`,400,255);c.fillText(state.sub,400,305);
+ for(let i=0;i<state.picks.length;i++){const h=state.picks[i],y=500+i*215;await drawShareSilk(c,h,100,y-63);c.fillStyle='#171717';c.font='900 30px Arial';c.fillText(`#${i+1}`,215,y-12);c.font='900 48px Arial';c.fillText(h.display,285,y-12);const price=sharePrice(h,state);if(price){c.fillStyle='#e53b35';c.font='800 27px Arial';c.fillText(price,285,y+38)}}
+ c.fillStyle='#666';c.font='23px Arial';c.fillText(state.finished?(state.dividend?'Official TABtouch tote dividend':'Official result · dividend unavailable'):'TABtouch original market snapshot',100,1210);c.fillStyle='#171717';c.font='700 24px Arial';c.fillText(location.host,100,1260);const blob=await new Promise(r=>canvas.toBlob(r,'image/png'));return new File([blob],`geoffs-guide-r${race.number}.png`,{type:'image/png'});
 }
-async function shareGeoff(){
- const status=document.getElementById('shareStatus');try{const file=await geoffShareCard(),payload={title:'I bet with Geoff',text:geoffShareText(),url:`${location.origin}/#race-${race.number}/form`};if(navigator.canShare?.({files:[file]}))payload.files=[file];if(navigator.share){await navigator.share(payload);status.textContent='Shared.'}else{const a=document.createElement('a');a.href=URL.createObjectURL(file);a.download=file.name;a.click();status.textContent='Share card downloaded.'}}catch(e){if(e.name!=='AbortError')status.textContent='Share was not available. Try WhatsApp or Message.'}
-}
-document.getElementById('shareGeoff').onclick=shareGeoff;
-document.getElementById('shareWhatsApp').onclick=()=>location.href=`https://wa.me/?text=${encodeURIComponent(geoffShareText())}`;
-document.getElementById('shareMessage').onclick=()=>location.href=`sms:?&body=${encodeURIComponent(geoffShareText())}`;
+async function shareGeoff(){const status=document.getElementById('shareStatus');try{const file=await geoffShareCard(),payload={title:geoffShareState().title,text:geoffShareText(),url:`${location.origin}/#race-${race.number}/form`};if(navigator.canShare?.({files:[file]}))payload.files=[file];if(navigator.share){await navigator.share(payload);status.textContent='Shared'}else{const a=document.createElement('a');a.href=URL.createObjectURL(file);a.download=file.name;a.click();status.textContent='Saved'}}catch(e){if(e.name!=='AbortError')status.textContent='Try WhatsApp or Messages'}}
