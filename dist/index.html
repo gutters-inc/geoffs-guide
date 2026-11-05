@@ -23,6 +23,41 @@
 <button aria-label="About this guide" class="about-button" id="methodButton">i</button>
 </header>
 <main>
+<section class="day-roundup" id="dayRoundup" hidden aria-labelledby="roundupTitle">
+  <div class="roundup-kicker">OAKS DAY · COMPLETED MEETING</div>
+  <div class="roundup-hero">
+    <img src="assets/geoffs-returns-after-r7.png" alt="Geoff's returns tracker after Race 7, using supplied Sportsbet fixed prices" loading="eager"/>
+    <div class="roundup-hero-copy">
+      <span class="roundup-chip">R9 result interim at publication</span>
+      <h1 id="roundupTitle">Geoff landed three — and found seven top-three finishes.</h1>
+      <p>The honest end-of-day card: the hits, the misses and the saved selections exactly as published.</p>
+      <div class="roundup-scoreline"><div><b>3/9</b><span>top-pick winners</span></div><div><b>7/9</b><span>top-pick top threes</span></div></div>
+      <div class="roundup-returns">
+        <article><span>$10 win · 9 races</span><b>+$140.00</b><small>$230.00 returned · $90 staked</small></article>
+        <article class="negative"><span>$5 E/W · each top 3</span><b>−$19.35</b><small>$250.65 returned · $270 staked</small></article>
+      </div>
+      <p class="roundup-price-note">Sportsbet fixed prices supplied for the meeting. R8 added $23.85 E/W; R9 added $8.25 E/W.</p>
+      <div class="roundup-actions"><button type="button" data-roundup-target="results">See every result ↓</button><button type="button" data-roundup-target="leaderboards">Meeting leaders ↓</button></div>
+    </div>
+  </div>
+  <div class="roundup-section" id="roundupResults">
+    <div class="roundup-heading"><div><span>THE CARD</span><h2>Race-by-race</h2></div><p>Frozen tips are never rewritten after the jump.</p></div>
+    <div class="roundup-result-grid" id="roundupResultGrid"></div>
+  </div>
+  <div class="roundup-section" id="roundupLeaderboards">
+    <div class="roundup-heading"><div><span>THE MEETING</span><h2>Who owned Oaks Day?</h2></div><p>Meeting-only figures. Placings mean top three.</p></div>
+    <div class="roundup-board-grid"><article><h3>Jockey leaderboard</h3><div id="jockeyLeaderboard"></div></article><article><h3>Trainer leaderboard</h3><div id="trainerLeaderboard"></div></article></div>
+  </div>
+  <div class="roundup-section tipster-scoreboard">
+    <div class="roundup-heading"><div><span>SAVED BEFORE THE RACE</span><h2>Tipster scoreboard</h2></div><p>Ranked by winners first, then top-three inclusions.</p></div>
+    <div id="tipsterScoreboard"></div>
+    <p class="roundup-method">Denominator: nine races. Scratched selections and no-tip cases would be excluded and shown separately. The available complete saved sets are Geoff’s original baseline and final frozen top pick; they finished joint-first.</p>
+  </div>
+  <div class="roundup-section roundup-lessons">
+    <div class="roundup-heading"><div><span>WHAT WE LEARNT</span><h2>Short, honest lessons</h2></div></div>
+    <ul><li><b>The wins:</b> Harry’s Yacht, Bella Verona and Sulek made the saved top pick count.</li><li><b>The near misses:</b> Veyepee, Semantics, De Armas and Bev’s Nine still finished in the money.</li><li><b>The Oaks:</b> Proxima Dea beat the De Armas selection; the saved top three still contained the winner.</li><li><b>The finish:</b> Rey Magnerio won R9; Bev’s Nine ran third. R9 remained interim when this roundup was published.</li></ul>
+  </div>
+</section>
 <nav aria-label="Select race" class="race-tabs" hidden="" id="raceTabs">
 </nav>
 <div aria-hidden="true" id="raceStart">
@@ -222,8 +257,8 @@
 <p>Follow the form. See the reasoning.</p>
 <span>FLEMINGTON / OAKS DAY 2026</span>
 <p class="release-summary">
-<b>Latest release · 5 Nov 2026, 4:42pm AEDT</b>
-<br/>Clearer low-confidence picks, share cards, alert testing and release history.</p>
+<b>Latest release · 5 Nov 2026, 6:25pm AEDT</b>
+<br/>Completed-day roundup, returns, leaderboards and transparent tip scorecard.</p>
 <a class="release-link" href="release-notes.html">See all release notes ↗</a>
 </footer>
 </main>
@@ -234,6 +269,8 @@
 <script defer="" src="model.js">
 </script>
 <script defer="" src="views.js">
+</script>
+<script defer="" src="roundup.js">
 </script>
 <script defer="" src="ux.js">
 </script>
