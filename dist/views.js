@@ -10,8 +10,11 @@ function shortSentiment(h){const {first,other}=runnerSentiment(h),current=curren
 function selectionConfidence(h,{live=false,checked=null}={}){
  if(!h)return {level:'withheld',label:'No confident selection',reason:'Too little evidence for a firm pick.'};
  if(live&&(!checked||Date.now()-Date.parse(checked)>7200000||!Number.isFinite(Date.parse(checked))))return {level:'low',label:'Low confidence',reason:'Current race information needs a fresh check.'};
- if(h.evidence==='Supported')return {level:'moderate',label:'Moderate confidence',reason:'Several recent, connected runs support this view.'};
- return {level:'low',label:'Low confidence',reason:h.evidence==='Sparse'?'Sparse recent or matching-condition evidence.':'Some supporting form; the evidence is limited.'};
+ if(live&&h.evidence==='Supported')return {level:'moderate',label:'Moderate confidence',reason:'Several recent, connected runs support this view.'};
+ if(live&&h.reliable)return {level:'low',label:'Cautious selection',reason:'The minimum evidence test passed, but support is not strong.'};
+ if(live)return {level:'low',label:'Low confidence',reason:h.evidence==='Sparse'?'Sparse recent or matching-condition evidence.':'Some supporting form; the evidence is limited.'};
+ if(h.evidence==='Supported')return {level:'moderate',label:'Supported evidence',reason:'Several recent, connected runs support this ranking.'};
+ return {level:'low',label:h.evidence==='Sparse'?'Sparse evidence':'Limited evidence',reason:h.evidence==='Sparse'?'Few recent or matching-condition runs support this ranking.':'Some supporting form exists, but it is limited.'};
 }
 function confidenceMarkup(h,options){const c=selectionConfidence(h,options);return `<div class="selection-confidence ${c.level}"><span><i aria-hidden="true"></i>${c.label}</span><small>${c.reason} Evidence strength, not win probability.</small></div>`}
 function renderSimple(){

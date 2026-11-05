@@ -1,5 +1,9 @@
 @import url('ig.css');
 
+html,body{max-width:100%;overflow-x:hidden}
+.mobile-race-picker,.race-heading,.home-updated{max-width:100vw}
+.mobile-race-picker select{min-width:0;max-width:100%}
+
 .official-race-result{margin:14px 0;padding:14px;background:#171717;color:#fff;border-left:5px solid var(--red);border-radius:5px}
 .official-race-result>span{display:block;font-size:9px;letter-spacing:1px;font-weight:800;color:#d2d2d7}
 .official-race-result>div{margin:8px 0 11px}
@@ -15,6 +19,10 @@
 .mail-result-official{margin:5px 0;padding:11px 9px;background:#f3f3f5;border-left:3px solid var(--red);border-top:0;border-radius:3px}
 .mail-result-official>b,.mail-result-official em{color:var(--red-dark)}
 .home-updated #enableRaceAlerts{border-color:#52525b;color:#303038}
+.home-updated #enableRaceAlerts{grid-column:2;grid-row:1/3}
+.home-updated #openLateMail{grid-column:1/-1;grid-row:3;justify-self:start;min-height:36px;padding:4px 0 0}
+.result-learning{margin:9px 0;padding:9px 10px;background:#f3f3f5;border-left:3px solid var(--red);font-size:10px;line-height:1.5;color:#494953}
+.result-learning b{color:var(--ink)}
 .race-alert-status{margin:7px 0 0;font-size:10px;color:var(--muted);line-height:1.5}
 .race-alert-status:empty{display:none}
 #formResultReview:empty{display:none}
@@ -42,5 +50,5 @@
  .form-result-card>header{display:block}
  .form-result-card>header strong{display:block;text-align:left;margin-top:7px;font-size:19px}
  .form-finish{grid-template-columns:1fr}
- .home-updated #enableRaceAlerts{order:4}
+ .home-updated #enableRaceAlerts{grid-column:2;grid-row:1/3}
 }

@@ -2,7 +2,7 @@
   "site": "https://oaks-form-connections-2026.aguthridge.chatgpt.site",
   "date": "2026-11-05",
   "timezone": "Australia/Melbourne",
-  "goal": "Prepare and publish saved Late mail ten minutes before the advertised start, update official winners/track changes, and send the user a concise update. Leave the immutable original form unchanged.",
+  "goal": "Prepare and publish saved Late mail ten minutes before the advertised start, process the immediately preceding result on the next alternating check, and use verified same-day evidence to refine later tips. Leave the immutable original form unchanged.",
   "read": "/api/late-mail",
   "write": {
     "method": "POST",
@@ -42,14 +42,15 @@
       "Current reported going and weather. Rain alone is not a surface rating.",
       "Latest sourced guide/trainer views. Preserve publication date; re-fetching old mail does not make it new.",
       "Official results from earlier races, with no provisional-result influence."
+      ,"For each run, process the immediately preceding race result even when the other task owns that race's pre-race tip. Do not revise its frozen recommendation."
     ],
     "limits": "Do not fabricate tips, quotes, prices, certainty, independent votes or numerical gear/jockey bonuses. Keep each note <=15 words and all derived paraphrases <=100 words per article. Never copy an article. Unsupported or contradictory claims are omitted or explicitly marked uncertain."
   },
   "execution": [
-    "Read the saved edition and determine the upcoming race for this check (or final wrap). Search current late mail, using exact meeting/date/runner matches.",
+    "Read the saved edition and determine the upcoming owned race for this check (or final wrap). First process the immediately preceding race's official result; leave provisional results unconfirmed. Search current late mail using exact meeting/date/runner matches.",
     "Send brief new/rechecked source-backed notes with a unique scheduled-slot runKey to the protected writer. The server saves updated source facts, evidence-first revised tips, immutable baseline comparison and pre-race archives in durable storage.",
     "Read back /api/late-mail and verify the update timestamp/runKey. Partial or failed checks must be reported; the previous verified edition is retained on total source failure. A duplicate successful slot is idempotent.",
-    "Give the user an update with late changes, reported going, official winners, revised vs baseline selection and reasons, source links and saved update time. Call a provisional leader provisional. No bet placement or API-key-backed generator is involved.",
+    "Give the user an update with late changes, reported going, official winners, revised vs baseline selection and reasons, source links and saved update time. State explicitly whether earlier official results altered the tip; the writer applies only its bounded comparable-race signal. Call a provisional leader provisional. No bet placement or API-key-backed generator is involved.",
     "If advertised start times change, preserve this same linked automation and adjust only remaining check dates using its task control; do not create duplicates. Send updated automation times in the next authorised payload to keep the page plan accurate.",
     "If final results remain provisional, report them as unconfirmed. Do not add unsupported sub-hour follow-ups. Each linked task must remain at most hourly; preserve its assigned race slots and the other task\u2019s remaining checks."
   ],
