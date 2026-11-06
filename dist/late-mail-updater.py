@@ -3,7 +3,7 @@ import sys,json,urllib.request,urllib.error,termios
 if sys.stdin.isatty():
  attrs=termios.tcgetattr(sys.stdin.fileno());attrs[3]&=~termios.ECHO;termios.tcsetattr(sys.stdin.fileno(),termios.TCSANOW,attrs)
 print('Ready for update JSON on stdin (input hidden).',flush=True)
-data=json.loads(sys.stdin.readline());base='https://oaks-form-connections-2026.aguthridge.chatgpt.site'
+data=json.loads(sys.stdin.readline());base='https://geoffs-guide-stakes-day-2026.aguthridge.chatgpt.site'
 headers={'OAI-Sites-Authorization':'Bearer '+data['token'],'Authorization':'Bearer '+data['token'],'Content-Type':'application/json'}
 def call(path,body=None):
  request=urllib.request.Request(base+path,headers=headers,data=json.dumps(body).encode() if body is not None else None,method='POST' if body is not None else 'GET')
