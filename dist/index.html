@@ -89,7 +89,7 @@
 </div>
 <p aria-live="polite" class="race-alert-status" id="raceAlertStatus">
 </p>
-<section aria-label="Share Geoff's tips" class="share-geoff" id="shareGeoffPanel">
+<section id="welcomeBriefing" class="geoff-briefing" aria-label="Thirty-second welcome from Geoff"><p class="mail-quiet">Geoff’s 30-second welcome is loading…</p></section><section aria-label="Share Geoff's tips" class="share-geoff" id="shareGeoffPanel">
 </section>
 <section aria-live="polite" id="formResultReview">
 </section>
@@ -141,7 +141,7 @@
 </div>
 <p class="mail-schedule" id="lateMailSchedule">
 </p>
-<div id="lateMailComparison">
+<section id="raceBriefing" class="geoff-briefing" aria-label="Saved thirty-second race preview"></section><div id="lateMailComparison">
 </div>
 <div id="lateMailFactors">
 </div><details class="mail-details"><summary>If the ground changes</summary><div id="groundScenarios"></div><p class="mail-quiet">Hypothetical form leaders, not a forecast rating or firm tips. Sparse evidence stays low confidence.</p></details><details class="mail-details"><summary>What Oaks taught us</summary><div id="oaksLessons"></div><a href="oaks-review.html">Stakes Day archive ↗</a></details>
@@ -207,7 +207,7 @@
 <div id="ladderStatus">
 </div>
 </section>
-<section aria-label="Ranked horses with comparisons between neighbours" class="form-ladder" id="formLadder">
+<section id="ladderSnapshot" class="ladder-snapshot" aria-label="Visual summary of the original form ladder"></section><section aria-label="Ranked horses with comparisons between neighbours" class="form-ladder" id="formLadder">
 </section>
 <button aria-expanded="false" class="show-ladder" id="showFullLadder">Show the rest of the field ↓</button>
 <p class="ladder-footnote">This is a model’s form order, not a predicted finishing order. A shared-race link is evidence, not proof. Different trips, conditions, fitness and weights can reverse results. Separate form groups cannot be ranked reliably against each other.</p>
@@ -240,7 +240,7 @@
 <div class="loading-mark">G</div>
 <p>Loading the guide…</p>
 </div>
-<script defer="" src="model.js">
+<script defer="" src="preview-model.js"></script><script defer="" src="model.js">
 </script>
 <script defer="" src="landing.js"></script><script defer="" src="views.js">
 </script>
@@ -252,13 +252,13 @@
 </script>
 <script defer="" src="tips.js">
 </script>
-<script defer="" src="ladder.js">
+<script defer="" src="ladder-visual.js"></script><script defer="" src="ladder.js">
 </script>
 <script defer="" src="late-mail.js">
 </script>
 <script defer="" src="share.js">
 </script>
-<script defer="" src="app.js">
+<script defer="" src="briefing.js"></script><script defer="" src="app.js">
 </script>
 <dialog aria-label="Runner form details" id="runnerDialog">
 <div class="dialog-toolbar">

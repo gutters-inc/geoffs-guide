@@ -34,6 +34,7 @@ function renderRaceFacts() {
     `<div class="fact"><b>${race.distance.toLocaleString()}m</b><span>DISTANCE</span></div><div class="fact"><b>${isForm ? baseline.filter((h) => h.eligible).length : race.horses.filter((h) => !h.scratched && !h.emergency).length}</b><span>${isForm ? "ORIGINAL FIELD" : "LATEST FIELD"}</span></div><div class="fact"><b>${esc(going)}</b><span>${isForm ? "ORIGINAL GOING" : "SAVED GOING"}</span></div>`;
 }
 function chooseRace(n,{automatic=false}={}) {
+  if(typeof stopBriefing==='function')stopBriefing();
   if(!automatic)defaultRacePending=false;
   race = data.races.find((r) => r.number === Number(n)) || data.races[0];
   baseline = M.rate(
@@ -161,6 +162,7 @@ Promise.all([
     if(defaultRacePending&&landingViewPending)setExperience(landing.view,false);
     chooseRace(validLink?linkedRace:landing.race,{automatic:true});
     $("loading").hidden = true;
+    initBriefings();
     initSavedMail();
   })
   .catch((e) => {

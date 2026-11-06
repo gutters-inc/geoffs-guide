@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';import fs from 'node:fs';import {createR
 import {buildLateMail,validateMailNotes,authorisedMailWriter,lateMailResponse} from './worker/late-mail.mjs';
 import {memoryBucket} from './test-bucket.mjs';
 import {liveResponse} from './worker/live.mjs';import LM from './scripts/test-live-model.mjs';
-const require=createRequire(import.meta.url),M=require('./dist/model.js');
+const require=createRequire(import.meta.url),M=require('./dist/model.js');require('./dist/preview-model.js');
 const original=JSON.parse(fs.readFileSync('dist/data.json')),editorial=JSON.parse(fs.readFileSync('dist/editorial.json')),gearBase=JSON.parse(fs.readFileSync('dist/gear-baseline.json')),seed=JSON.parse(fs.readFileSync('dist/late-mail.json'));
 const morning='2026-11-06T00:05:00Z',before=JSON.stringify(original),first=buildLateMail({original,editorial,gearBase,feed:seed.meeting,previous:null,notes:[],runKey:'2026-11-07-initial',now:morning},M,LM);
 assert.equal(first.meeting.races.length,9);assert.equal(JSON.stringify(original),before);assert.equal(first.selections[3].reportedGoing,'Good4');assert(first.selections[1].provisionalLeader);assert.equal(first.selections[1].revisedTip,null);assert(first.selections[1].warnings.some(t=>t.includes('No reliable revised tip')));assert(first.changes[7].some(c=>c.type==='gear'&&!c.newSinceBaseline));
@@ -36,3 +36,13 @@ const retained=await(await lateMailResponse(new Request('https://test/api/late-m
 const managed=JSON.parse(fs.readFileSync('config/factors.json'));const changedPolicy=buildLateMail({original,editorial,gearBase,feed:seed.meeting,notes:[],runKey:'2026-11-07-initial',now:morning},M,LM,{...managed,preferRecent:false,followReportedGoing:false,useComparableResults:false,crowdMaximum:0});
 assert(changedPolicy.selections[1].why.some(t=>t.includes('45-day')));assert.equal(changedPolicy.selections[1].drawBias,0);assert.equal(JSON.stringify(original),before);
 console.log('PASS: saved revisions, source facts, gear provenance, pre-race freeze, protected durable write/readback, idempotency and failed-source retention.');
+// A briefing is published only from a successful ten-minute source check, then stays immutable.
+const previewBucket=memoryBucket(),preClock=Date.parse(seed.meeting.races[0].startAt)-600000;
+const previewEnv={BUCKET:previewBucket,LATE_MAIL_UPDATER_SHA256:hash};let previewClock=preClock;
+const previewServices={now:()=>previewClock,pause:async()=>{},race:async n=>({...structuredClone(seed.meeting.races.find(r=>r.number===n)),checked:new Date(previewClock).toISOString()}),weather:async()=>null};
+const previewPost=(key,phase)=>new Request('https://test/api/late-mail/refresh',{method:'POST',headers:{authorization:'Bearer '+token},body:JSON.stringify({runKey:key,phase,race:1,notes:[]})});
+let prep=await lateMailResponse(previewPost('2026-11-07-r1-pre-1230','pre'),previewEnv,{},previewServices);assert.equal(prep.status,200);
+let savedPreview=await(await lateMailResponse(new Request('https://test/api/late-mail'),previewEnv,{},previewServices)).json();assert(savedPreview.previews['1']);assert.equal(savedPreview.previews['1'].scenes.at(-1).end,30);assert(savedPreview.previews['1'].opinions.length>=1);
+const beforePreview=JSON.stringify(savedPreview.previews['1']);previewClock=preClock+900000;prep=await lateMailResponse(previewPost('2026-11-07-r1-post-1245','post'),previewEnv,{},previewServices);assert.equal(prep.status,200);savedPreview=await(await lateMailResponse(new Request('https://test/api/late-mail'),previewEnv,{},previewServices)).json();assert.equal(JSON.stringify(savedPreview.previews['1']),beforePreview);
+const latePreviewBucket=memoryBucket();prep=await lateMailResponse(previewPost('2026-11-07-r1-post-1245','post'),{...previewEnv,BUCKET:latePreviewBucket},{},previewServices);assert.equal(prep.status,200);const noHindsight=await(await lateMailResponse(new Request('https://test/api/late-mail'),{...previewEnv,BUCKET:latePreviewBucket},{},previewServices)).json();assert.equal(noHindsight.previews['1'],undefined);
+console.log('PASS: ten-minute briefing preparation, saved editorial attribution, immutable post-race preview and no hindsight generation.');

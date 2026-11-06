@@ -80,6 +80,7 @@ function nextPlannedRaceCheck(){
 }
 function renderLateMail(){
  if(!race)return;
+ if(typeof renderRaceBriefing==='function')renderRaceBriefing();
  const home=$('homeLastUpdated'),s=lateMail?.selections?.[String(race.number)];
  home.querySelector('b').textContent=lateMail?mailDate(lateMail.updated):'Original form available';home.querySelector('span').textContent=lateMail?'LAST UPDATED':'AWAITING UPDATE';
  if(!lateMail||!s){$('lateMailStamp').textContent=lateMail?'No saved check for this race yet.':'No saved check available yet.';$('lateMailSchedule').textContent='The original guide and published tips are still available.';$('lateMailBadge').textContent='AWAITING UPDATE';$('savedConditions').innerHTML='';$('lateMailComparison').innerHTML='<p class="mail-quiet">Late mail will appear after a saved race check.</p>';for(const id of ['lateMailFactors','lateMailGear','lateMailOpinions','lateMailResults'])$(id).innerHTML='';renderFormResult();return}
