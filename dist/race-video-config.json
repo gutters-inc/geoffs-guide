@@ -17,5 +17,16 @@
   "maximumDurationSeconds": 35,
   "maximumRaces": 9,
   "generationWindow": "After successful saved ten-minute check, before jump",
-  "unattendedVerified": false
+  "unattendedVerified": false,
+  "deliveryStyle": {
+    "greeting": "Always begin with a classic NZ greeting: Kia ora, team; Gidday, team; or Kia ora, good sorts.",
+    "voice": "Natural New Zealand conversational delivery using the selected Geoff voice.",
+    "colloquialisms": [
+      "For mine",
+      "Let’s have a squiz",
+      "Happy punting, team"
+    ],
+    "frequency": "One or two light expressions through the tips, not every sentence.",
+    "facts": "Keep horse names, tipster attributions, source facts, assumptions and confidence caveats exact. Never add certainty or call a horse a sure thing."
+  }
 }
