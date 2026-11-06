@@ -36,7 +36,9 @@
       "https://www.racingvictoria.com.au/",
       "https://www.vrc.com.au/",
       "https://www.justhorseracing.com.au/",
-      "https://sen.com.au/"
+      "https://sen.com.au/",
+      "https://x.com/",
+      "https://twitter.com/"
     ],
     "check": [
       "Late scratchings and final-field status; do not promote emergencies without confirmation.",
@@ -44,7 +46,8 @@
       "Rider, barrier and carried-weight changes; vet/stewards reports.",
       "Current reported going and weather. Rain alone is not a surface rating.",
       "Latest sourced guide/trainer views. Preserve publication date; re-fetching old mail does not make it new.",
-      "Official results from earlier races, with no provisional-result influence."
+      "Official results from earlier races, with no provisional-result influence.",
+      "Check accessible direct X/Twitter posts for genuinely fresh race tips. Verify author, exact selection and publication time within3 hours; store direct status URL and published ISO time, not a search snippet or account page. No invented quote or posting time."
     ],
     "limits": "Do not fabricate tips, quotes, prices, certainty, independent votes or numerical gear/jockey bonuses. Keep each note <=15 words and all derived paraphrases <=100 words per article. Never copy an article. Unsupported or contradictory claims are omitted or explicitly marked uncertain."
   },

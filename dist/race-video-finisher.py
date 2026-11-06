@@ -9,7 +9,7 @@ with tempfile.TemporaryDirectory() as folder:
  def draw(text,x,y,size,color='white',weight=False,a=None,b=None):
   f=tmp/f't{len(list(tmp.iterdir()))}.txt';f.write_text(text);return f',drawtext=fontfile={bold if weight else font}:textfile={f}:x={x}:y={y}:fontsize={size}:fontcolor={color}:line_spacing=7'+(f":enable='gte(t,{a})*lt(t,{b})'" if a is not None else '')
  chain+=draw(f'GEOFF / RACE {p["race"]}',20,24,25,weight=True)+draw('SAVED TEN-MINUTE VIEW',20,589,18,'0xff7777',True)
- chain+=draw(str((p.get('confidence') or {}).get('label','Evidence limited')),20,625,21)
+ chain+=draw(str((p.get('evidence') or {}).get('headline','Saved race view')),20,625,21)
  groups=[];group=[]
  for w in words:
   if group and len(' '.join(t['text'] for t in group)+' '+w['text'])>28:groups.append(group);group=[]

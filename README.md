@@ -125,3 +125,6 @@ The owner-authorized `/api/race-videos` writer supports permanent per-race `clai
 
 
 Geoff race scripts always open with a rotating classic NZ greeting and use restrained Kiwi expressions (for mine, have a squiz, happy punting). The factual tip text, named attribution, run/track assumptions and uncertainty stay intact. The selected NZ voice delivers the script; no extra ad-libbed model dialogue is requested.
+
+
+Race-preview editorial emphasis leads with the selection, verified first-pick support (with coverage and outlet-group context), the original form-ladder leader and the most material new runner/going change. One short qualification distinguishes a provisional watch from a firm selection; evidence-confidence ratings are unchanged. Fresh public social tips require a direct X/Twitter status URL, named author, exact active runner and verified publication time within3 hours. They remain attributed opinions. Unreadable posts and unsupported timestamps are omitted.

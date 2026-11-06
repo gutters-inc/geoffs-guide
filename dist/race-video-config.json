@@ -28,5 +28,6 @@
     ],
     "frequency": "One or two light expressions through the tips, not every sentence.",
     "facts": "Keep horse names, tipster attributions, source facts, assumptions and confidence caveats exact. Never add certainty or call a horse a sure thing."
-  }
+  },
+  "editorialStyle": "Evidence first: verified tip count and coverage, top of the original ladder, material late changes and fresh attributed social tips. Confidence ratings stay unchanged; avoid repeating low-confidence caveats."
 }
