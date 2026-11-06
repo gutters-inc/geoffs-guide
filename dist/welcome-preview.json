@@ -3,13 +3,15 @@
   "duration": 30,
   "presenter": "Geoff",
   "voice": {
-    "lang": "en-US",
+    "lang": "en-GB",
     "kind": "synthetic",
     "recorded": true,
     "embeddedAudio": true,
-    "engine": "offline speech synthesis"
+    "engine": "Kokoro v1.0 neural TTS",
+    "name": "George",
+    "cloned": false
   },
-  "video": "assets/geoff-tv-welcome-30s.mp4",
+  "video": "assets/geoff-tv-neural-30s.mp4",
   "poster": "assets/geoff-tv-poster.jpg",
   "scenes": [
     {
@@ -31,7 +33,7 @@
       "end": 15,
       "title": "The form, connected.",
       "caption": "Ladder explains the links. Tips carries the published calls.",
-      "narration": "The ladder explains shared form. Tips includes Adam Page and Glenn Ingram\u2019s published calls."
+      "narration": "The ladder connects form. Tips includes Adam Page and Glenn Ingram."
     },
     {
       "start": 15,
@@ -45,14 +47,14 @@
       "end": 25,
       "title": "Three Group Ones.",
       "caption": "Champions Sprint \u00b7 Mile \u00b7 Stakes. Watch the evidence confidence.",
-      "narration": "Expect three Group One features. Confidence stays cautious where the evidence is thin."
+      "narration": "Three Group One features. Confidence stays cautious when evidence is thin."
     },
     {
       "start": 25,
       "end": 30,
       "title": "Results, then learn.",
       "caption": "Interim stays unconfirmed. Official results inform later assessments.",
-      "narration": "Interim results stay labelled. Official results inform the next assessment. Enjoy the day."
+      "narration": "Interim results stay labelled. Official results inform the next assessment."
     }
   ],
   "sources": [
@@ -79,6 +81,10 @@
     {
       "title": "TABtouch: declared field and historical form statistics",
       "url": "https://www.tabtouch.com.au/racing/2026-11-07/mr/7"
+    },
+    {
+      "title": "TABtouch: declared field and historical form statistics",
+      "url": "https://www.tabtouch.com.au/racing/2026-11-07/mr/7"
     }
   ],
   "animation": {
@@ -89,6 +95,7 @@
       "point"
     ],
     "statsAsOf": "2026-11-06",
-    "note": "Animated likeness with synthetic English narration. Mouth poses are stylised, not phoneme-accurate lip sync. Historical stats are not win probabilities."
-  }
+    "note": "Animated likeness with synthetic British English narration. Stylised mouth animation. Historical stats are not win probabilities."
+  },
+  "audio": "assets/geoff-welcome-neural.mp3"
 }
