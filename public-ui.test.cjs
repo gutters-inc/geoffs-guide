@@ -1,11 +1,12 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),{parseHTML}=require('linkedom');
 const original=JSON.parse(fs.readFileSync('dist/data.json')),edition=JSON.parse(fs.readFileSync('dist/late-mail.json')),html=fs.readFileSync('dist/index.html','utf8');
 const scripts=[...html.matchAll(/<script[^>]*src="([^"]+)"/g)].map(m=>m[1]);
-async function boot({hash='',failure='',delay=false}={}){
+async function boot({hash='',failure='',delay=false,at=null}={}){
  const {window}=parseHTML(html),document=window.document,requests=[],calls=[];let release;
  Object.defineProperty(window.HTMLSelectElement.prototype,'value',{get(){return this._value??this.options[0]?.value??''},set(v){this._value=String(v)},configurable:true});
  const location={hash},data=structuredClone(original),snapshot=structuredClone(edition);let promise=delay?new Promise(r=>{release=r}):Promise.resolve();
- const context=vm.createContext({window,document,console,location,history:{replaceState(_,__,hash){location.hash=hash}},localStorage:{getItem(){throw Error('Public UI must not use private factor preferences')},setItem(){throw Error('No public factor settings')}},fetch:async(url,options)=>{requests.push({url,options});if(url==='/api/late-mail'){await promise;if(failure)throw Error('Saved store unavailable');return {ok:true,json:async()=>snapshot}}if(url==='late-mail.json'&&failure==='all')throw Error('Fallback unavailable');return {ok:true,json:async()=>url==='data.json'?data:JSON.parse(fs.readFileSync('dist/'+url))}},setTimeout,clearTimeout,Date,Map,Set,Error});
+ class ClockDate extends Date{constructor(...args){super(...(args.length?args:[at??Date.now()]))}static now(){return at??Date.now()}}
+ const context=vm.createContext({window,document,console,location,history:{replaceState(_,__,hash){location.hash=hash}},localStorage:{getItem(){throw Error('Public UI must not use private factor preferences')},setItem(){throw Error('No public factor settings')}},fetch:async(url,options)=>{requests.push({url,options});if(url==='/api/late-mail'){await promise;if(failure)throw Error('Saved store unavailable');return {ok:true,json:async()=>snapshot}}if(url==='late-mail.json'&&failure==='all')throw Error('Fallback unavailable');return {ok:true,json:async()=>url==='data.json'?data:JSON.parse(fs.readFileSync('dist/'+url))}},setTimeout,clearTimeout,Date:ClockDate,Map,Set,Error});
  for(const script of scripts){vm.runInContext(fs.readFileSync('dist/'+script,'utf8'),context);if(script==='model.js')context.FormModel=window.FormModel}
  await new Promise(r=>setTimeout(r,30));return {context,document,location,data,snapshot,requests,release};
 }
@@ -19,7 +20,7 @@ async function boot({hash='',failure='',delay=false}={}){
  assert.equal(vm.runInContext("selectionConfidence({evidence:'Sparse',score:99}).level",context),'low');
  assert.equal(vm.runInContext("selectionConfidence({evidence:'Supported',ownRecentRuns:3,daysSinceRun:14}).level",context),'moderate');
  assert.equal(vm.runInContext("selectionConfidence({evidence:'Supported'},{live:true,checked:'2020-01-01'}).level",context),'low');
- assert.equal(document.querySelectorAll('#contenderCards .selection-confidence').length,3);
+ assert.equal(document.querySelectorAll('#contenderCards .selection-confidence').length,Math.min(3,original.races[Number(document.getElementById('mobileRaceSelect').value)-1].horses.filter(h=>!h.scratched&&!h.emergency&&h.history.length).length));
  assert(document.querySelector('img[alt="Geoff"]'));assert(document.getElementById('homeLastUpdated').textContent.includes('LAST UPDATED'));
  for(let n=1;n<=9;n++){
   vm.runInContext(`chooseRace(${n})`,context);const frozen=vm.runInContext('JSON.stringify(baseline.map(h=>[h.name,h.score]))',context);
@@ -59,5 +60,12 @@ async function boot({hash='',failure='',delay=false}={}){
  for(const failure of ['api','all']){const a=await boot({failure,hash:'#race-3/race-day'});assert(a.document.getElementById('loading').hidden);assert(!a.document.getElementById('raceDayPanel').hidden);if(failure==='api')assert(a.document.getElementById('lateMailStamp').textContent.includes('fallback'));else assert(a.document.getElementById('lateMailStamp').textContent.includes('No saved check'));a.document.getElementById('valueMode').onclick();assert(a.document.querySelectorAll('.guide-card').length>0)}
  const delayed=await boot({delay:true});vm.runInContext('chooseRace(2)',delayed.context);delayed.document.getElementById('raceDayMode').onclick();delayed.release();await new Promise(r=>setTimeout(r,30));assert.equal(delayed.document.getElementById('mobileRaceSelect').value,'2');assert(delayed.document.getElementById('lateMailComparison').textContent.includes('Fiorenot'));
  for(const hash of ['#race-2/late-mail','#race-5/tips','#race-8/connections','#race-9/results']){const a=await boot({hash});assert(a.document.getElementById('loading').hidden);assert.equal(['formPanel','raceDayPanel','valuePanel','connectionsPanel','resultsPanel'].filter(id=>!a.document.getElementById(id).hidden).length,1)}
+ // Landing follows the next verified jump only until the visitor makes a choice.
+ const mid=await boot({at:Date.parse('2026-11-07T02:01:00Z')});assert.equal(mid.document.getElementById('mobileRaceSelect').value,'2');assert.equal(mid.location.hash,'');
+ const delayedLanding=await boot({delay:true,at:Date.parse('2026-11-07T01:00:00Z')});assert.equal(delayedLanding.document.getElementById('mobileRaceSelect').value,'1');delayedLanding.snapshot.meeting.races[0].startAt='2026-11-07T03:00:00Z';delayedLanding.release();await new Promise(r=>setTimeout(r,30));assert.equal(delayedLanding.document.getElementById('mobileRaceSelect').value,'2');
+ const linked=await boot({hash:'#race-1/form',at:Date.parse('2026-11-07T02:01:00Z')});assert.equal(linked.document.getElementById('mobileRaceSelect').value,'1');
+ const last=await boot({at:Date.parse('2026-11-07T07:00:00Z')});assert.equal(last.document.getElementById('mobileRaceSelect').value,'9');assert(!last.document.getElementById('raceDayPanel').hidden);
+ const finalMail=structuredClone(edition);for(const r of finalMail.meeting.races)r.status='official';context.finalMail=finalMail;assert.equal(vm.runInContext('nextRaceLanding(originalData,finalMail).view',context),'results');
+ const provisionalMail=structuredClone(edition);provisionalMail.meeting.races[0].status='provisional';context.provisionalMail=provisionalMail;assert.equal(vm.runInContext("nextRaceLanding(originalData,provisionalMail,Date.parse('2026-11-07T01:00:00Z')).race",context),2);
  console.log('PASS: 45 race/tab journeys, 125 runner sheets, one race picker/no factor controls, source details, keyboard/deep links, immutable form and saved/fallback/missing/delayed editions. DOM checks; rendered mobile browser unavailable.');
 })().catch(e=>{console.error(e);process.exitCode=1});

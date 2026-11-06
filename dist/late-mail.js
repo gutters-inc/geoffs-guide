@@ -110,6 +110,7 @@ function renderLateMail(){
 function acceptSavedMail(saved){
  if(saved?.date!==data.date||!Number.isFinite(Date.parse(saved.updated))||!saved.selections||(!Array.isArray(saved.meeting?.races)||saved.meeting.races.length===0))throw Error('Invalid saved edition');for(const s of Object.values(saved.selections))for(const key of ['baselineTip','revisedTip','provisionalLeader'])if(s[key]?.name)s[key].display=M.title(s[key].name);lateMail=saved;
  for(const report of saved.meeting.races){const field=data.races.find(r=>r.number===report.number);if(!field||!Array.isArray(report.runners))continue;if(report.startAt)field.time=new Date(report.startAt).toLocaleTimeString('en-AU',{timeZone:'Australia/Melbourne',hour:'2-digit',minute:'2-digit',hour12:false});for(const h of field.horses){const r=report.runners.find(r=>r.number===h.number&&horseKey(r.name)===horseKey(h.name));if(!r)continue;h.scratched=!!r.scratched;if(r.jockey)h.jockey=M.title(r.jockey)}}
+ if(defaultRacePending){const landing=nextRaceLanding(originalData,saved);defaultRacePending=false;if(landingViewPending){setExperience(landing.view,false);landingViewPending=false}chooseRace(landing.race,{automatic:true});return}
  $('raceMeta').textContent=`RACE ${race.number} · ${race.time} AEDT`;renderRaceFacts();renderSimple();renderRankings();renderDetail();renderTips();renderLateMail();syncMobileRace();
 }
 async function loadSavedMail(){

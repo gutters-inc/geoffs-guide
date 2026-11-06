@@ -80,3 +80,7 @@ The stdlib-only `dist/late-mail-updater.py` watch receives access through hidden
 Provisional placings appear in Late mail and Results as **INTERIM**, without payouts or celebration. They freeze the saved pre-race tip but do not enter track learning, jockey/trainer scoreboards or tipster accuracy. Only official reports count. A provisional/pending response cannot overwrite an earlier official result. Tips without a recent pre-jump check remain Low confidence.
 
 `polling.test.mjs` covers twenty concurrent lease claims, per-race/host/budget limits, cooldown persistence, Retry-After, clock boundaries, terminal stops, interim freeze and public reads without upstream calls. The UI suite also checks interim labels and their exclusion from official results.
+
+## Default landing
+
+A normal visit opens Form on the next future jump, sorted by the latest saved start time. Completed, abandoned, provisional and already-started races are excluded. Published AEDT times are the fallback while the shared edition loads. Once the saved edition arrives, the default is corrected once; manual race/tab choices and explicit deep links are preserved. Automatic selection leaves the root URL unpinned, so reloading a normal visit can select the next jump. After the last jump the default is Late mail while results remain unresolved, then Results once every race is official or abandoned.

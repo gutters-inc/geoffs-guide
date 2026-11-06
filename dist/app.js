@@ -16,6 +16,7 @@ const shortDate = (d) =>
     timeZone: "UTC",
   });
 let data, originalData, graph, race, ranked, selected;
+let defaultRacePending=false,landingViewPending=false;
 const display = (n) => graph.nodes.get(n)?.display || M.title(n),
   active = () => baseline.filter((h) => h.eligible);
 function openMethod() {
@@ -32,7 +33,8 @@ function renderRaceFacts() {
   $("raceFacts").innerHTML =
     `<div class="fact"><b>${race.distance.toLocaleString()}m</b><span>DISTANCE</span></div><div class="fact"><b>${isForm ? baseline.filter((h) => h.eligible).length : race.horses.filter((h) => !h.scratched && !h.emergency).length}</b><span>${isForm ? "ORIGINAL FIELD" : "LATEST FIELD"}</span></div><div class="fact"><b>${esc(going)}</b><span>${isForm ? "ORIGINAL GOING" : "SAVED GOING"}</span></div>`;
 }
-function chooseRace(n) {
+function chooseRace(n,{automatic=false}={}) {
+  if(!automatic)defaultRacePending=false;
   race = data.races.find((r) => r.number === Number(n)) || data.races[0];
   baseline = M.rate(
     graph,
@@ -60,7 +62,7 @@ function chooseRace(n) {
   renderLadder();
   renderLateMail();
   syncMobileRace();
-  syncRoute();
+  if(!automatic)syncRoute();
 }
 function renderRankings() {
   $("fieldCount").textContent = `${baseline.length} listed`;
@@ -140,6 +142,9 @@ Promise.all([
     graph = M.build(originalData);
     $("dataTimestamp").textContent =
       `Original form saved ${new Date(d.retrieved).toLocaleString("en-AU", { timeZone: "Australia/Melbourne", dateStyle: "medium", timeStyle: "short" })} AEDT. Late mail has its own saved update time.`;
+    const linkedRace=Number(location.hash.match(/race-(\d+)(?:\/|$)/)?.[1]),validLink=d.races.some(r=>r.number===linkedRace);
+    defaultRacePending=!validLink;landingViewPending=!/\/(?:results|scorecard|connections|race-day|late-mail|value|tips|form)(?:$|\/)/.test(location.hash);
+    const landing=nextRaceLanding(originalData,null);
     setExperience(
       location.hash.includes("/results")
         ? "results"
@@ -153,7 +158,8 @@ Promise.all([
             : "form",
       false,
     );
-    chooseRace(Number(location.hash.match(/race-(\d)/)?.[1] || 8));
+    if(defaultRacePending&&landingViewPending)setExperience(landing.view,false);
+    chooseRace(validLink?linkedRace:landing.race,{automatic:true});
     $("loading").hidden = true;
     initSavedMail();
   })

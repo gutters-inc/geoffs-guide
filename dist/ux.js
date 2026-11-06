@@ -3,6 +3,7 @@ const signedChange=n=>Math.abs(n)<.005?'0.00':`${n>0?'+':'−'}${Math.abs(n).toF
 function scenarioActive(){return false}
 function syncRoute(){if(race)history.replaceState(null,'',`#race-${race.number}${experience==='form'?'':'/'+experience}`)}
 function setExperience(value,sync=true){
+ if(sync)landingViewPending=false;
  const previous=experience;experience=['form','simple'].includes(value)?'form':['late-mail','race-day'].includes(value)?'race-day':['tips','value'].includes(value)?'value':['results','scorecard'].includes(value)?'results':'connections';
  document.body.classList.toggle('simple-mode',experience==='form');
  document.body.classList.toggle('results-mode',experience==='results');
