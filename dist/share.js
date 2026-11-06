@@ -18,7 +18,7 @@ function renderGeoffShare(){
 }
 function geoffShareText(){const s=geoffShareState();return `${s.title} · Flemington R${race.number}\n${s.hero?.display||''}${sharePrice(s.hero,s)?` · ${sharePrice(s.hero,s)}`:''}\n${location.origin}/#race-${race.number}/form`}
 async function loadShareImage(src){const img=new Image();img.src=src;await img.decode();return img}
-async function drawShareSilk(c,h,x,y,size){if(!h)return;const img=await loadShareImage(`assets/silks-r${race.number}.png`),i=race.horses.findIndex(r=>r.name===h.name),w=img.width/race.horses.length;if(i>=0)c.drawImage(img,i*w,0,w,img.height,x,y,size,size)}
+async function drawShareSilk(c,h,x,y,size){if(!h)return;const img=await loadShareImage(`assets/silks-r${race.number}.png?meeting=${data.date}`),i=race.horses.findIndex(r=>r.name===h.name),w=img.width/race.horses.length;if(i>=0)c.drawImage(img,i*w,0,w,img.height,x,y,size,size)}
 function canvasText(c,text,x,y,max,font,weight='900'){let size=font;c.font=`${weight} ${size}px Arial`;while(c.measureText(text).width>max&&size>32){size-=2;c.font=`${weight} ${size}px Arial`}c.fillText(text,x,y)}
 async function buildGeoffShareCard(){
  const state=geoffShareState(),canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1350;const c=canvas.getContext('2d'),accent=state.mood==='landed'?'#23834a':state.mood==='money'?'#b88414':state.mood==='off'?'#4c4c50':'#d9342b';

@@ -1,6 +1,6 @@
 let media={},baseline=[],experience='form';
 function silk(h,size=''){
- const i=race.horses.findIndex(x=>x.name===h.name);return i<0?'':`<span class="race-silk ${size}" role="img" aria-label="${esc(h.display)} silks" style="--sprite:url('assets/silks-r${race.number}.png');--silk-x:${i};--silk-count:${race.horses.length}"></span>`;
+ const i=race.horses.findIndex(x=>x.name===h.name);return i<0?'':`<span class="race-silk ${size}" role="img" aria-label="${esc(h.display)} silks" style="--sprite:url('assets/silks-r${race.number}.png?meeting=${data.date}');--silk-x:${i};--silk-count:${race.horses.length}"></span>`;
 }
 function horsePhoto(h,variant='card'){
  const p=media[h.name];if(!p)return '<p class="photo-note">Verified photo unavailable</p>';return `<figure class="horse-photo ${variant} ${p?'':'no-photo'}">${p?`<img src="${esc(p.src)}" alt="${esc(h.display)}" loading="lazy" onerror="this.hidden=true;this.parentElement.classList.add('photo-failed')"><figcaption><a href="${esc(p.source)}" target="_blank" rel="noopener">${esc(p.credit)} ↗</a></figcaption>`:`<div class="photo-placeholder">${silk(h,'hero')}<span>Horse photo unavailable</span></div>`}<span class="image-error">Photo unavailable</span></figure>`;
