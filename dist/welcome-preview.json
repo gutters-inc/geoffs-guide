@@ -9,8 +9,8 @@
     "embeddedAudio": true,
     "engine": "offline speech synthesis"
   },
-  "video": "assets/geoff-welcome-narrated-30s.mp4",
-  "poster": "assets/geoff-welcome-poster.jpg",
+  "video": "assets/geoff-tv-welcome-30s.mp4",
+  "poster": "assets/geoff-tv-poster.jpg",
   "scenes": [
     {
       "start": 0,
@@ -67,6 +67,28 @@
     {
       "title": "Glenn Ingram \u00b7 TABtouch race previews",
       "url": "https://www.tabtouch.com.au/racing/2026-11-07/mr/8"
+    },
+    {
+      "title": "Autumn Glow photo: Bradley Photos, via Just Horse Racing",
+      "url": "https://www.justhorseracing.com.au/news/australian-racing/autumn-glow-crowns-her-unbeaten-sydney-spring-in-the-king-charles/910786"
+    },
+    {
+      "title": "Cosmic Crusader photo: Racing Photos, via TBWA",
+      "url": "https://www.tbwa.net.au/2026/10/wa-delivers-on-cox-plate-day-at-flemington/"
+    },
+    {
+      "title": "TABtouch: declared field and historical form statistics",
+      "url": "https://www.tabtouch.com.au/racing/2026-11-07/mr/7"
     }
-  ]
+  ],
+  "animation": {
+    "kind": "illustrated pose animation",
+    "gestures": [
+      "talking",
+      "blink",
+      "point"
+    ],
+    "statsAsOf": "2026-11-06",
+    "note": "Animated likeness with synthetic English narration. Mouth poses are stylised, not phoneme-accurate lip sync. Historical stats are not win probabilities."
+  }
 }
