@@ -1,6 +1,6 @@
 # Geoffs Guide
 
-Public, mobile-only Flemington Stakes Day guide for 7 November 2026. Preserve the existing Site ID, public audience, original user portrait bytes and 520px maximum reading column. The published experience is deliberately read-only: **Form, Late mail, Tips, Ladder**. The race picker is the only selection control. Do not reintroduce sliders, factor checkboxes, guide preferences, photo uploads, odds/price calculators or editable model settings into the public interface.
+Public, mobile-only Flemington Stakes Day guide for 7 November 2026. Preserve the existing Site ID, public audience, original user portrait bytes and 520px maximum reading column. The published experience is deliberately read-only: **Form, Late mail, Tips, Ladder, Results**. The race picker is the only selection control. Do not reintroduce sliders, factor checkboxes, guide preferences, photo uploads, odds/price calculators or editable model settings into the public interface.
 
 ## Public experience
 
@@ -13,7 +13,7 @@ Public code ignores old browser factor preferences. Race history and the origina
 
 ## Managed factors
 
-Edit **`config/factors.json`** to manage shared revision policy; there is no public tuning panel. The build validates and embeds it server-side. Defaults: 21-day recent-evidence half-life, reported going with 70% matching-ground preference, at least three comparable earlier official races for the gate signal (cap 0.35L), and a Low crowd tie-breaker (max 0.05 raw units). Published tips also decay with a two-day half-life, unknown dates get half weight and future dates are excluded. Shared ownership/outlet groups share a vote. Missing connected form gets no crowd bonus. These heuristics are not calibrated probabilities; no gear or jockey win-count performance bonus is invented.
+Edit **`config/factors.json`** to manage shared revision policy; there is no public tuning panel. The build validates and embeds it server-side. Defaults: 21-day recent-evidence half-life, reported going with 70% matching-ground preference, at least three comparable earlier official races for the gate signal (cap 0.35L), and a modest crowd tie-breaker (max 0.10 raw units). Published tips also decay with a two-day half-life, unknown dates get half weight and future dates are excluded. Shared ownership/outlet groups share a vote. Missing connected form gets no crowd bonus. These heuristics are not calibrated probabilities; no gear or jockey win-count performance bonus is invented.
 
 The original guide always retains its unadjusted 45-day evidence half-life. Form and Ladder are original-history views. Late mail is the separate server-prepared revision.
 
@@ -39,11 +39,11 @@ The browser reads the saved edition automatically, with a clearly dated packaged
 
 `NODE_PATH=/tmp/oaks-qa/node_modules npm test` runs model, source-parser, durable writer and public interaction checks. `npm run build` validates factors and packages the Worker. `node scripts/check-sensitivity.cjs` writes the engineering sensitivity report. `scripts/seed-late-mail.mjs` prepares a packaged fallback from the independently checked local source pages.
 
-The public UI suite covers all nine races across four tabs, all 125 runner sheets, no public factor controls, keyboard/deep links, source assumptions, immutable baseline and saved/fallback/missing/delayed editions. Managed rendered-browser QA remains unavailable because `cua_repl.js` is absent. Do not install a browser or invent an alternate preview route; report that visual limit honestly.
+The public UI suite covers all nine races across five tabs, all 125 runner sheets, no public factor controls, keyboard/deep links, source assumptions, immutable baseline and saved/fallback/missing/delayed editions. Managed rendered-browser QA remains unavailable because `cua_repl.js` is absent. Do not install a browser or invent an alternate preview route; report that visual limit honestly.
 
 ## Compact IG-inspired colour system
 
-`dist/ig.css` is the single public stylesheet. It uses IG’s current red #E61E1E, charcoal #171717, white and cool grey #EDF0F2, verified against IG’s public CSS. Geoffs Guide keeps its own name, portrait and identity; no IG logo or affiliation claim is used. The former cover is condensed into a masthead; runner ranks and silks lead compact row cards. Source photos and credits are preserved. Public control removal, four-tab navigation, factor policy and background schedules are unchanged.
+`dist/ig.css` is the single public stylesheet. It uses IG’s current red #E61E1E, charcoal #171717, white and cool grey #EDF0F2, verified against IG’s public CSS. Geoffs Guide keeps its own name, portrait and identity; no IG logo or affiliation claim is used. The former cover is condensed into a masthead; runner ranks and silks lead compact row cards. Source photos and credits are preserved. Public control removal, five-tab navigation, factor policy and background schedules are unchanged.
 
 ## Stakes Day refresh and Oaks review
 
@@ -62,3 +62,5 @@ The tips edition contains nine named voices from TAB NZ, TABtouch, Just Horse Ra
 Public repository: https://github.com/gutters-inc/geoffs-guide (`main`). The `github` remote is the collaboration repository; `origin` is the Sites source repository. GitHub pushes alone do not deploy the public Site. Keep both pushed to the same reviewed source commit when publishing.
 
 Use Node 22+ and Python 3. Install the JS dev dependency with `npm install`; `npm test` runs the checks and `npm run build` packages the Worker. The collector additionally needs `beautifulsoup4`. A copy served from `dist/` can use the packaged saved fallback; production refreshes need the existing R2 binding and runtime writer secret, neither of which belongs in Git.
+
+The newer Results tab, share cards, notification opt-in and official dividend parsing were retained during the Stakes refresh. The historical supplied-price return artwork is available only in `oaks-review.html`; it is never presented as a Stakes Day result. New Results scoreboards count only official races and distinguish firm revised picks from baseline fallbacks.

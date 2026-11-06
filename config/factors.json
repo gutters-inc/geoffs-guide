@@ -6,5 +6,5 @@
   "useComparableResults": true,
   "minimumComparableResults": 3,
   "drawCap": 0.35,
-  "crowdMaximum": 0.05
+  "crowdMaximum": 0.1
 }

@@ -1,10 +1,278 @@
 <!DOCTYPE html>
 
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/><meta content="#171717" name="theme-color"/><title>Geoffs Guide · Stakes Day 2026</title><meta content="Geoffs Guide: published racing tips, each guide’s reasoning, and a visual form ladder for Flemington Stakes Day. Mobile only." name="description"/><link href="ig.css" rel="stylesheet"/></head>
-<body class="simple-mode"><header><a class="brand" href="./"><span class="brand-mark">G<span>↗</span></span><span>Geoffs Guide<small>STAKES DAY · SAT 7 NOV</small></span></a><div class="geoff-portrait"><img alt="Geoff" height="1280" src="assets/geoff-source.jpg" width="590"/></div><button aria-label="About this guide" class="about-button" id="methodButton">i</button></header>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+<meta content="#171717" name="theme-color"/>
+<title>Geoffs Guide · Stakes Day 2026</title>
+<meta content="Geoffs Guide: published racing tips, each guide’s reasoning, and a visual form ladder for Flemington Stakes Day. Mobile only." name="description"/>
+<link href="results.css?v=24" rel="stylesheet"/>
+</head>
+<body class="simple-mode">
+<header>
+<a class="brand" href="./">
+<span class="brand-mark">G<span>↗</span>
+</span>
+<span>Geoffs Guide<small>STAKES DAY · SAT 7 NOV</small>
+</span>
+</a>
+<div class="geoff-portrait">
+<img alt="Geoff" height="1280" src="assets/geoff-source.jpg" width="590"/>
+</div>
+<button aria-label="About this guide" class="about-button" id="methodButton">i</button>
+</header>
 <main>
-<nav aria-label="Select race" class="race-tabs" hidden="" id="raceTabs"></nav><div aria-hidden="true" id="raceStart"></div><nav aria-label="Choose a race" class="mobile-race-picker"><button aria-label="Previous race" id="previousRace">‹</button><label><span>FLEMINGTON · SAT 7 NOV</span><select aria-label="Select race" id="mobileRaceSelect"></select></label><button aria-label="Next race" id="nextRace">›</button></nav>
-<section class="race-heading"><div><div class="eyebrow" id="raceMeta"></div><h2 id="raceName"></h2></div><div class="race-facts" id="raceFacts"></div></section>
-<div class="experience-bar"><nav aria-label="Form guide views" class="page-tabs" role="tablist"><button aria-controls="formPanel" aria-selected="true" class="active" id="simpleMode" role="tab" tabindex="0"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>Form<small>The original</small></button><button aria-controls="raceDayPanel" aria-selected="false" id="raceDayMode" role="tab" tabindex="-1"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m13 2-9 12h7l-1 8 10-13h-7l1-7Z"/></svg>Late mail<small>Latest changes</small></button><button aria-controls="valuePanel" aria-selected="false" id="valueMode" role="tab" tabindex="-1"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 11a8 8 0 0 1-8 8H8l-5 3V11a9 9 0 0 1 18 0Z"/><path d="m8 11 3 3 5-5"/></svg>Tips<small>Who likes who</small></button><button aria-controls="connectionsPanel" aria-selected="false" id="exploreMode" role="tab" tabindex="-1"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 21V11h4v10M10 21V4h4v17M16 21V8h4v13"/></svg>Ladder<small>Why this order</small><span id="connectionsBadge"></span></button></nav></div><section aria-labelledby="simpleMode" id="formPanel" role="tabpanel"><div aria-live="polite" class="home-updated" id="homeLastUpdated"><span>LAST UPDATED</span><b>Loading the saved edition…</b><button id="openLateMail">Late mail ↗</button></div><div class="baseline-intro"><span class="eyebrow">THE ORIGINAL FORM</span><h2>The form shortlist</h2><p>Original form. Check Late mail for changes.</p></div><section class="simple-overview"><div class="section-title"><div><div class="eyebrow">THE SHORTLIST, AT A GLANCE</div><h3>Three names to understand.</h3></div><span class="pill" id="shortlistStatus"></span></div><div aria-live="polite" class="simple-verdict" id="simpleVerdict"></div><div class="contender-cards" id="contenderCards"></div></section><section class="bottom-grid"><details class="full-field"><summary>See the whole field <span id="fieldCount"></span></summary><div class="field-list" id="rankings"></div><p class="simple-note" id="rankingNote"></p></details></section></section><section aria-labelledby="raceDayMode" hidden="" id="raceDayPanel" role="tabpanel"><section aria-labelledby="lateMailTitle" class="late-mail-section" id="lateMailPanel"><header><div><span class="eyebrow">LATEST SAVED VIEW</span><h2 id="lateMailTitle">Late <em>mail.</em></h2></div><span id="lateMailBadge"></span></header><p id="lateMailStamp"></p><div class="saved-conditions" id="savedConditions"></div><p class="mail-schedule" id="lateMailSchedule"></p><div id="lateMailComparison"></div><div id="lateMailFactors"></div><details class="mail-details"><summary>If the ground changes</summary><div id="groundScenarios"></div><p class="mail-quiet">Hypothetical form leaders, not a forecast rating or firm tips. Sparse evidence stays low confidence.</p></details><details class="mail-details"><summary>What Oaks taught us</summary><div id="oaksLessons"></div></details><details class="mail-details"><summary>Gear &amp; equipment </summary><div id="lateMailGear"></div><p>“First time” is the source’s declaration. We show whether it was already declared in the original form. Gear and rider notices do not receive an invented performance bonus.</p></details><details class="mail-details"><summary>Latest guide &amp; trainer views</summary><div id="lateMailOpinions"></div></details><details class="mail-details"><summary>Winners &amp; track reports </summary><div id="lateMailResults"></div></details></section></section><section aria-labelledby="valueMode" hidden="" id="valuePanel" role="tabpanel"><div class="tips-intro"><div class="eyebrow">THE PUBLISHED VIEWS</div><h2>The tips.</h2><p>The picks. The reasons.</p><div id="tipsCoverage"></div></div><section class="tips-section"><div class="eyebrow">THE CHAT AROUND THIS RACE</div><h3>Who’s getting the nod?</h3><div id="tipsRoundup"></div><p class="tips-small">Counts are published first selections, not win chances or an accuracy ranking. Some guides share ownership; see the source notes. Scratched horses, emergencies and “no bet” calls don’t count towards a horse’s tally.</p></section><section class="tips-section"><div class="guide-heading"><div><div class="eyebrow">THE GUIDES, SIDE BY SIDE</div><h3>Every guide’s pick</h3></div></div><div id="guideCards"></div></section><details class="tips-source-note"><summary>About these guides &amp; quotes </summary><p id="tipsResearchDate"></p><p id="tipsSourceNote"></p><p id="socialCoverage"></p><p>Quotes are brief excerpts from linked publications. Reporter wording is labelled. Some guides discuss a horse without recommending a bet; we preserve that distinction.</p></details></section><section aria-labelledby="exploreMode" hidden="" id="connectionsPanel" role="tabpanel"><section class="ladder-intro"><div class="eyebrow">THE ORIGINAL FORM LADDER</div><h2>Who edges who?</h2><p>Why each runner edges the one below.</p><div id="ladderStatus"></div></section><section aria-label="Ranked horses with comparisons between neighbours" class="form-ladder" id="formLadder"></section><button aria-expanded="false" class="show-ladder" id="showFullLadder">Show the rest of the field ↓</button><p class="ladder-footnote">This is a model’s form order, not a predicted finishing order. A shared-race link is evidence, not proof. Different trips, conditions, fitness and weights can reverse results. Separate form groups cannot be ranked reliably against each other.</p></section>
-<details class="method-details" id="method"><summary>How this guide works </summary><div class="simple-method"><p>Form is the original race-history shortlist. Late mail is the saved revision after track and runner checks. The original order stays fixed so you can compare the two.</p><p>Recent results and conditions matter more than published tips. Missing information is shown as missing. A shared-race connection is a clue, not a guaranteed finishing order.</p><p id="dataTimestamp"></p><a href="https://www.tabtouch.com.au/racing/2026-11-07/mr/8" rel="noopener" target="_blank">Published form source ↗</a></div></details>
-<footer><div class="brand small">GG ↗ <span>GEOFFS GUIDE</span></div><p>Follow the form. See the reasoning.</p><span>FLEMINGTON / STAKES DAY 2026</span></footer></main><div id="loading" role="status"><div class="loading-mark">G</div><p>Loading the guide…</p></div><script defer="" src="model.js"></script><script defer="" src="views.js"></script><script defer="" src="ux.js"></script><script defer="" src="mobile.js"></script><script defer="" src="tips.js"></script><script defer="" src="ladder.js"></script><script defer="" src="late-mail.js"></script><script defer="" src="app.js"></script><dialog aria-label="Runner form details" id="runnerDialog"><div class="dialog-toolbar"><span class="eyebrow">RUNNER DETAILS</span><button aria-label="Close runner details" id="closeRunner">Close ×</button></div><div id="dialogContent"><aside class="horse-card"><div class="eyebrow">05 / UNDER THE SILKS</div><div id="horseDetail"></div></aside></div><button class="trace-runner" id="traceRunner">See this horse on the form ladder ↗</button></dialog></body></html>
+<section aria-labelledby="roundupTitle" class="day-roundup" hidden="" id="dayRoundup"><div class="roundup-heading"><div><span>STAKES DAY · OFFICIAL RESULTS</span><h2 id="roundupTitle">The scorecard</h2></div><p id="meetingProgress"></p></div><div class="roundup-section" id="roundupResults"><h3>Race by race</h3><div class="roundup-result-grid" id="roundupResultGrid"></div></div><div class="roundup-section" id="roundupLeaderboards"><h3>Who’s delivering?</h3><p>Official completed races only. Small samples do not change jockey or trainer weights.</p><div class="roundup-board-grid"><article><h3>Jockeys</h3><div id="jockeyLeaderboard"></div></article><article><h3>Trainers</h3><div id="trainerLeaderboard"></div></article></div></div><div class="roundup-section tipster-scoreboard"><h3>Published tips: the audit</h3><div id="tipsterScoreboard"></div><p class="roundup-method">Original and firm revised selections are counted separately. Withheld calls and scratchings are excluded. Same-outlet voices are not independent evidence.</p></div></section>
+<nav aria-label="Select race" class="race-tabs" hidden="" id="raceTabs">
+</nav>
+<div aria-hidden="true" id="raceStart">
+</div>
+<nav aria-label="Choose a race" class="mobile-race-picker">
+<button aria-label="Previous race" id="previousRace">‹</button>
+<label>
+<span>FLEMINGTON · STAKES DAY</span>
+<select aria-label="Select race" id="mobileRaceSelect">
+</select>
+</label>
+<button aria-label="Next race" id="nextRace">›</button>
+</nav>
+<section class="race-heading">
+<div>
+<div class="eyebrow" id="raceMeta">
+</div>
+<h2 id="raceName">
+</h2>
+</div>
+<div class="race-facts" id="raceFacts">
+</div>
+</section>
+<div class="experience-bar">
+<nav aria-label="Form guide views" class="page-tabs" role="tablist">
+<button aria-controls="formPanel" aria-selected="true" class="active" id="simpleMode" role="tab" tabindex="0">
+<svg aria-hidden="true" class="nav-icon" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24">
+<rect height="18" rx="2" width="14" x="5" y="3"></rect>
+<path d="M9 8h6M9 12h6M9 16h4"></path>
+</svg>Form<small>The original</small>
+</button>
+<button aria-controls="raceDayPanel" aria-selected="false" id="raceDayMode" role="tab" tabindex="-1">
+<svg aria-hidden="true" class="nav-icon" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="m13 2-9 12h7l-1 8 10-13h-7l1-7Z"></path>
+</svg>Late mail<small>Latest changes</small>
+</button>
+<button aria-controls="valuePanel" aria-selected="false" id="valueMode" role="tab" tabindex="-1">
+<svg aria-hidden="true" class="nav-icon" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M21 11a8 8 0 0 1-8 8H8l-5 3V11a9 9 0 0 1 18 0Z"></path>
+<path d="m8 11 3 3 5-5"></path>
+</svg>Tips<small>Who likes who</small>
+</button>
+<button aria-controls="connectionsPanel" aria-selected="false" id="exploreMode" role="tab" tabindex="-1">
+<svg aria-hidden="true" class="nav-icon" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M4 21V11h4v10M10 21V4h4v17M16 21V8h4v13"></path>
+</svg>Ladder<small>Why this order</small>
+<span id="connectionsBadge">
+</span>
+</button>
+<button aria-controls="resultsPanel" aria-selected="false" id="resultsMode" role="tab" tabindex="-1">
+<svg aria-hidden="true" class="nav-icon" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M5 20V10h4v10M10 20V5h4v15M15 20v-7h4v7M4 20h16"></path>
+</svg><span id="resultsTabLabel">Results</span><small>Meeting scorecard</small>
+</button>
+</nav>
+</div>
+<section aria-labelledby="simpleMode" id="formPanel" role="tabpanel">
+<div aria-live="polite" class="home-updated" id="homeLastUpdated">
+<span>LAST UPDATED</span>
+<b>Loading the saved edition…</b>
+<button id="enableRaceAlerts">10-minute alerts</button>
+<button id="openLateMail">Late mail ↗</button>
+</div>
+<p aria-live="polite" class="race-alert-status" id="raceAlertStatus">
+</p>
+<section aria-label="Share Geoff's tips" class="share-geoff" id="shareGeoffPanel">
+</section>
+<section aria-live="polite" id="formResultReview">
+</section>
+<div class="baseline-intro">
+<span class="eyebrow">THE ORIGINAL FORM</span>
+<h2>The form shortlist</h2>
+<p>Original form. Check Late mail for changes.</p>
+</div>
+<section class="simple-overview">
+<div class="section-title">
+<div>
+<div class="eyebrow">THE SHORTLIST, AT A GLANCE</div>
+<h3>Three names to understand.</h3>
+</div>
+<span class="pill" id="shortlistStatus">
+</span>
+</div>
+<div aria-live="polite" class="simple-verdict" id="simpleVerdict">
+</div>
+<div class="contender-cards" id="contenderCards">
+</div>
+</section>
+<section class="bottom-grid">
+<details class="full-field">
+<summary>See the whole field <span id="fieldCount">
+</span>
+</summary>
+<div class="field-list" id="rankings">
+</div>
+<p class="simple-note" id="rankingNote">
+</p>
+</details>
+</section>
+</section>
+<section aria-labelledby="raceDayMode" hidden="" id="raceDayPanel" role="tabpanel">
+<section aria-labelledby="lateMailTitle" class="late-mail-section" id="lateMailPanel">
+<header>
+<div>
+<span class="eyebrow">LATEST SAVED VIEW</span>
+<h2 id="lateMailTitle">Late <em>mail.</em>
+</h2>
+</div>
+<span id="lateMailBadge">
+</span>
+</header>
+<p id="lateMailStamp">
+</p>
+<div class="saved-conditions" id="savedConditions">
+</div>
+<p class="mail-schedule" id="lateMailSchedule">
+</p>
+<div id="lateMailComparison">
+</div>
+<div id="lateMailFactors">
+</div><details class="mail-details"><summary>If the ground changes</summary><div id="groundScenarios"></div><p class="mail-quiet">Hypothetical form leaders, not a forecast rating or firm tips. Sparse evidence stays low confidence.</p></details><details class="mail-details"><summary>What Oaks taught us</summary><div id="oaksLessons"></div><a href="oaks-review.html">Stakes Day archive ↗</a></details>
+<details class="mail-details">
+<summary>Gear &amp; equipment </summary>
+<div id="lateMailGear">
+</div>
+<p>“First time” is the source’s declaration. We show whether it was already declared in the original form. Gear and rider notices do not receive an invented performance bonus.</p>
+</details>
+<details class="mail-details">
+<summary>Latest guide &amp; trainer views</summary>
+<div id="lateMailOpinions">
+</div>
+</details>
+<details class="mail-details">
+<summary>Winners &amp; track reports </summary>
+<div id="lateMailResults">
+</div>
+</details>
+</section>
+</section>
+<section aria-labelledby="valueMode" hidden="" id="valuePanel" role="tabpanel">
+<div class="tips-intro">
+<div class="eyebrow">THE PUBLISHED VIEWS</div>
+<h2>The tips.</h2>
+<p>The picks. The reasons.</p>
+<div id="tipsCoverage">
+</div>
+</div>
+<section class="tips-section">
+<div class="eyebrow">THE CHAT AROUND THIS RACE</div>
+<h3>Who’s getting the nod?</h3>
+<div id="tipsRoundup">
+</div>
+<p class="tips-small">Counts are published first selections, not win chances or an accuracy ranking. Some guides share ownership; see the source notes. Scratched horses, emergencies and “no bet” calls don’t count towards a horse’s tally.</p>
+</section>
+<section class="tips-section">
+<div class="guide-heading">
+<div>
+<div class="eyebrow">THE GUIDES, SIDE BY SIDE</div>
+<h3>Every guide’s pick</h3>
+</div>
+</div>
+<div id="guideCards">
+</div>
+</section>
+<details class="tips-source-note">
+<summary>About these guides &amp; quotes </summary>
+<p id="tipsResearchDate">
+</p>
+<p id="tipsSourceNote">
+</p>
+<p id="socialCoverage">
+</p>
+<p>Quotes are brief excerpts from linked publications. Reporter wording is labelled. Some guides discuss a horse without recommending a bet; we preserve that distinction.</p>
+</details>
+</section>
+<section aria-labelledby="exploreMode" hidden="" id="connectionsPanel" role="tabpanel">
+<section class="ladder-intro">
+<div class="eyebrow">THE ORIGINAL FORM LADDER</div>
+<h2>Who edges who?</h2>
+<p>Why each runner edges the one below.</p>
+<div id="ladderStatus">
+</div>
+</section>
+<section aria-label="Ranked horses with comparisons between neighbours" class="form-ladder" id="formLadder">
+</section>
+<button aria-expanded="false" class="show-ladder" id="showFullLadder">Show the rest of the field ↓</button>
+<p class="ladder-footnote">This is a model’s form order, not a predicted finishing order. A shared-race link is evidence, not proof. Different trips, conditions, fitness and weights can reverse results. Separate form groups cannot be ranked reliably against each other.</p>
+</section>
+<section aria-labelledby="resultsMode" hidden="" id="resultsPanel" role="tabpanel">
+<div class="results-loading" id="resultsLoading">Loading the meeting scorecard…</div>
+</section>
+<details class="method-details" id="method">
+<summary>How this guide works </summary>
+<div class="simple-method">
+<p>Form is the original race-history shortlist. Late mail is the saved revision after track and runner checks. The original order stays fixed so you can compare the two.</p>
+<p>Recent results and conditions matter more than published tips. Missing information is shown as missing. A shared-race connection is a clue, not a guaranteed finishing order.</p>
+<p id="dataTimestamp">
+</p>
+<a href="https://www.tabtouch.com.au/racing/2026-11-07/mr/8" rel="noopener" target="_blank">Published form source ↗</a>
+</div>
+</details>
+<footer>
+<div class="brand small">GG ↗ <span>GEOFFS GUIDE</span>
+</div>
+<p>Follow the form. See the reasoning.</p>
+<span>FLEMINGTON / STAKES DAY 2026</span>
+<p class="release-summary">
+<b>Latest release · 6 Nov 2026</b>
+<br/>Stakes Day fields, confidence, trial context and wet-ground scenarios. Oaks results are archived separately.</p>
+<a class="release-link" href="release-notes.html">See all release notes ↗</a>
+</footer>
+</main>
+<div id="loading" role="status">
+<div class="loading-mark">G</div>
+<p>Loading the guide…</p>
+</div>
+<script defer="" src="model.js">
+</script>
+<script defer="" src="views.js">
+</script>
+<script defer="" src="roundup.js">
+</script>
+<script defer="" src="ux.js">
+</script>
+<script defer="" src="mobile.js">
+</script>
+<script defer="" src="tips.js">
+</script>
+<script defer="" src="ladder.js">
+</script>
+<script defer="" src="late-mail.js">
+</script>
+<script defer="" src="share.js">
+</script>
+<script defer="" src="app.js">
+</script>
+<dialog aria-label="Runner form details" id="runnerDialog">
+<div class="dialog-toolbar">
+<span class="eyebrow">RUNNER DETAILS</span>
+<button aria-label="Close runner details" id="closeRunner">Close ×</button>
+</div>
+<div id="dialogContent">
+<aside class="horse-card">
+<div class="eyebrow">05 / UNDER THE SILKS</div>
+<div id="horseDetail">
+</div>
+</aside>
+</div>
+<button class="trace-runner" id="traceRunner">See this horse on the form ladder ↗</button>
+</dialog>
+</body>
+</html>

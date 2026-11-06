@@ -2,7 +2,7 @@
   "site": "https://oaks-form-connections-2026.aguthridge.chatgpt.site",
   "date": "2026-11-07",
   "timezone": "Australia/Melbourne",
-  "goal": "Prepare and publish saved Late mail ten minutes before the advertised start, update official winners/track changes, and send the user a concise update. Leave the immutable original form unchanged.",
+  "goal": "Prepare saved Stakes Day late mail, process preceding official results and use verified same-day evidence to refine later selections. Preserve the original form and the separate Oaks archive.",
   "read": "/api/late-mail",
   "write": {
     "method": "POST",
