@@ -1,14 +1,15 @@
 (function(root){
-  const TODAY='2026-11-05';
+  const TODAY='2026-11-07';
   const norm=s=>s.toUpperCase().replace(/\s*\((?:[A-Z]{2,3}|EM\d+)\)/g,'').trim();
   const title=s=>s.toLowerCase().replace(/\b\w/g,c=>c.toUpperCase()).replace(/(['’])([SMTD])\b/g,(_,a,b)=>a+b.toLowerCase());
   function build(data){
+    const asOf=data.date||TODAY;
     const nodes=new Map(), races=new Map();
     for(const r of data.races)for(const h of r.horses){
       if(!nodes.has(h.name))nodes.set(h.name,{name:h.name,display:h.display,horse:h});
       else nodes.get(h.name).horse=h;
       for(const run of h.history){
-        if(run.date>=TODAY)continue;
+        if(run.date>=asOf)continue;
         const key=[run.date,run.track,run.distance,run.raceTime||run.grade].join('|');
         if(!races.has(key))races.set(key,{...run,key,results:new Map()});
         const race=races.get(key);
@@ -41,11 +42,11 @@
       const queue=[n];components.set(n,cid);
       for(let i=0;i<queue.length;i++)for(const v of adjacency.get(queue[i]).keys())if(!components.has(v)){components.set(v,cid);queue.push(v)}cid++;
     }
-    return {nodes,races,adjacency,observations,components};
+    return {nodes,races,adjacency,observations,components,asOf};
   }
-  function ground(s){return /heavy/i.test(s)?'Heavy':/soft/i.test(s)?'Soft':/good|firm/i.test(s)?'Good':'Unknown'}
+  function ground(s){return /heavy/i.test(s)?'Heavy':/soft|slow|yielding/i.test(s)?'Soft':/good|firm/i.test(s)?'Good':'Unknown'}
   function weight(edge,distance,scenario={}){
-    const days=(Date.parse(TODAY)-Date.parse(edge.race.date))/86400000;
+    const days=(Date.parse(scenario.asOf||TODAY)-Date.parse(edge.race.date))/86400000;
     const strength=Number.isFinite(scenario.groundStrength)?Math.max(0,Math.min(1,scenario.groundStrength)):.7;
     const goingFactor=!scenario.going||scenario.going==='all'?1:ground(edge.race.going)===scenario.going?1:1-strength;
     const trackFactor=scenario.preferTrack&&!/^flemington$/i.test(edge.race.track) ? .5 : 1;
@@ -68,6 +69,7 @@
     return {bonuses,support,guideCount,groupCount:groups.size};
   }
   function rate(graph,race,scenario={}){
+    scenario={asOf:graph.asOf||TODAY,...scenario};
     const overrides=scenario.overrides||{};
     const targets=new Map(race.horses.map(h=>[h.name,Number.isFinite(overrides[h.name]?.weight)?overrides[h.name].weight:h.weight]));
     const kgFactor=Number.isFinite(scenario.kgFactor)?Math.max(0,Math.min(1,scenario.kgFactor)):.5;
@@ -95,7 +97,7 @@
       const edges=graph.adjacency.get(h.name)||new Map();
       const direct=field.filter(o=>o.name!==h.name&&edges.has(o.name)).length;
       const connectedRuns=new Set([...edges.values()].flat().map(e=>e.race.key));
-      const relevantRuns=[...connectedRuns].filter(key=>{const r=graph.races.get(key);return (Date.parse(TODAY)-Date.parse(r.date))/86400000<=90&&Math.abs(Math.log(race.distance/r.distance))<.5}).length;
+      const relevantRuns=[...connectedRuns].filter(key=>{const r=graph.races.get(key);return (Date.parse(scenario.asOf)-Date.parse(r.date))/86400000<=90&&Math.abs(Math.log(race.distance/r.distance))<.5}).length;
       const goingRuns=h.history.filter(r=>ground(r.going)===scenario.going).length;
       const trackRuns=h.history.filter(r=>/^flemington$/i.test(r.track)).length;
       const conditionSparse=scenario.going&&scenario.going!=='all'&&(scenario.groundStrength??.7)>0&&goingRuns<2||scenario.preferTrack&&trackRuns===0;
@@ -105,8 +107,11 @@
       const crowdBonus=!h.scratched&&!h.emergency&&connectedRuns.size?Math.max(0,Math.min(.15,Number(scenario.crowdBonuses?.[h.name])||0)):0;
       const evidenceRaw=(ratings.get(h.name)||0)+manualBonus+drawBonus;
       const raw=evidenceRaw+crowdBonus;
-      return {...h,raw,score:50+45*Math.tanh(raw/4),direct,runs:connectedRuns.size,relevantRuns,evidence,component:graph.components.get(h.name),eligible:!h.scratched&&!h.emergency,edges,goingRuns,trackRuns,manualBonus,drawBonus,evidenceRaw,crowdBonus,scenarioWeight:targets.get(h.name)};
-    }).sort((a,b)=>Number(b.eligible)-Number(a.eligible)||b.raw-a.raw||a.number-b.number);
+      const ownRecentRuns=h.history.filter(r=>r.date<scenario.asOf&&(Date.parse(scenario.asOf)-Date.parse(r.date))/86400000<=90&&Math.abs(Math.log(race.distance/r.distance))<.5).length;
+      const ownGoingRuns=h.history.filter(r=>r.date<scenario.asOf&&(Date.parse(scenario.asOf)-Date.parse(r.date))/86400000<=90&&ground(r.going)===scenario.going&&Math.abs(Math.log(race.distance/r.distance))<.5).length;
+      const latestDate=h.history.map(r=>r.date).filter(d=>d<scenario.asOf).sort().at(-1),daysSinceRun=latestDate?(Date.parse(scenario.asOf)-Date.parse(latestDate))/86400000:null;
+      return {...h,ownRecentRuns,ownGoingRuns,daysSinceRun,raw,score:50+45*Math.tanh(raw/4),direct,runs:connectedRuns.size,relevantRuns,evidence,component:graph.components.get(h.name),eligible:!h.scratched&&!h.emergency,edges,goingRuns,trackRuns,manualBonus,drawBonus,evidenceRaw,crowdBonus,scenarioWeight:targets.get(h.name)};
+    }).sort((a,b)=>Number(b.eligible)-Number(a.eligible)||Number(b.history.length>0)-Number(a.history.length>0)||b.raw-a.raw||a.number-b.number);
   }
   function path(graph,from,to,max=3){
     if(from===to)return [];
@@ -145,5 +150,17 @@
     if(steps){const forward=steps.every(s=>s.delta>=0)&&steps.some(s=>s.delta>0),reverse=steps.every(s=>s.delta<=0)&&steps.some(s=>s.delta<0);const commonRival=steps.length===2?steps[0].to:null;const marginRead=commonRival?steps[0].delta+steps[1].delta:null;return {kind:'indirect',direction:forward?'supports':reverse?'opposes':'mixed',steps,commonRival,marginRead};}
     return {kind:graph.components.get(a)===graph.components.get(b)?'long-chain':'disconnected',direction:'uncertain',steps:null};
   }
-  const api={build,crowd,rate,path,wins,weight,title,ground,comparison};root.FormModel=api;if(typeof module!=='undefined')module.exports=api;
+  function confidence(h,{live=false,checked=null,asOf=Date.now(),separateGroups=false,going=null}={}){
+    if(!h)return {level:'withheld',label:'No confident selection',reason:'Too little evidence for a firm pick.'};
+    const low=reason=>({level:'low',label:'Low confidence',reason});
+    if(live&&(!checked||!Number.isFinite(Date.parse(checked))||asOf-Date.parse(checked)>7200000))return low('Current race information needs a fresh check.');
+    if(!h.history?.length&&h.ownRecentRuns===0)return low('No race history; trials are context, not proven race form.');
+    if(h.daysSinceRun===null||h.daysSinceRun>60)return low('Fresh or returning runner; current fitness is not established by race history.');
+    if(!Number.isFinite(h.ownRecentRuns)||h.ownRecentRuns<2)return low('Fewer than two recent comparable starts for this horse.');
+    if(live&&going&&going!=='all'&&h.ownGoingRuns<1)return low('No recent comparable run on the reported ground.');
+    if(separateGroups)return low('Separate form groups make the field order uncertain.');
+    if(h.evidence==='Supported')return {level:'moderate',label:'Moderate confidence',reason:'Recent starts and connected form support this view.'};
+    return low(h.evidence==='Sparse'?'Sparse recent or matching-condition evidence.':'Some supporting form; the evidence is limited.');
+  }
+  const api={confidence,build,crowd,rate,path,wins,weight,title,ground,comparison};root.FormModel=api;if(typeof module!=='undefined')module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);

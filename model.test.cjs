@@ -2,7 +2,7 @@ const assert=require('node:assert/strict');
 const M=require('./dist/model.js');
 const run=(date,winner,pos,margin,track='Test')=>({date,winner,pos,margin,track,distance:2000,raceTime:'2:00',grade:'G2',total:8});
 const horse=(name,history)=>({name,display:name,number:1,history,scratched:false,emergency:false});
-const fixture={races:[{number:1,distance:2000,horses:[
+const fixture={date:'2026-11-05',races:[{number:1,distance:2000,horses:[
   horse('A',[run('2026-10-10','A',1,0)]),
   horse('B',[run('2026-10-10','A',3,2),run('2026-10-20','B',1,0)]),
   horse('C',[run('2026-10-20','B',4,3)]),
@@ -23,7 +23,7 @@ const reversed=M.build(fixture);assert.equal(reversed.adjacency.get('A').get('B'
 // Real data invariants: margins, historical dates, valid path evidence, finite scores, exclusions.
 const data=require('./dist/data.json'),actual=M.build(data);
 for(const r of data.races){const ranks=M.rate(actual,r);for(const h of ranks){assert(Number.isFinite(h.score));assert(h.score>5&&h.score<95);if(h.scratched||h.emergency)assert(!h.eligible)}
-  for(const h of r.horses)for(const s of h.history){assert(s.date<'2026-11-05');assert(s.margin>=0);if(s.pos===1)assert.equal(s.margin,0)}
+  for(const h of r.horses)for(const s of h.history){assert(s.date<'2026-11-07');assert(s.margin>=0);if(s.pos===1)assert.equal(s.margin,0)}
 }
 for(const e of actual.observations){assert(actual.adjacency.get(e.a).has(e.b));assert(e.race.results.has(e.a)&&e.race.results.has(e.b))}
 console.log('PASS: chain direction, depth, missing connections, ratings, reversals, future leakage and all nine race datasets.');
@@ -57,7 +57,7 @@ console.log('PASS: neutral scenario, handicap direction and zero coefficient, dr
 
 // Shared groups and duplicate guide identities cannot create extra crowd votes.
 const voices=[{id:'one',name:'One',group:'Shared',picks:{1:'A'}},{id:'two',name:'Two',group:'Shared',picks:{1:'A'}},{id:'three',name:'Three',group:'Other',picks:{1:'B'}},{id:'abstain',name:'Abstain',picks:{1:null}}];
-for(const voice of voices)voice.date='2026-11-05';
+for(const voice of voices)voice.date='2026-11-07';
 const consensus=M.crowd([...voices,voices[0]],race,{strength:.1});
 assert.equal(consensus.guideCount,3);assert.equal(consensus.groupCount,2);
 assert.equal(consensus.bonuses.A,.05);assert.equal(consensus.bonuses.B,.05);
@@ -90,3 +90,10 @@ const evidence=M.rate(recencyGraph,recencyRace,{preferRecent:true}),boosted=M.ra
 for(const h of boosted)assert(h.crowdBonus<=.15&&h.crowdBonus>=0);
 assert(evidence[0].raw-evidence[1].raw>.15);
 console.log('PASS: newer conflicting results lead; fresh/old/unknown/future tips respect the evidence-first cap.');
+
+assert.equal(M.confidence({history:[],ownRecentRuns:0,daysSinceRun:null}).level,'low');
+assert.equal(M.confidence({history:[{}],ownRecentRuns:0,daysSinceRun:190,evidence:'Supported'}).level,'low');
+assert.equal(M.confidence({history:[{}],ownRecentRuns:3,ownGoingRuns:0,daysSinceRun:14,evidence:'Supported'},{live:true,checked:new Date().toISOString(),going:'Heavy'}).level,'low');
+assert.equal(M.confidence({history:[{}],ownRecentRuns:3,daysSinceRun:14,evidence:'Supported'},{separateGroups:true}).level,'low');
+assert.equal(M.confidence({history:[{}],ownRecentRuns:3,daysSinceRun:14,evidence:'Supported'}).level,'moderate');
+const review=require('./dist/lessons.json');assert.equal(review.originalWins,3);assert.equal(review.revisedWins,1);assert.equal(review.firmRevisedPicks,4);

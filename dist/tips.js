@@ -1,9 +1,9 @@
 let editorial=null;
 const horseKey=s=>String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
 const findRunner=n=>race.horses.find(h=>horseKey(h.name)===horseKey(n));
-const hasRace=s=>Object.prototype.hasOwnProperty.call(s.picks||{},String(race.number));
+const hasRace=s=>Object.prototype.hasOwnProperty.call(s.picks||{},String(race.number))||Object.prototype.hasOwnProperty.call(s.calls||{},String(race.number));
 const guideURL=s=>s.perRaceSource?race.source:s.sourceUrls?.[String(race.number)]||s.url;
-const guideDate=s=>s.sourceDates?.[String(race.number)]||s.date;
+const guideDate=s=>s.sourceDates?.[String(race.number)]||s.date||'Publication date not supplied';
 const activeTip=s=>{const h=findRunner(s.picks?.[String(race.number)]);return h&&!h.scratched&&!h.emergency?h:null};
 function runnerSentiment(h){
   const sources=(editorial?.sources||[]).filter(hasRace),first=[],other=[];
@@ -46,7 +46,7 @@ function renderTips(){
   const visible=covering;
   document.getElementById('guideCards').innerHTML=visible.map(s=>{
     const covers=hasRace(s),pick=covers?s.picks[String(race.number)]:undefined,h=pick?findRunner(pick):null,excluded=h&&(h.scratched||h.emergency);
-    let title=!covers?'No published pick for this race':pick===null?'No bet · Sitting this one out':h?`${h.number}. ${h.display}`:M.title(pick);
+    let title=s.calls?.[String(race.number)]||(!covers?'No published pick for this race':pick===null?'No bet · Sitting this one out':h?`${h.number}. ${h.display}`:M.title(pick));
     const extra=s.rankings?.[String(race.number)]||s.alternatives?.[String(race.number)]||[];
     return `<article class="guide-card"><header><span class="guide-avatar">${esc(s.name.split(' ').map(w=>w[0]).slice(0,2).join(''))}</span><div><b>${esc(s.name)}</b><span>${esc(s.outlet)}</span></div></header><p class="guide-profile">${esc(s.profile||'Published racing column')} · ${esc(guideDate(s))}</p><div class="guide-pick ${excluded?'excluded-pick':''}">${h?silk(h,'large'):pick===null?'<span class="no-bet-icon">Ⅱ</span>':''}<b>${esc(title)}</b></div>${excluded?`<p class="excluded-note">${h.scratched?'Scratched':'Emergency'} · excluded from the tally and active tips.</p>`:''}${s.conditional?.[String(race.number)]?`<p class="guide-note">${esc(s.conditional[String(race.number)])}</p>`:''}${tipContext(s,pick)}${extra.length||s.quote&&s.quoteRace===race.number||s.note?`<details class="guide-more"><summary>More from this guide <span>+</span></summary>${extra.length?`<p class="guide-order-label">${s.rankings?.[String(race.number)]?'Published selection order':'Other published mentions · not a ranked list'}</p><ol class="guide-mentions ${s.rankings?.[String(race.number)]?'ordered':'unranked'}">${extra.map(n=>{const runner=findRunner(n);return `<li class="${runner?.scratched||runner?.emergency?'excluded-mention':''}">${esc(runner?.display||M.title(n))}${runner?.scratched?' · scratched':runner?.emergency?' · emergency':''}</li>`}).join('')}</ol>`:''}${s.quote&&s.quoteRace===race.number?`<figure class="guide-quote"><blockquote>“${esc(s.quote)}”</blockquote><figcaption>${esc(s.quoteType||'Published column')}</figcaption></figure>`:''}${s.note?`<p class="guide-note">${esc(s.note)}</p>`:''}</details>`:''}<a class="guide-source" href="${esc(guideURL(s))}" target="_blank" rel="noopener">Original guide ↗</a></article>`;
   }).join('')||'<p class="tips-empty">No published tips for this race in the current guide sample.</p>';

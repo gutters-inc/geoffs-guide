@@ -1,92 +1,92 @@
 {
-  "asOf": "2026-11-05",
+  "asOf": "2026-11-07",
   "method": "Maximum absolute rating-point movement among eligible runners, changing one control at a time. Crowd changes are measured after recent-form weighting, so their incremental effect is isolated. Original form remains the 45-day benchmark.",
   "races": [
     {
       "race": 1,
-      "recentForm": 15.985,
-      "softGround": 11.525,
-      "insideGateSmall": 2.754,
-      "tipsLow": 0.147,
-      "tipsStandard": 0.293,
-      "tipsHigh": 0.44
+      "recentForm": 1.078,
+      "softGround": 0,
+      "insideGateSmall": 2.809,
+      "tipsLow": 0.093,
+      "tipsStandard": 0.186,
+      "tipsHigh": 0.279
     },
     {
       "race": 2,
-      "recentForm": 21.099,
-      "softGround": 10.457,
-      "insideGateSmall": 2.379,
-      "tipsLow": 0.255,
-      "tipsStandard": 0.511,
-      "tipsHigh": 0.766
+      "recentForm": 15.803,
+      "softGround": 5.48,
+      "insideGateSmall": 2.332,
+      "tipsLow": 0.226,
+      "tipsStandard": 0.452,
+      "tipsHigh": 0.678
     },
     {
       "race": 3,
-      "recentForm": 9.316,
-      "softGround": 7.253,
-      "insideGateSmall": 2.159,
-      "tipsLow": 0.109,
-      "tipsStandard": 0.218,
-      "tipsHigh": 0.328
+      "recentForm": 14.484,
+      "softGround": 8.784,
+      "insideGateSmall": 2.202,
+      "tipsLow": 0.216,
+      "tipsStandard": 0.432,
+      "tipsHigh": 0.648
     },
     {
       "race": 4,
-      "recentForm": 4.964,
-      "softGround": 8.335,
-      "insideGateSmall": 2.793,
-      "tipsLow": 0.244,
-      "tipsStandard": 0.488,
-      "tipsHigh": 0.731
+      "recentForm": 13.108,
+      "softGround": 10.213,
+      "insideGateSmall": 2.735,
+      "tipsLow": 0.165,
+      "tipsStandard": 0.331,
+      "tipsHigh": 0.497
     },
     {
       "race": 5,
-      "recentForm": 14.656,
-      "softGround": 9.553,
-      "insideGateSmall": 2.809,
-      "tipsLow": 0.298,
-      "tipsStandard": 0.595,
-      "tipsHigh": 0.892
+      "recentForm": 7.469,
+      "softGround": 10.879,
+      "insideGateSmall": 2.477,
+      "tipsLow": 0.133,
+      "tipsStandard": 0.265,
+      "tipsHigh": 0.398
     },
     {
       "race": 6,
-      "recentForm": 10.723,
-      "softGround": 10.875,
-      "insideGateSmall": 2.565,
-      "tipsLow": 0.066,
-      "tipsStandard": 0.133,
-      "tipsHigh": 0.199
+      "recentForm": 3.278,
+      "softGround": 12.774,
+      "insideGateSmall": 2.738,
+      "tipsLow": 0.16,
+      "tipsStandard": 0.318,
+      "tipsHigh": 0.476
     },
     {
       "race": 7,
-      "recentForm": 3.591,
-      "softGround": 4.232,
-      "insideGateSmall": 2.809,
-      "tipsLow": 0.372,
-      "tipsStandard": 0.745,
-      "tipsHigh": 1.119
+      "recentForm": 7.569,
+      "softGround": 6.482,
+      "insideGateSmall": 2.715,
+      "tipsLow": 0.18,
+      "tipsStandard": 0.359,
+      "tipsHigh": 0.536
     },
     {
       "race": 8,
-      "recentForm": 3.931,
-      "softGround": 8.626,
-      "insideGateSmall": 2.811,
-      "tipsLow": 0.189,
-      "tipsStandard": 0.379,
-      "tipsHigh": 0.568
+      "recentForm": 13.725,
+      "softGround": 13.116,
+      "insideGateSmall": 2.242,
+      "tipsLow": 0.099,
+      "tipsStandard": 0.199,
+      "tipsHigh": 0.298
     },
     {
       "race": 9,
-      "recentForm": 21.076,
-      "softGround": 11.758,
-      "insideGateSmall": 2.719,
-      "tipsLow": 0.234,
-      "tipsStandard": 0.469,
-      "tipsHigh": 0.704
+      "recentForm": 11.948,
+      "softGround": 13.129,
+      "insideGateSmall": 2.811,
+      "tipsLow": 0.243,
+      "tipsStandard": 0.486,
+      "tipsHigh": 0.729
     }
   ],
   "summary": {
-    "maximumStandardTipPoints": 0.745,
-    "maximumHighTipPoints": 1.119,
+    "maximumStandardTipPoints": 0.486,
+    "maximumHighTipPoints": 0.729,
     "historicalFormHalfLifeDays": 21,
     "originalHalfLifeDays": 45,
     "tipHalfLifeDays": 2,

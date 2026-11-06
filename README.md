@@ -1,6 +1,6 @@
 # Geoffs Guide
 
-Public, mobile-only Flemington Oaks Day guide for 5 November 2026. Preserve the existing Site ID, public audience, original user portrait bytes and 520px maximum reading column. The published experience is deliberately read-only: **Form, Late mail, Tips, Ladder**. The race picker is the only selection control. Do not reintroduce sliders, factor checkboxes, guide preferences, photo uploads, odds/price calculators or editable model settings into the public interface.
+Public, mobile-only Flemington Stakes Day guide for 7 November 2026. Preserve the existing Site ID, public audience, original user portrait bytes and 520px maximum reading column. The published experience is deliberately read-only: **Form, Late mail, Tips, Ladder**. The race picker is the only selection control. Do not reintroduce sliders, factor checkboxes, guide preferences, photo uploads, odds/price calculators or editable model settings into the public interface.
 
 ## Public experience
 
@@ -27,12 +27,9 @@ UI sources and assets are in `dist/`; `worker/live.mjs` fetches the fixed TABtou
 
 ## Saved updates and schedules
 
-The two existing, enabled Site-linked automations split race checks to respect the once-per-hour limit per task:
+The two Site-linked Oaks automations have finished and remain **paused**. No Stakes Day race-day schedule is enabled. The proposed ten-minute pre-race slots are recorded in `dist/late-mail-plan.json`, but a plan does not enable execution. Preserve paused state until the user requests resuming race-day checks.
 
-- A: 12:50, 14:00, 15:10, 16:20, 17:40 AEDT.
-- B: 13:25, 14:35, 15:45, 17:00, 18:10 AEDT (last slot is the results wrap).
-
-These are one-day schedules on 5 November 2026. Preserve them when making UI changes. Creation proves scheduling, not execution or delivery. Each job uses the published `/late-mail-update-instructions.json`, `/late-mail-plan.json` and fixed-Site `/late-mail-updater.py`. A fresh worker obtains supported Site service access through `get_site`, sends it only to this Site in `OAI-Sites-Authorization` plus the standard `Authorization` header, and supplies credentials via hidden stdin, never command arguments, files or output. The protected writer verifies a SHA-256 digest against the hosted secret `LATE_MAIL_UPDATER_SHA256`. Do not rotate platform credentials to test access.
+Each future job uses the published `/late-mail-update-instructions.json`, `/late-mail-plan.json` and fixed-Site `/late-mail-updater.py`. A fresh worker obtains supported Site service access through `get_site`, sends it only to this Site in `OAI-Sites-Authorization` plus the standard `Authorization` header, and supplies credentials via hidden stdin, never command arguments, files or output. The protected writer verifies a SHA-256 digest against the hosted secret `LATE_MAIL_UPDATER_SHA256`. Do not rotate platform credentials to test access.
 
 GET `/api/late-mail` reads R2. POST `/api/late-mail/refresh` refreshes all nine primary race pages, modelled weather and brief source-backed task notes, stores latest/per-slot snapshots and returns safe readback metadata. Slots are idempotent. Partial checks preserve old missing-race facts with their actual timestamps. Total failure retains the previous edition and does not move its saved-update timestamp. After a race starts, its last saved pre-race recommendation freezes; official winners attach without hindsight tips.
 
@@ -42,8 +39,26 @@ The browser reads the saved edition automatically, with a clearly dated packaged
 
 `NODE_PATH=/tmp/oaks-qa/node_modules npm test` runs model, source-parser, durable writer and public interaction checks. `npm run build` validates factors and packages the Worker. `node scripts/check-sensitivity.cjs` writes the engineering sensitivity report. `scripts/seed-late-mail.mjs` prepares a packaged fallback from the independently checked local source pages.
 
-The public UI suite covers all nine races across four tabs, all 149 runner sheets, no public factor controls, keyboard/deep links, source assumptions, immutable baseline and saved/fallback/missing/delayed editions. Managed rendered-browser QA remains unavailable because `cua_repl.js` is absent. Do not install a browser or invent an alternate preview route; report that visual limit honestly.
+The public UI suite covers all nine races across four tabs, all 125 runner sheets, no public factor controls, keyboard/deep links, source assumptions, immutable baseline and saved/fallback/missing/delayed editions. Managed rendered-browser QA remains unavailable because `cua_repl.js` is absent. Do not install a browser or invent an alternate preview route; report that visual limit honestly.
 
 ## Compact IG-inspired colour system
 
 `dist/ig.css` is the single public stylesheet. It uses IG’s current red #E61E1E, charcoal #171717, white and cool grey #EDF0F2, verified against IG’s public CSS. Geoffs Guide keeps its own name, portrait and identity; no IG logo or affiliation claim is used. The former cover is condensed into a masthead; runner ranks and silks lead compact row cards. Source photos and credits are preserved. Public control removal, four-tab navigation, factor policy and background schedules are unchanged.
+
+## Stakes Day refresh and Oaks review
+
+`config/meeting.json` names the current nine-race card. `collect.py --cached` parses checked pages from `raw/<meeting date>/` (ignored); without the flag it retrieves the exact meeting. Race times come from the source, converted from AWST to AEDT. The live writer, dated storage keys, client plan and source notes all target 7 November 2026. Never merge a previous meeting into a new one. `scripts/seed-late-mail.mjs` builds the fallback using the checked local pages. Silks were re-fetched for this card; horse photos are retained only against verified identities with credits.
+
+The immutable Oaks data, final durable snapshot and original model live in `archive/oaks-2026/`. `node scripts/oaks-review.cjs` uses that original model to write `dist/lessons.json`: 3/9 original first picks won; 1/4 firm saved revised picks won; five revised tips were withheld. This is a descriptive audit of one meeting, not a backtest or evidence of improved predictive performance. Do not optimise coefficients to those nine results.
+
+Stakes confidence checks the horse's **own** recent comparable starts, last-race age, reported-ground evidence and disconnected form groups, rather than relying on its network alone. Fewer than two own comparable starts in 90 days, a gap over 60 days, absent fresh live facts, missing matching-ground form, or separate groups caps confidence at Low. Moderate is reserved for supported form; no calibrated win percentages or High label is supplied. Current weights remain unchanged. Debutants/missing histories are unranked rather than represented by a neutral 50-point runner in the public ladder.
+
+Runner details now include sourced career/course/distance/first-up/Soft/Heavy records, recent trials/jump-outs, and dated stewards context flags. These are contextual evidence, not automatic numeric bonuses. Saved Good/Soft/Heavy leaders are clearly hypothetical and retain confidence caveats. Curator forecasts and lane views are attributed opinions; only the racing source changes the reported going.
+
+The tips edition contains nine named voices from TAB NZ, TABtouch, Just Horse Racing and SEN/RSN, 43 first selections, and a separate boxed quinella. SEN voices share one outlet group in the booster; reprinted columns and multi-leg selections do not create independent win tips. Missing publication dates and track/run assumptions stay labelled missing.
+
+## Collaborating
+
+Public repository: https://github.com/gutters-inc/geoffs-guide (`main`). The `github` remote is the collaboration repository; `origin` is the Sites source repository. GitHub pushes alone do not deploy the public Site. Keep both pushed to the same reviewed source commit when publishing.
+
+Use Node 22+ and Python 3. Install the JS dev dependency with `npm install`; `npm test` runs the checks and `npm run build` packages the Worker. The collector additionally needs `beautifulsoup4`. A copy served from `dist/` can use the packaged saved fallback; production refreshes need the existing R2 binding and runtime writer secret, neither of which belongs in Git.

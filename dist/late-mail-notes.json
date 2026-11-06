@@ -1,1 +1,26 @@
-[{"race":3,"horse":"JUST FOLK / MERRIGOLD","type":"scratching","summary":"Morning field report confirms both scratchings, at 06:51 and 07:10 AEDT.","url":"https://www.justhorseracing.com.au/fields-results/race-fields/chester-manifold-stakes-field-odds-2026/913320","published":"2026-11-05T07:57:00+11:00","checked":"2026-11-04T23:51:31Z"},{"race":7,"horse":"SEQUINNED","type":"trainer","summary":"Stable upbeat after Flemington gallop; settling early remains important.","url":"https://www.justhorseracing.com.au/news/australian-racing/sequinned-to-come-up-roses/913849","published":"2026-11-04T11:36:00+11:00","checked":"2026-11-04T23:54:00Z"},{"race":2,"horse":"BUSTLING","type":"trainer","summary":"Stable expects improvement on bigger track; excessive rain remains a concern.","url":"https://www.justhorseracing.com.au/news/australian-racing/bustling-a-way-back-to-victory/913850","published":"2026-11-04T11:35:00+11:00","checked":"2026-11-04T23:54:00Z"}]
+[
+  {
+    "race": 0,
+    "horse": "",
+    "type": "track",
+    "summary": "Curator warns rain could bring Heavy8; forecast only, not an official rating.",
+    "url": "https://sen.com.au/news/2026/11/05/champions-stakes-day-weather-horses-flemington-track-forecast",
+    "published": null
+  },
+  {
+    "race": 0,
+    "horse": "",
+    "type": "track",
+    "summary": "Curator expects fresher middle-to-outside sprint lanes; watch race-day evidence.",
+    "url": "https://sen.com.au/news/2026/11/05/champions-stakes-day-weather-horses-flemington-track-forecast",
+    "published": null
+  },
+  {
+    "race": 7,
+    "horse": "TOM KITTEN",
+    "type": "gear",
+    "summary": "Trainer confirms first-time blinkers; expects the Flemington mile to suit.",
+    "url": "https://www.justhorseracing.com.au/news/australian-racing/gear-change-to-drive-a-snappier-tom/914250",
+    "published": "2026-11-06T01:10:00Z"
+  }
+]

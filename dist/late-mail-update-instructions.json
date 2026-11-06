@@ -1,6 +1,6 @@
 {
   "site": "https://oaks-form-connections-2026.aguthridge.chatgpt.site",
-  "date": "2026-11-05",
+  "date": "2026-11-07",
   "timezone": "Australia/Melbourne",
   "goal": "Prepare and publish saved Late mail ten minutes before the advertised start, update official winners/track changes, and send the user a concise update. Leave the immutable original form unchanged.",
   "read": "/api/late-mail",
@@ -8,7 +8,7 @@
     "method": "POST",
     "path": "/api/late-mail/refresh",
     "payload": {
-      "runKey": "2026-11-05-rN-pre-HHMM (Melbourne check time) or 2026-11-05-final-HHMM",
+      "runKey": "2026-11-07-rN-pre-HHMM (Melbourne check time) or 2026-11-07-final-HHMM",
       "notes": [
         {
           "race": "integer 0\u20139",
@@ -28,12 +28,13 @@
     "on401": "Do not bypass authorization or rotate credentials. Report the failed update and retain the old edition."
   },
   "research": {
-    "primary": "TABtouch nine fixed race pages, https://www.tabtouch.com.au/racing/2026-11-05/mr/{1..9}. The writer fetches current fields, gear declarations, guide selection, going, source start times and official dividends itself.",
+    "primary": "TABtouch nine fixed race pages, https://www.tabtouch.com.au/racing/2026-11-07/mr/{1..9}. The writer fetches current fields, gear declarations, guide selection, going, source start times and official dividends itself.",
     "other": [
       "https://www.racing.com/",
       "https://www.racingvictoria.com.au/",
       "https://www.vrc.com.au/",
-      "https://www.justhorseracing.com.au/"
+      "https://www.justhorseracing.com.au/",
+      "https://sen.com.au/"
     ],
     "check": [
       "Late scratchings and final-field status; do not promote emergencies without confirmation.",
@@ -46,6 +47,7 @@
     "limits": "Do not fabricate tips, quotes, prices, certainty, independent votes or numerical gear/jockey bonuses. Keep each note <=15 words and all derived paraphrases <=100 words per article. Never copy an article. Unsupported or contradictory claims are omitted or explicitly marked uncertain."
   },
   "execution": [
+    "Use only this meeting date. Preserve Oaks archives. Keep existing automations paused unless the user asks to enable Stakes Day checks.",
     "Read the saved edition and determine the upcoming race for this check (or final wrap). Search current late mail, using exact meeting/date/runner matches.",
     "Send brief new/rechecked source-backed notes with a unique scheduled-slot runKey to the protected writer. The server saves updated source facts, evidence-first revised tips, immutable baseline comparison and pre-race archives in durable storage.",
     "Read back /api/late-mail and verify the update timestamp/runKey. Partial or failed checks must be reported; the previous verified edition is retained on total source failure. A duplicate successful slot is idempotent.",
@@ -54,76 +56,76 @@
     "If final results remain provisional, report them as unconfirmed. Do not add unsupported sub-hour follow-ups. Each linked task must remain at most hourly; preserve its assigned race slots and the other task\u2019s remaining checks."
   ],
   "schedule": {
-    "date": "2026-11-05",
+    "date": "2026-11-07",
     "timezone": "Australia/Melbourne",
     "checks": [
       {
         "race": 1,
-        "jump": "2026-11-05T10:00:00+08:00",
-        "check": "2026-11-05T09:50:00+08:00",
-        "local": "12:50",
-        "runKey": "2026-11-05-r1-pre-1250"
+        "jump": "2026-11-07T12:40:00+11:00",
+        "check": "2026-11-07T12:30:00+11:00",
+        "local": "12:30",
+        "runKey": "2026-11-07-r1-pre-1230"
       },
       {
         "race": 2,
-        "jump": "2026-11-05T10:35:00+08:00",
-        "check": "2026-11-05T10:25:00+08:00",
-        "local": "13:25",
-        "runKey": "2026-11-05-r2-pre-1325"
+        "jump": "2026-11-07T13:15:00+11:00",
+        "check": "2026-11-07T13:05:00+11:00",
+        "local": "13:05",
+        "runKey": "2026-11-07-r2-pre-1305"
       },
       {
         "race": 3,
-        "jump": "2026-11-05T11:10:00+08:00",
-        "check": "2026-11-05T11:00:00+08:00",
-        "local": "14:00",
-        "runKey": "2026-11-05-r3-pre-1400"
+        "jump": "2026-11-07T13:50:00+11:00",
+        "check": "2026-11-07T13:40:00+11:00",
+        "local": "13:40",
+        "runKey": "2026-11-07-r3-pre-1340"
       },
       {
         "race": 4,
-        "jump": "2026-11-05T11:45:00+08:00",
-        "check": "2026-11-05T11:35:00+08:00",
-        "local": "14:35",
-        "runKey": "2026-11-05-r4-pre-1435"
+        "jump": "2026-11-07T14:30:00+11:00",
+        "check": "2026-11-07T14:20:00+11:00",
+        "local": "14:20",
+        "runKey": "2026-11-07-r4-pre-1420"
       },
       {
         "race": 5,
-        "jump": "2026-11-05T12:20:00+08:00",
-        "check": "2026-11-05T12:10:00+08:00",
-        "local": "15:10",
-        "runKey": "2026-11-05-r5-pre-1510"
+        "jump": "2026-11-07T15:10:00+11:00",
+        "check": "2026-11-07T15:00:00+11:00",
+        "local": "15:00",
+        "runKey": "2026-11-07-r5-pre-1500"
       },
       {
         "race": 6,
-        "jump": "2026-11-05T12:55:00+08:00",
-        "check": "2026-11-05T12:45:00+08:00",
-        "local": "15:45",
-        "runKey": "2026-11-05-r6-pre-1545"
+        "jump": "2026-11-07T15:50:00+11:00",
+        "check": "2026-11-07T15:40:00+11:00",
+        "local": "15:40",
+        "runKey": "2026-11-07-r6-pre-1540"
       },
       {
         "race": 7,
-        "jump": "2026-11-05T13:30:00+08:00",
-        "check": "2026-11-05T13:20:00+08:00",
+        "jump": "2026-11-07T16:30:00+11:00",
+        "check": "2026-11-07T16:20:00+11:00",
         "local": "16:20",
-        "runKey": "2026-11-05-r7-pre-1620"
+        "runKey": "2026-11-07-r7-pre-1620"
       },
       {
         "race": 8,
-        "jump": "2026-11-05T14:10:00+08:00",
-        "check": "2026-11-05T14:00:00+08:00",
+        "jump": "2026-11-07T17:10:00+11:00",
+        "check": "2026-11-07T17:00:00+11:00",
         "local": "17:00",
-        "runKey": "2026-11-05-r8-pre-1700"
+        "runKey": "2026-11-07-r8-pre-1700"
       },
       {
         "race": 9,
-        "jump": "2026-11-05T14:50:00+08:00",
-        "check": "2026-11-05T14:40:00+08:00",
+        "jump": "2026-11-07T17:50:00+11:00",
+        "check": "2026-11-07T17:40:00+11:00",
         "local": "17:40",
-        "runKey": "2026-11-05-r9-pre-1740"
+        "runKey": "2026-11-07-r9-pre-1740"
       }
     ],
     "final": {
-      "check": "2026-11-05T18:10:00+11:00",
-      "runKey": "2026-11-05-final-1810"
+      "check": "2026-11-07T18:10:00+11:00",
+      "runKey": "2026-11-07-final-1810"
     }
   }
 }

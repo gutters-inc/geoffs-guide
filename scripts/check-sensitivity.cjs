@@ -1,5 +1,5 @@
 const fs=require('node:fs'),M=require('../dist/model.js'),data=require('../dist/data.json'),editorial=require('../dist/editorial.json'),graph=M.build(data);
-const report={asOf:'2026-11-05',method:'Maximum absolute rating-point movement among eligible runners, changing one control at a time. Crowd changes are measured after recent-form weighting, so their incremental effect is isolated. Original form remains the 45-day benchmark.',races:[]};
+const report={asOf:data.date,method:'Maximum absolute rating-point movement among eligible runners, changing one control at a time. Crowd changes are measured after recent-form weighting, so their incremental effect is isolated. Original form remains the 45-day benchmark.',races:[]};
 for(const race of data.races){
  const baseline=M.rate(graph,race),recent=M.rate(graph,race,{preferRecent:true});
  const check=(from,to)=>{const previous=new Map(from.map(h=>[h.name,h]));return +Math.max(...to.filter(h=>h.eligible).map(h=>Math.abs(h.score-previous.get(h.name).score))).toFixed(3)};

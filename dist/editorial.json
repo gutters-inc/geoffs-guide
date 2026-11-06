@@ -1,590 +1,375 @@
 {
-  "checked": "2026-11-04T07:25:41.738581+00:00",
-  "meetingDate": "2026-11-05",
-  "region": "Victoria, Australia (assumed)",
+  "checked": "2026-11-06T07:10:09.972567+00:00",
+  "meetingDate": "2026-11-07",
+  "region": "Victoria, Australia",
   "sources": [
     {
       "id": "timms",
       "name": "Jared Timms",
       "outlet": "TAB NZ Punters Lounge",
       "group": "Entain",
-      "date": "2026-11-04",
-      "url": "https://www.tab.co.nz/punters/2026/11/2026-crown-oaks-day-tips-preview-flemington-thursday-5th-november/",
-      "quote": "I’m eager to have the Wakeful Stakes winner De Armas on top",
-      "quoteRace": 8,
-      "quoteType": "Published first-person column",
+      "date": "2026-11-06",
+      "url": "https://www.tab.co.nz/punters/2026/11/2026-champions-day-tips-preview-flemington-saturday-7th-november/",
       "picks": {
-        "1": "AUTUMN SLIDE",
-        "2": "YOURE NOT THE KING",
-        "3": "PINSTRIPED",
-        "4": "SASS APPEAL",
-        "5": "PERISHER",
-        "6": "SPIRITED DEFENCE",
-        "7": "SEQUINNED",
-        "8": "DE ARMAS",
-        "9": "BEV'S NINE"
+        "1": "SOLDI",
+        "2": "FIORENOT",
+        "3": "DEFIANTLY",
+        "4": "PALLATON",
+        "5": "SOVERATO",
+        "7": "AUTUMN GLOW",
+        "8": "OMNI MAN",
+        "9": "EDUCATED"
       },
-      "profile": "Full-card column · TAB NZ",
       "tipNotes": {
         "1": {
-          "why": "Fitter; reliable second-up record."
+          "why": "Debut winner; straight course is the question.",
+          "ground": "Not stated.",
+          "run": "Must handle straight."
         },
         "2": {
-          "why": "Consecutive wins; lighter weight."
+          "why": "Freshened; mile should suit.",
+          "ground": "Not stated.",
+          "run": "Big track suits."
         },
         "3": {
-          "why": "Competitive form; Flemington mile suits."
+          "why": "European staying wins; Australian debut.",
+          "ground": "Not stated.",
+          "run": "2600m suits."
         },
         "4": {
-          "why": "Repeat Empire Rose effort wins."
+          "why": "Forgive tempo; third-up improvement.",
+          "ground": "Not stated.",
+          "run": "Needs better tempo."
         },
         "5": {
-          "why": "Debut winner; improvement over 1800m."
+          "why": "Tesio win and fitness.",
+          "ground": "Not stated.",
+          "run": "Low draw helps."
         },
         "6": {
-          "why": "Strong finish against Bendigo’s pattern."
+          "why": "Boxed quinella: Tempted and Joliestar; no single winner nominated.",
+          "ground": "Not stated.",
+          "run": "No position specified."
         },
         "7": {
-          "why": "Dominant winner; trial maintains fitness.",
-          "run": "Find cover before accelerating."
+          "why": "Autumn Glow to win; Buckaroo top three.",
+          "ground": "Not stated.",
+          "run": "No position specified."
         },
         "8": {
-          "why": "Wakeful winner; distance and backup suit."
+          "why": "Geelong Cup third; stronger form reference.",
+          "ground": "Not stated.",
+          "run": "Late finish."
         },
         "9": {
-          "why": "Close fresh efforts; improvement expected."
+          "why": "Seymour winner; tougher opposition.",
+          "ground": "Not stated.",
+          "run": "Central draw."
         }
+      },
+      "profile": "Published analyst; R6 is a boxed quinella, not a first pick",
+      "conditional": {
+        "6": "Boxed quinella: Tempted / Joliestar. Excluded from first-pick tally."
+      },
+      "alternatives": {
+        "6": [
+          "TEMPTED",
+          "JOLIESTAR"
+        ]
+      },
+      "calls": {
+        "6": "Boxed quinella: Tempted / Joliestar"
       }
-    },
-    {
-      "id": "cook",
-      "name": "Ryan Cook",
-      "outlet": "Neds Blog",
-      "group": "Entain",
-      "date": "2026-11-03",
-      "url": "https://www.neds.com.au/blog/2026/11/2026-vrc-oaks-day-tips-preview/",
-      "quote": "All eyes on the unbeaten PROXIMA DEA (1), with the only real knock being the wide gate.",
-      "quoteRace": 8,
-      "quoteType": "Published column",
-      "picks": {
-        "1": "SHES GOT THE CASH",
-        "2": "YOURE NOT THE KING",
-        "3": "TAVI TIME",
-        "4": "SASS APPEAL",
-        "5": "PERISHER",
-        "6": "BEL MEZYAAN",
-        "7": "SEQUINNED",
-        "8": "PROXIMA DEA",
-        "9": "REY MAGNERIO"
-      },
-      "profile": "Full-card bookmaker column",
-      "tipNotes": {
-        "1": {
-          "why": "Strong jumpouts.",
-          "ground": "Creditable heavy-track form.",
-          "run": "Use gate; find early cover."
-        },
-        "2": {
-          "why": "Two resuming wins; 1400m suits.",
-          "ground": "Wet conditions potentially advantageous.",
-          "run": "Inside barrier provides cover."
-        },
-        "3": {
-          "why": "Fitness improvement; blinkers."
-        },
-        "4": {
-          "why": "Strong Empire Rose effort.",
-          "ground": null,
-          "run": "Needs cover from tricky gate."
-        },
-        "5": {
-          "why": "Strong Australian debut; proven beyond 2000m."
-        },
-        "6": {
-          "why": "Eye-catching return win.",
-          "ground": "Handles rain-affected going.",
-          "run": "Saved for late from wide alley."
-        },
-        "7": {
-          "why": "Dominant Caulfield win; explosive acceleration."
-        },
-        "8": {
-          "why": "Unbeaten; Derby result strengthens form.",
-          "ground": "Wet or dry suitable.",
-          "run": "Must cross early and secure cover."
-        },
-        "9": {
-          "why": "Fastest final 200m; ready third-up."
-        }
-      },
-      "meetingGround": "Wednesday rain forecast; monitor conditions."
     },
     {
       "id": "page",
       "name": "Adam Page",
       "outlet": "Just Horse Racing",
       "group": "Just Horse Racing",
-      "date": "2026-11-04",
-      "url": "https://www.justhorseracing.com.au/tips/flemington-horse-racing-tips-and-best-bets-vrc-crown-oaks-day-thursday-5-11-2026/913456",
-      "quote": "I think 2500m is okay for her and is hard to beat.",
-      "quoteRace": 8,
-      "quoteType": "Published first-person column",
+      "date": "2026-11-06",
+      "url": "https://www.justhorseracing.com.au/tips/flemington-horse-racing-tips-and-best-bets-champions-stakes-day-saturday-7-11-2026/913829",
       "picks": {
-        "1": "GRAND OMAHA",
-        "2": "KEITEL",
-        "3": "ENCAP",
-        "4": "SASS APPEAL",
-        "5": "PERISHER",
-        "6": "OUR JUSTIFY",
-        "7": "SEQUINNED",
-        "8": "DE ARMAS",
-        "9": "CAVALRY GIRL"
-      },
-      "profile": "Full-card analyst · main selections",
-      "tipNotes": {}
-    },
-    {
-      "id": "cody",
-      "name": "Cody Lane",
-      "outlet": "The Great Tip Off",
-      "group": "GTO",
-      "date": "2026-11-04",
-      "url": "https://thegreattipoff.com/news/horse-racing-tips-for-the-victorian-oaks-2026",
-      "quote": "Quick Finish is Cody's standout value selection for the VRC Oaks.",
-      "quoteRace": 8,
-      "quoteType": "Article’s editorial wording about Cody’s assessment",
-      "picks": {
-        "8": "PROXIMA DEA"
-      },
-      "note": "Top selection Proxima Dea; alternative preference Quick Finish for an each-way approach.",
-      "alternatives": {
-        "8": [
-          "DE ARMAS",
-          "QUICK FINISH",
-          "ICELADY"
-        ]
-      },
-      "profile": "Oaks runner-by-runner preview",
-      "tipNotes": {
-        "8": {
-          "run": "Steady tempo expected; needs cover from wide gate."
-        }
-      },
-      "meetingGround": "Expected Good 4, rail out 6m; monitor showers."
-    },
-    {
-      "id": "gately",
-      "name": "David Gately",
-      "outlet": "The Great Tip Off report",
-      "group": "GTO",
-      "date": "2026-11-04",
-      "url": "https://thegreattipoff.com/news/david-gately-horse-racing-tips-for-oaks-day-51126",
-      "quote": "The standout Bet of the Day at Flemington.",
-      "quoteRace": 7,
-      "quoteType": "The Great Tip Off’s report of Gately’s selections, not a spoken quotation",
-      "picks": {
-        "7": "SEQUINNED"
-      },
-      "note": "Published alternative Cilacap is scratched in the guide’s field snapshot; excluded from active tips.",
-      "profile": "Reported best-bet selections",
-      "tipNotes": {},
-      "meetingGround": "Prepared for Good/Soft; possible improvement during meeting."
-    },
-    {
-      "id": "orwin",
-      "name": "Trent Orwin",
-      "outlet": "Before You Bet",
-      "group": "Before You Bet",
-      "date": "2026-11-04",
-      "url": "https://www.beforeyoubet.com.au/flemington-racing-tips-oaks-day-thursday-november-5th-2026",
-      "picks": {
-        "1": null,
-        "2": "YOURE NOT THE KING",
-        "3": null,
-        "4": "SASS APPEAL",
-        "5": "FIORENOT",
-        "6": null,
-        "7": "SEQUINNED",
-        "8": "PROXIMA DEA",
-        "9": "REY MAGNERIO"
-      },
-      "noBetRaces": [
-        1,
-        3,
-        6
-      ],
-      "alternatives": {
-        "2": [
-          "KEITEL"
-        ],
-        "4": [
-          "FIREBALL MISS"
-        ],
-        "5": [
-          "PERISHER"
-        ],
-        "7": [
-          "SCINTILLATION"
-        ],
-        "8": [
-          "DE ARMAS"
-        ],
-        "9": [
-          "BEV'S NINE"
-        ]
-      },
-      "profile": "Full-card analyst · explicit no-bet calls",
-      "rationale": {
-        "8": "Unbeaten Sydney form, including a line through the Derby winner. The staying trip remains the test."
+        "1": "SHE'S SUPREME",
+        "2": "GRAND OMAHA",
+        "3": "PINHOLE",
+        "4": "IMMORTAL STAR",
+        "5": "VIVY AIR",
+        "6": "TEMPTED",
+        "7": "AUTUMN GLOW",
+        "8": "AELIANA",
+        "9": "EDUCATED"
       },
       "tipNotes": {
+        "1": {
+          "why": "Trial follow-up after Gimcrack debut.",
+          "ground": "Good4 in preview.",
+          "run": "Near speed."
+        },
         "2": {
-          "run": "Lead or box-seat from gate two."
+          "why": "Drop from Group company.",
+          "ground": "Good4 in preview.",
+          "run": "Wide draw."
+        },
+        "3": {
+          "why": "Luckless Moonee Valley Cup.",
+          "ground": "Good4 in preview.",
+          "run": "Needs clear passage."
+        },
+        "4": {
+          "why": "Straight-course form; favourable weight.",
+          "ground": "Good4 in preview.",
+          "run": "Off speed."
+        },
+        "5": {
+          "why": "Forgive interrupted Craven Plate.",
+          "ground": "Good4 in preview.",
+          "run": "Needs room."
+        },
+        "6": {
+          "why": "Everest winner; first straight attempt.",
+          "ground": "Good4 in preview.",
+          "run": "Cover then clear."
+        },
+        "7": {
+          "why": "Dominant recent mile form.",
+          "ground": "Good4 in preview.",
+          "run": "Not specified."
         },
         "8": {
-          "run": "First test at this staying distance."
+          "why": "Cox Plate third; suitable position.",
+          "ground": "Good4 in preview.",
+          "run": "Settles well."
+        },
+        "9": {
+          "why": "Seymour win; proven straight form.",
+          "ground": "Good4 in preview.",
+          "run": "Positive position."
         }
       },
-      "meetingGround": "Expected Good 4, rail out 6m; monitor showers."
-    },
-    {
-      "id": "curnow",
-      "name": "Daryl Curnow",
-      "outlet": "GoBet",
-      "group": "GoBet",
-      "date": "2026-11-04",
-      "url": "https://www.gobet.com.au/horse-racing-tips/flemington-november-5-2026/",
-      "picks": {
-        "1": "AUTUMN SLIDE",
-        "2": "YOURE NOT THE KING",
-        "3": "ENCAP",
-        "4": "POLYMNIA",
-        "5": "PERISHER",
-        "6": "ENDLESS SUMMER",
-        "7": "SEQUINNED",
-        "8": "PROXIMA DEA",
-        "9": "CAVALRY GIRL"
-      },
-      "profile": "Full-card racing guide",
-      "rationale": {
-        "8": "Supports the unbeaten filly’s form and expected stamina."
-      },
-      "alternatives": {
-        "8": [
-          "ICELADY",
-          "REFUSE TO CURTSY"
-        ]
-      },
-      "tipNotes": {}
+      "profile": "Published race-by-race analyst"
     },
     {
       "id": "ingram",
       "name": "Glenn Ingram",
       "outlet": "TABtouch",
       "group": "TABtouch",
-      "date": "2026-11-04",
-      "url": "https://www.tabtouch.com.au/racing/2026-11-05/mr/8",
+      "date": null,
+      "url": "https://www.tabtouch.com.au/racing/2026-11-07/mr/1",
       "picks": {
-        "1": "RICK'S CAFE",
-        "2": "YOURE NOT THE KING",
-        "3": "JUST FOLK",
-        "4": "POLYMNIA",
-        "5": "VEYEPEE",
-        "6": "NARAGHI",
-        "7": "SEQUINNED",
-        "8": "DE ARMAS",
-        "9": "CAVALRY GIRL"
-      },
-      "profile": "Racecard analyst · all nine races",
-      "rankings": {
-        "1": [
-          "RICK'S CAFE",
-          "CERTAINLY QUIET",
-          "STUNG",
-          "SPEX"
-        ],
-        "2": [
-          "YOURE NOT THE KING",
-          "GETAFIX",
-          "ALABAMA FOX",
-          "SILVER DAGGER"
-        ],
-        "3": [
-          "JUST FOLK",
-          "FEROCE",
-          "TAVI TIME",
-          "WARMONGER"
-        ],
-        "4": [
-          "POLYMNIA",
-          "SASS APPEAL",
-          "GOLD MEDALLIST",
-          "FIREBALL MISS"
-        ],
-        "5": [
-          "VEYEPEE",
-          "PERISHER",
-          "NOBLER",
-          "FIORENOT"
-        ],
-        "6": [
-          "NARAGHI",
-          "SULEK",
-          "ROSA AOTEAROA",
-          "WETUMPKA"
-        ],
-        "7": [
-          "SEQUINNED",
-          "SEMANTICS",
-          "CALAMARI RING",
-          "NISHIOKA"
-        ],
-        "8": [
-          "DE ARMAS",
-          "PROXIMA DEA",
-          "REFUSE TO CURTSY",
-          "CHURCHILL ROSE"
-        ],
-        "9": [
-          "CAVALRY GIRL",
-          "REY MAGNERIO",
-          "BEV'S NINE",
-          "ICE KOOL"
-        ]
-      },
-      "perRaceSource": true,
-      "rationale": {
-        "8": "Prefers the Wakeful winner’s class and quick back-up while acknowledging the staying question.",
-        "5": "A lighter weight and a forward ride are the appeal for Veyepee."
+        "1": "SOLDI",
+        "2": "FIORENOT",
+        "3": "PINHOLE",
+        "4": "HANKEE ALPHA",
+        "5": "ZULEIKA",
+        "6": "JOLIESTAR",
+        "7": "AUTUMN GLOW",
+        "8": "COSMIC CRUSADER",
+        "9": "ROYAL RENDEZVOUS"
       },
       "tipNotes": {
         "1": {
-          "why": "Stuck on after working wide."
+          "why": "Race experience against debutants.",
+          "ground": "Not stated.",
+          "run": "Professional racing manners."
         },
         "2": {
-          "why": "Progressive; stable going well."
+          "why": "Third-up and easier race.",
+          "ground": "Needs ground on good side.",
+          "run": "Favourable draw."
         },
         "3": {
-          "why": "Maps to a soft lead.",
-          "run": "Soft lead expected."
+          "why": "Held up last start.",
+          "ground": "Not stated.",
+          "run": "Midfield; even tempo."
         },
         "4": {
-          "why": "Strong latest run behind leaders."
+          "why": "Luckless second-up; wet win first-up.",
+          "ground": "Rain assists.",
+          "run": "Outside draw preferred."
         },
         "5": {
-          "why": "Weight drop; inside draw.",
-          "run": "Forward from inside draw."
+          "why": "Third-up to preferred 2000m.",
+          "ground": "Not stated.",
+          "run": "Not specified."
         },
         "6": {
-          "why": "Promising first-up gap-taking win.",
-          "run": "Stronger class is the test."
+          "why": "Proven straight winner over untested rival.",
+          "ground": "Not stated.",
+          "run": "Mazu sets genuine pace."
         },
         "7": {
-          "why": "Strong acceleration; straight looks suitable.",
-          "run": "Outside draw suits straight racing."
+          "why": "Autumn Glow leads his selections.",
+          "ground": "Not stated.",
+          "run": "Lindermann goes forward."
         },
         "8": {
-          "why": "Wakeful win; quick backup.",
-          "run": "Stamina beyond 2000m remains a query."
+          "why": "Strong tempo suits Cosmic Crusader.",
+          "ground": "Soft helps.",
+          "run": "Slow pace favours Birdman."
         },
         "9": {
-          "why": "Published choice now scratched."
+          "why": "Needs things to fall right.",
+          "ground": "Not stated.",
+          "run": "Fast speed; outside finish."
         }
-      }
+      },
+      "profile": "Current race preview; publication time not supplied",
+      "perRaceSource": true
     },
     {
-      "id": "cusworth",
-      "name": "Adam Cusworth",
-      "outlet": "Blackbook",
-      "group": "Blackbook",
-      "date": "2026-11-03",
-      "url": "https://www.blackbook.com.au/feature-races/vrc-oaks/crown-oaks-racing-tips-20261103-0001/",
+      "id": "hunter",
+      "name": "Mark Hunter",
+      "outlet": "SEN / RSN",
+      "group": "SEN",
+      "date": "2026-11-06",
+      "url": "https://sen.com.au/news/2026/11/06/horse-racing-tips-mark-hunter-rsn-caulfield-flemington-sandown-07-11",
       "picks": {
-        "1": "BON FETE",
-        "4": "SASS APPEAL",
-        "6": "ROSA AOTEAROA",
-        "8": "QUICK FINISH",
-        "9": "CAVALRY GIRL"
-      },
-      "profile": "Selected-race best bets + Oaks preview",
-      "alternatives": {
-        "8": [
-          "SHAMEFUL IMPULSE"
-        ]
-      },
-      "rationale": {
-        "8": "The Derby placing establishes the trip; a favourable draw can support a handy run."
-      },
-      "quote": "Barrier five and proven stamina give her a tactical advantage.",
-      "quoteRace": 8,
-      "quoteType": "Published column",
-      "sourceDates": {
-        "1": "2026-11-02",
-        "4": "2026-11-02",
-        "6": "2026-11-02",
-        "8": "2026-11-03",
-        "9": "2026-11-02"
-      },
-      "sourceUrls": {
-        "1": "https://www.blackbook.com.au/horse-racing-tips/flemington-racing-tips-for-november-5-20261102-0006/",
-        "4": "https://www.blackbook.com.au/horse-racing-tips/flemington-racing-tips-for-november-5-20261102-0006/",
-        "6": "https://www.blackbook.com.au/horse-racing-tips/flemington-racing-tips-for-november-5-20261102-0006/",
-        "9": "https://www.blackbook.com.au/horse-racing-tips/flemington-racing-tips-for-november-5-20261102-0006/"
-      },
-      "conditional": {
-        "1": "Only if Bon Fete gains a start."
+        "3": "PINHOLE",
+        "4": "HANKEE ALPHA",
+        "9": "ELECTRIC ELVIS"
       },
       "tipNotes": {
-        "8": {
-          "run": "Handy from gate five; proven at 2500m."
+        "3": {
+          "why": "Published win selection.",
+          "ground": "Not stated.",
+          "run": "Not stated."
+        },
+        "4": {
+          "why": "Best bet.",
+          "ground": "Not stated.",
+          "run": "Not stated."
+        },
+        "9": {
+          "why": "Roughie selection.",
+          "ground": "Not stated.",
+          "run": "Not stated."
         }
-      }
+      },
+      "profile": "Selected races only; R9 labelled roughie"
     },
     {
-      "id": "marsh",
-      "name": "Alex Marsh",
-      "outlet": "Bets.com.au",
-      "group": "Bets.com.au",
-      "date": "2026-11-03",
-      "url": "https://www.bets.com.au/horse-racing/group-1-races/vrc-oaks-betting-tips-20261103-0014/",
+      "id": "miles",
+      "name": "Miles Pfitzner",
+      "outlet": "SEN / RSN",
+      "group": "SEN",
+      "date": "2026-11-06",
+      "url": "https://sen.com.au/news/2026/11/06/saturday-tip-sheet-race-by-race-for-stakes-day-more-07-11",
       "picks": {
-        "8": "PROXIMA DEA"
+        "1": "SOLDI",
+        "3": "BERKELEY SQUARE",
+        "8": "COSMIC CRUSADER",
+        "9": "EDUCATED"
       },
-      "profile": "Oaks feature analyst",
-      "alternatives": {
-        "8": [
-          "SALANN",
-          "REFUSE TO CURTSY"
-        ]
-      },
-      "rationale": {
-        "8": "Strong Sydney form through Global Goal and Stormy Marco underpins the selection."
-      },
-      "tipNotes": {}
+      "tipNotes": {},
+      "profile": "Tip sheet; reasons and track assumptions not supplied"
     },
     {
-      "id": "palmer",
-      "name": "Palmerbet Staff",
-      "outlet": "Palmerbet",
-      "group": "Palmerbet",
-      "date": "2026-11-03",
-      "url": "https://blog.palmerbet.com/horse-racing/race_preview/g1-the-oaks/",
+      "id": "gately",
+      "name": "David Gately",
+      "outlet": "SEN / RSN",
+      "group": "SEN",
+      "date": "2026-11-06",
+      "url": "https://sen.com.au/news/2026/11/06/saturday-tip-sheet-race-by-race-for-stakes-day-more-07-11",
       "picks": {
-        "8": "PROXIMA DEA"
+        "6": "TEMPTED"
       },
-      "profile": "Bookmaker editorial desk · Oaks only",
-      "alternatives": {
-        "8": [
-          "QUICK FINISH"
-        ]
-      },
-      "rationale": {
-        "8": "The unbeaten filly is the leading selection; Quick Finish is the alternative with proven staying form."
-      },
-      "tipNotes": {}
+      "tipNotes": {},
+      "profile": "Tip sheet; reasons and track assumptions not supplied"
     },
     {
-      "id": "eckford",
-      "name": "Ryan Eckford",
-      "outlet": "Ryan Eckford Sports",
-      "group": "Ryan Eckford Sports",
-      "date": "2026-11-04",
-      "url": "https://ryaneckfordsports.wordpress.com/2026/11/04/2026-vrc-oaks-preview/",
+      "id": "scanlon",
+      "name": "Connor Scanlon",
+      "outlet": "SEN / RSN",
+      "group": "SEN",
+      "date": null,
+      "url": "https://sen.com.au/news/2026/11/05/group-1-gurus-who-to-back-on-champions-day-why",
       "picks": {
-        "1": "ALL BUSINESS",
-        "2": "SAV ON ICE",
-        "3": "JUST FOLK",
-        "4": "SASS APPEAL",
-        "5": "PERISHER",
-        "6": "YAM",
-        "7": "SEQUINNED",
-        "8": "QUICK FINISH",
-        "9": "CAVALRY GIRL"
+        "6": "TEMPTED",
+        "7": "AUTUMN GLOW",
+        "8": "BIRDMAN"
       },
-      "profile": "Independent sports blogger · full-card selections",
-      "rankings": {
-        "8": [
-          "QUICK FINISH",
-          "PROXIMA DEA",
-          "DE ARMAS",
-          "ICELADY"
-        ]
+      "tipNotes": {
+        "6": {
+          "why": "Everest win; straight untested.",
+          "ground": "Not stated.",
+          "run": "Not stated."
+        },
+        "7": {
+          "why": "Strongest mile form.",
+          "ground": "Not stated.",
+          "run": "Not stated."
+        },
+        "8": {
+          "why": "Forgive Cox Plate interference.",
+          "ground": "Not stated.",
+          "run": "Clear passage needed."
+        }
       },
-      "rationale": {
-        "8": "Quick Finish heads the published Oaks order after the Derby placing."
+      "profile": "Group 1 column; shares SEN outlet group"
+    },
+    {
+      "id": "clark",
+      "name": "Ethan Clark",
+      "outlet": "SEN / RSN",
+      "group": "SEN",
+      "date": null,
+      "url": "https://sen.com.au/news/2026/11/05/group-1-gurus-who-to-back-on-champions-day-why",
+      "picks": {
+        "6": "HEADWALL",
+        "7": "AUTUMN GLOW",
+        "8": "BIRDMAN"
       },
-      "tipNotes": {}
+      "tipNotes": {
+        "6": {
+          "why": "Straight suits; needs cover.",
+          "ground": "Not stated.",
+          "run": "Cover then outside."
+        },
+        "7": {
+          "why": "Dominant mare.",
+          "ground": "Not stated.",
+          "run": "Not stated."
+        },
+        "8": {
+          "why": "Cox Plate interference.",
+          "ground": "Not stated.",
+          "run": "Clear run needed."
+        }
+      },
+      "profile": "Group 1 column; shares SEN outlet group"
+    },
+    {
+      "id": "slevison",
+      "name": "Andrew Slevison",
+      "outlet": "SEN / RSN",
+      "group": "SEN",
+      "date": null,
+      "url": "https://sen.com.au/news/2026/11/05/group-1-gurus-who-to-back-on-champions-day-why",
+      "picks": {
+        "6": "TEMPTED",
+        "7": "AUTUMN GLOW",
+        "8": "COSMIC CRUSADER"
+      },
+      "tipNotes": {
+        "6": {
+          "why": "Must handle straight.",
+          "ground": "Not stated.",
+          "run": "Not stated."
+        },
+        "7": {
+          "why": "Class advantage.",
+          "ground": "Not stated.",
+          "run": "Not stated."
+        },
+        "8": {
+          "why": "Cox Plate winner.",
+          "ground": "Not stated.",
+          "run": "Not stated."
+        }
+      },
+      "profile": "Group 1 column; shares SEN outlet group"
     }
   ],
-  "offers": [
-    {
-      "book": "Sportsbet",
-      "name": "Bet Return",
-      "kind": "Personalised token",
-      "status": "Account-dependent · Oaks coverage unconfirmed",
-      "summary": "An eligible cash fixed-odds win bet can return a bonus bet for the token’s specified finishing positions.",
-      "terms": [
-        "Cap and qualifying places: shown on your token.",
-        "One per race; cannot combine with Power Play or another promotion.",
-        "Race-specific tokens expire after the race. Bonus bet is not a cash refund."
-      ],
-      "source": "https://helpcentre.sportsbet.com.au/hc/en-us/articles/115013721108-Product-Features-Terms-and-Conditions",
-      "destination": "https://www.sportsbet.com.au/specials"
-    },
-    {
-      "book": "TAB",
-      "name": "Race Saver / Reload",
-      "kind": "Personalised bonus-bet offers",
-      "status": "Account-dependent · Oaks coverage unconfirmed",
-      "summary": "Allocated offers can provide a bonus bet after a qualifying result or non-winning win bet.",
-      "terms": [
-        "Your token defines the cap, qualifying results and races.",
-        "Once per person per race. Thoroughbred win offers require eight runners.",
-        "Bonus-funded, live or cashed-out bets can be excluded. Check the full token terms."
-      ],
-      "source": "https://help.tab.com.au/bonus-bets-promotions/my-offers-bonus-bet-t-cs",
-      "destination": "https://help.tab.com.au/bonus-bets-promotions/my-offers-faqs"
-    },
-    {
-      "book": "TAB",
-      "name": "Pump",
-      "kind": "Personalised price enhancement",
-      "status": "Account-dependent · Oaks coverage unconfirmed",
-      "summary": "An allocated Pump can enhance the odds on an eligible bet, with cash winnings.",
-      "terms": [
-        "Maximum stake and potential payout are offer-specific.",
-        "Check eligible markets and expiry in the offer.",
-        "Cannot combine with another offer. Compare the resulting price, not the badge."
-      ],
-      "source": "https://help.tab.com.au/bonus-bets-promotions/my-offers-faqs",
-      "destination": "https://help.tab.com.au/bonus-bets-promotions/my-offers-faqs"
-    },
-    {
-      "book": "bet365",
-      "name": "Each Way Extra",
-      "kind": "Published betting feature",
-      "status": "Published feature · Oaks availability unconfirmed",
-      "summary": "On selected horse races, choose more or fewer places in exchange for different odds.",
-      "terms": [
-        "More places can mean a shorter price; compare both win and place terms.",
-        "Scratchings may alter available terms.",
-        "No universal Oaks stake cap or coverage verified."
-      ],
-      "source": "https://extra.bet365.com.au/features/au/each-way-extra",
-      "destination": "https://www.bet365.com.au/promos/en-au/horse-racing"
-    }
-  ],
-  "offerNote": "No public Oaks-specific promotion for 5 November 2026 was verified. These are published features or personalised offers to check in your own account; no eligibility or bonus value is assumed.",
-  "socialNote": "No direct Grok connection or relevant verified X post was available. Quotes are from the linked published columns and reports.",
-  "otherBooks": [
-    {
-      "name": "Ladbrokes Australia",
-      "url": "https://www.ladbrokes.com.au/"
-    },
-    {
-      "name": "Neds",
-      "url": "https://www.neds.com.au/"
-    }
-  ],
-  "coverageNote": "Jared Timms’s matching Ladbrokes column is counted once with TAB NZ. Alex Marsh’s syndicated RacingInsider version is counted once. Blackbook full-card and Oaks articles share Adam Cusworth’s identity. Neds and TAB NZ share ownership; source agreement is not independent evidence."
+  "coverageNote": "Nine named voices across four outlet groups. SEN voices share one group for the model booster. Published picks are not accuracy-ranked. Missing assumptions remain missing; TABtouch publication time is unknown.",
+  "socialNote": "Published columns and official previews only. No unverified X posts or invented quotes."
 }

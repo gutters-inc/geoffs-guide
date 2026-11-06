@@ -1,0 +1,120 @@
+{
+  "date": "2026-11-05",
+  "checked": "2026-11-05T07:10:41.796Z",
+  "originalWins": 3,
+  "officialRaces": 9,
+  "firmRevisedPicks": 4,
+  "revisedWins": 1,
+  "withheld": 5,
+  "races": [
+    {
+      "number": 1,
+      "winner": "Chiringita",
+      "source": "https://www.tabtouch.com.au/racing/2026-11-05/mr/1",
+      "going": "Good4",
+      "original": "Spex",
+      "originalWon": false,
+      "winnerOriginalRank": 7,
+      "preRace": "Spex",
+      "preRaceWon": false,
+      "preRaceAt": "2026-11-05T01:50:36.250Z"
+    },
+    {
+      "number": 2,
+      "winner": "Youre Not The King",
+      "source": "https://www.tabtouch.com.au/racing/2026-11-05/mr/2",
+      "going": "Good4",
+      "original": "Misty Whisper",
+      "originalWon": false,
+      "winnerOriginalRank": 6,
+      "preRace": null,
+      "preRaceWon": false,
+      "preRaceAt": "2026-11-05T02:33:38.337Z"
+    },
+    {
+      "number": 3,
+      "winner": "Harry's Yacht",
+      "source": "https://www.tabtouch.com.au/racing/2026-11-05/mr/3",
+      "going": "Good4",
+      "original": "Harry's Yacht",
+      "originalWon": true,
+      "winnerOriginalRank": 1,
+      "preRace": null,
+      "preRaceWon": false,
+      "preRaceAt": "2026-11-05T03:05:48.059Z"
+    },
+    {
+      "number": 4,
+      "winner": "Bella Verona",
+      "source": "https://www.tabtouch.com.au/racing/2026-11-05/mr/4",
+      "going": "Good4",
+      "original": "Bella Verona",
+      "originalWon": true,
+      "winnerOriginalRank": 1,
+      "preRace": "Bella Verona",
+      "preRaceWon": true,
+      "preRaceAt": "2026-11-05T03:35:21.147Z"
+    },
+    {
+      "number": 5,
+      "winner": "Nobler",
+      "source": "https://www.tabtouch.com.au/racing/2026-11-05/mr/5",
+      "going": "Good4",
+      "original": "Veyepee",
+      "originalWon": false,
+      "winnerOriginalRank": 5,
+      "preRace": null,
+      "preRaceWon": false,
+      "preRaceAt": "2026-11-05T04:11:03.871Z"
+    },
+    {
+      "number": 6,
+      "winner": "Sulek",
+      "source": "https://www.tabtouch.com.au/racing/2026-11-05/mr/6",
+      "going": "Good4",
+      "original": "Sulek",
+      "originalWon": true,
+      "winnerOriginalRank": 1,
+      "preRace": null,
+      "preRaceWon": false,
+      "preRaceAt": "2026-11-05T04:53:25.262Z"
+    },
+    {
+      "number": 7,
+      "winner": "Lady Catalina",
+      "source": "https://www.tabtouch.com.au/racing/2026-11-05/mr/7",
+      "going": "Good4",
+      "original": "Semantics",
+      "originalWon": false,
+      "winnerOriginalRank": 11,
+      "preRace": null,
+      "preRaceWon": false,
+      "preRaceAt": "2026-11-05T05:21:17.691Z"
+    },
+    {
+      "number": 8,
+      "winner": "Proxima Dea",
+      "source": "https://www.tabtouch.com.au/racing/2026-11-05/mr/8",
+      "going": "Good4",
+      "original": "De Armas",
+      "originalWon": false,
+      "winnerOriginalRank": 3,
+      "preRace": "De Armas",
+      "preRaceWon": false,
+      "preRaceAt": "2026-11-05T05:21:17.691Z"
+    },
+    {
+      "number": 9,
+      "winner": "Rey Magnerio",
+      "source": "https://www.tabtouch.com.au/racing/2026-11-05/mr/9",
+      "going": "Good4",
+      "original": "Bev's Nine",
+      "originalWon": false,
+      "winnerOriginalRank": 6,
+      "preRace": "Bev's Nine",
+      "preRaceWon": false,
+      "preRaceAt": "2026-11-05T06:43:55.552Z"
+    }
+  ],
+  "lesson": "A nine-race review is descriptive, not validation. Sparse form and fresh runners need uncertainty, not automatic downgrades. Do not fit new jockey or lane bonuses to a single meeting."
+}
