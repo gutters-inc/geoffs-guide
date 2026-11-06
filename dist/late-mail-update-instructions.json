@@ -142,5 +142,10 @@
     "watchLimitMinutes": 45,
     "sourceBudgetPerHour": 30,
     "sourceBudgetPerDay": 90
+  },
+  "raceVideos": {
+    "instructions": "/race-video-instructions.json",
+    "config": "/race-video-config.json",
+    "when": "As soon as the initial saved ten-minute preview exists; run concurrently with the bounded result watch. Never wait until after jump to start a generation."
   }
 }

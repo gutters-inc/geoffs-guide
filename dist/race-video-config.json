@@ -1,0 +1,21 @@
+{
+  "enabled": true,
+  "meetingDate": "2026-11-07",
+  "voiceId": "fokq7YjnEjprXL6oclZl",
+  "voiceName": "Geoff",
+  "language": "en-NZ",
+  "photoAssetId": "yB7pkNFjMDeUNlVDDuy7",
+  "photoPath": "/assets/geoff-source.jpg",
+  "templateFlowId": "IK8PHfkjmi6gtHuoPfIM",
+  "photoNodeId": "K7xZBHVL3v8RYLgCY5Nr",
+  "speechModel": "eleven_v4",
+  "videoModel": "creatify-aurora",
+  "resolution": "480p",
+  "generationsPerRace": 1,
+  "speechCreditCap": 1000,
+  "videoCreditCap": 16000,
+  "maximumDurationSeconds": 35,
+  "maximumRaces": 9,
+  "generationWindow": "After successful saved ten-minute check, before jump",
+  "unattendedVerified": false
+}

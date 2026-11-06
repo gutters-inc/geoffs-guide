@@ -56,7 +56,7 @@ export async function lateMailResponse(request,env,ctx,services={race:fetchRace,
   if(path==='/api/meeting')return Response.json(snapshot.meeting,{headers:{'cache-control':'public, max-age=30'}});
   if(path==='/api/weather')return Response.json(snapshot.weather||{unavailable:true,checked:null},{headers:{'cache-control':'public, max-age=300'}});
   const attempt=await env.BUCKET?.get(MAIL_ATTEMPT),plan=await env.BUCKET?.get(MAIL_PLAN);
-  return Response.json({...snapshot,storageReady:!!env.BUCKET,lastAttempt:attempt?await attempt.json():null,automation:plan?await plan.json():null},{headers:{'cache-control':'no-store'}});
+  return Response.json({...snapshot,raceVideos:typeof raceVideoIndex==='function'?(await raceVideoIndex(env)).videos:{},storageReady:!!env.BUCKET,lastAttempt:attempt?await attempt.json():null,automation:plan?await plan.json():null},{headers:{'cache-control':'no-store'}});
  }
  if(request.method!=='POST')return new Response('Method not allowed',{status:405});
  if(!await authorisedMailWriter(request,env))return Response.json({error:'Update authorization required'},{status:401});
