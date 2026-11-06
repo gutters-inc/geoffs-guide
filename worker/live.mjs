@@ -25,11 +25,14 @@ export function parseRace(html,number,now=new Date().toISOString()){
   const lead=runners.find(h=>h.number===selectionNumbers[0]);
   return {number,checked:now,startAt,latestTip:lead?{number:lead.number,name:lead.name,author:clean(author),checked:now,published:null}:null,source:`https://www.tabtouch.com.au/racing/${DATE}/mr/${number}`,sourceUpdated:info?.timestamp||null,condition:clean(info?.condition||text.match(/Track condition\s+((?:Good|Soft|Heavy|Firm|Synthetic)\s*\d*)/i)?.[1]),weather:clean(info?.weather||text.match(/Weather conditions\s+(.{1,25}?)\s+Track condition/i)?.[1]),distance:num(info?.distance)||num(text.match(/Distance\s+(\d+)m/i)?.[1]),status,winners,runners};
 }
-async function upstream(url){const r=await fetch(url,{headers:{accept:'text/html,application/json','user-agent':'GeoffsGuide/1.0 (+public race-day companion)'},signal:AbortSignal.timeout(15000)});if(!r.ok)throw Error('Source unavailable');return r}
-export async function meeting(){
- const races=[],errors=[];let next=1;
- await Promise.all(Array.from({length:3},async()=>{while(next<=9){const n=next++;try{races.push(parseRace(await(await upstream(`https://www.tabtouch.com.au/racing/${DATE}/mr/${n}`)).text(),n))}catch{errors.push({number:n,message:'Race feed unavailable or format changed'})}}}));
- return {date:DATE,checked:new Date().toISOString(),races:races.sort((a,b)=>a.number-b.number),errors};
+export function retryAfterTime(value,now=Date.now()){
+ if(!value)return null;const seconds=Number(value);return Number.isFinite(seconds)?now+Math.max(0,seconds)*1000:(Number.isFinite(Date.parse(value))?Date.parse(value):null);
+}
+async function upstream(url){const r=await fetch(url,{headers:{accept:'text/html,application/json','user-agent':'GeoffsGuide/1.0 (+public race-day companion)'},signal:AbortSignal.timeout(12000)});if(!r.ok){const error=Error('Source unavailable');error.status=r.status;error.retryAt=retryAfterTime(r.headers.get('retry-after'));throw error}return r}
+export async function fetchRace(number){if(!Number.isInteger(number)||number<1||number>9)throw Error('Invalid race');return parseRace(await(await upstream(`https://www.tabtouch.com.au/racing/${DATE}/mr/${number}`)).text(),number)}
+export async function meeting({numbers=Array.from({length:9},(_,i)=>i+1)}={}){
+ const races=[],errors=[];for(const n of numbers){try{races.push(await fetchRace(n))}catch(error){errors.push({number:n,message:'Race source unavailable',status:error.status||null});break}}
+ return {date:DATE,checked:new Date().toISOString(),races,errors};
 }
 export async function weather(){
  const url='https://api.open-meteo.com/v1/forecast?latitude=-37.788&longitude=144.907&current=temperature_2m,precipitation,weather_code,wind_speed_10m&daily=precipitation_sum,precipitation_probability_max&timezone=Australia%2FMelbourne&forecast_days=3';

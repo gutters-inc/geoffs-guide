@@ -27,7 +27,11 @@ UI sources and assets are in `dist/`; `worker/live.mjs` fetches the fixed TABtou
 
 ## Saved updates and schedules
 
-The two Site-linked Oaks automations have finished and remain **paused**. No Stakes Day race-day schedule is enabled. The proposed ten-minute pre-race slots are recorded in `dist/late-mail-plan.json`, but a plan does not enable execution. Preserve paused state until the user requests resuming race-day checks.
+The two existing Site-linked A/B automations are reused for Stakes Day on 7 November, with at least an hour between runs within each task. The authoritative enabled state is returned by `/api/late-mail`; the published plan records the intended slots, not execution proof.
+
+- A pre-race starts: 12:30, 13:40, 15:00, 16:20, 17:40 AEDT (races 1, 3, 5, 7, 9).
+- B pre-race starts: 13:05, 14:20, 15:40, 17:00 AEDT (races 2, 4, 6, 8), plus the 18:10 final wrap.
+- Each race run performs its pre-check, then keeps a bounded client watch alive for result checks near jump +3, +6, +10 and +20 minutes. It stops at official/abandoned; source cooldowns can postpone or suppress checks. Any watch ends within 45 minutes. A delayed race uses its verified revised time within that bound. The next pre-check also checks at most one older unresolved race; the final wrap fetches only unresolved races.
 
 Each future job uses the published `/late-mail-update-instructions.json`, `/late-mail-plan.json` and fixed-Site `/late-mail-updater.py`. A fresh worker obtains supported Site service access through `get_site`, sends it only to this Site in `OAI-Sites-Authorization` plus the standard `Authorization` header, and supplies credentials via hidden stdin, never command arguments, files or output. The protected writer verifies a SHA-256 digest against the hosted secret `LATE_MAIL_UPDATER_SHA256`. Do not rotate platform credentials to test access.
 
@@ -64,3 +68,15 @@ Public repository: https://github.com/gutters-inc/geoffs-guide (`main`). The `gi
 Use Node 22+ and Python 3. Install the JS dev dependency with `npm install`; `npm test` runs the checks and `npm run build` packages the Worker. The collector additionally needs `beautifulsoup4`. A copy served from `dist/` can use the packaged saved fallback; production refreshes need the existing R2 binding and runtime writer secret, neither of which belongs in Git.
 
 The newer Results tab, share cards, notification opt-in and official dividend parsing were retained during the Stakes refresh. The historical supplied-price return artwork is available only in `oaks-review.html`; it is never presented as a Stakes Day result. New Results scoreboards count only official races and distinguish firm revised picks from baseline fallbacks.
+
+## Rate-limited event watches
+
+`worker/polling.mjs` holds the shared policy. A conditional R2 write acquires a five-minute exclusive refresh lease, so separate Worker instances and overlapping jobs cannot stampede the source. An expired owner cannot release a newer lease; publication verifies ownership. Racing requests are spaced by at least three seconds, the same race cannot be fetched more than once in two minutes, full manual refreshes have a ten-minute minimum, and all callers share ceilings of 30 racing requests/hour and 90/day. Counts include failed attempts. Weather has a thirty-minute minimum and is skipped on post-result polls.
+
+429 and transient failures stop the batch and persist exponential backoff with jitter, honouring longer Retry-After values. A source 403 opens a one-hour circuit. No browser, public `/api/meeting`, public `/api/weather`, or saved-edition read ever fetches upstream. Visitors read the shared edition approximately every 60–75 seconds while visible. Browser notifications are deduplicated per meeting/race, not per edition.
+
+The stdlib-only `dist/late-mail-updater.py` watch receives access through hidden stdin, follows the saved jump, and sleeps in chunks of at most thirty seconds. It is not an unlimited daemon and never stores the credential. Each run may take around thirty minutes; task execution and delivery remain best-effort, not a timing guarantee. No finish-event webhook is supplied by this source.
+
+Provisional placings appear in Late mail and Results as **INTERIM**, without payouts or celebration. They freeze the saved pre-race tip but do not enter track learning, jockey/trainer scoreboards or tipster accuracy. Only official reports count. A provisional/pending response cannot overwrite an earlier official result. Tips without a recent pre-jump check remain Low confidence.
+
+`polling.test.mjs` covers twenty concurrent lease claims, per-race/host/budget limits, cooldown persistence, Retry-After, clock boundaries, terminal stops, interim freeze and public reads without upstream calls. The UI suite also checks interim labels and their exclusion from official results.

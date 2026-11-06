@@ -12,11 +12,12 @@
     if(mail?.date!==form?.date||!editorial)return;
     const races=(mail.meeting?.races||[]).filter(r=>r.status==='official'&&r.winners?.length);
     const completed=races.filter(r=>r.winners?.length).length;
+    const interims=(mail.meeting?.races||[]).filter(r=>r.status==='provisional');const interimBox=document.getElementById('interimResults');if(interimBox)interimBox.innerHTML=interims.map(r=>interimPlacingsHTML(r)).join('');
     const panel=document.getElementById('resultsPanel'),roundup=document.getElementById('dayRoundup');
     panel?.append(roundup);
     const loading=document.getElementById('resultsLoading'),label=document.getElementById('resultsTabLabel');
     if(label)label.textContent='Results';
-    if(!races.length){roundup.hidden=true;if(loading){loading.hidden=false;loading.innerHTML='<span>STAKES DAY</span><h2>The scorecard starts after Race 1.</h2><p>Official results will collect here. <a href="oaks-review.html">See the Oaks Day archive ↗</a></p>'}return}
+    if(!races.length){for(const id of ['jockeyLeaderboard','trainerLeaderboard','tipsterScoreboard','roundupResultGrid'])document.getElementById(id).innerHTML='';roundup.hidden=true;if(loading){loading.hidden=false;loading.innerHTML='<span>STAKES DAY</span><h2>The scorecard starts after Race 1.</h2><p>Official results will collect here. <a href="oaks-review.html">See the Oaks Day archive ↗</a></p>'}return}
     if(loading)loading.hidden=true;
     document.getElementById('meetingProgress').textContent=`${races.length} of ${form.races.length} races official`;
     roundup.hidden=false;

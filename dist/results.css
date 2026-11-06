@@ -87,3 +87,5 @@ html,body{max-width:100%;overflow-x:hidden}
 
 /* Five mobile tabs fit without horizontal scrolling. */
 .page-tabs{gap:0;overflow-x:visible}.page-tabs>button{flex:1 1 0;min-width:0;font-size:10px}.page-tabs .nav-icon{width:21px;height:21px}#dayRoundup{margin:18px 0}.roundup-section{padding-top:20px}.roundup-heading h2{font-size:25px}
+
+.interim-race-result{background:#fff;border:1px solid var(--line);border-left:4px solid var(--red);padding:12px;margin:12px 0}.interim-race-result>span{font-size:10px;font-weight:800;color:var(--red-dark);letter-spacing:.7px}.interim-race-result h4{font-size:16px;margin:6px 0}.interim-race-result ol{list-style:none;padding:0;margin:8px 0;font-size:13px}.interim-race-result li{padding:4px 0}.interim-race-result small{display:block;font-size:10px;color:var(--muted);line-height:1.5}

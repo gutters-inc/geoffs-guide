@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {parseRace,pageModel,liveResponse} from './worker/live.mjs';
+import {parseRace,pageModel,liveResponse,retryAfterTime} from './worker/live.mjs';
 import LiveForm from './scripts/test-live-model.mjs';
 const fixture=(model,extra='')=>`<title>Flemington | Horse Racing | Odds &amp; Betting</title><p>Track condition Good4 Distance 1700m</p>${extra}<script>var model = ${JSON.stringify(model)};</script>`;
 const starters=[{number:1,name:'TEST (NZ)',rider:'RIDER A',barrier:1,weight:56,isWinner:true},{number:2,name:'OTHER',rider:'RIDER B',barrier:2,weight:57,isFobScratched:true}];
@@ -20,3 +20,5 @@ const dead=make(1,{winners:[{number:1},{number:2}]});signals=LiveForm.signals({r
 assert.equal(await liveResponse(new Request('https://example.com/no-api'),{}),null);
 assert.equal((await liveResponse(new Request('https://example.com/api/meeting',{method:'POST'}),{})).status,405);
 console.log('PASS: live parser guards, official/provisional results, scratched fields, dead heats, no future leakage, minimum sample and comparable-course draw learning.');
+
+assert.equal(retryAfterTime('120',1000),121000);assert.equal(retryAfterTime('Sat, 07 Nov 2026 02:00:00 GMT',0),Date.parse('2026-11-07T02:00:00Z'));

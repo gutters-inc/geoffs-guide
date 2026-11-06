@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';import fs from 'node:fs';import {createRequire} from 'node:module';import {webcrypto} from 'node:crypto';
 import {buildLateMail,validateMailNotes,authorisedMailWriter,lateMailResponse} from './worker/late-mail.mjs';
+import {memoryBucket} from './test-bucket.mjs';
 import {liveResponse} from './worker/live.mjs';import LM from './scripts/test-live-model.mjs';
 const require=createRequire(import.meta.url),M=require('./dist/model.js');
 const original=JSON.parse(fs.readFileSync('dist/data.json')),editorial=JSON.parse(fs.readFileSync('dist/editorial.json')),gearBase=JSON.parse(fs.readFileSync('dist/gear-baseline.json')),seed=JSON.parse(fs.readFileSync('dist/late-mail.json'));
@@ -20,16 +21,16 @@ assert.equal((await liveResponse(new Request('https://test/api/weather'),{})).st
 // Exercise the protected durable writer, readback, retries and failure retention.
 globalThis.FormModel=M;globalThis.LiveForm=LM;
 globalThis.assets=Object.fromEntries([['/data.json',original],['/editorial.json',editorial],['/gear-baseline.json',gearBase],['/late-mail.json',seed]].map(([key,obj])=>[key,{body:Buffer.from(JSON.stringify(obj)).toString('base64')}]));
-const store=new Map(),bucket={get:async key=>store.has(key)?{json:async()=>JSON.parse(store.get(key))}:null,put:async(key,value)=>{store.set(key,value)}};
+const bucket=memoryBucket(),store=bucket.values;
 const token='test-only-service-token',digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(token)),hash=Buffer.from(digest).toString('hex'),env={BUCKET:bucket,LATE_MAIL_UPDATER_SHA256:hash};
 assert(!await authorisedMailWriter(new Request('https://test'),env));
-let calls=0;const services={meeting:async()=>{calls++;return seed.meeting},weather:async()=>seed.weather};
-const post=(key,authorized=true)=>new Request('https://test/api/late-mail/refresh',{method:'POST',headers:authorized?{authorization:'Bearer '+token}:{},body:JSON.stringify({runKey:key,notes:[]})});
+let calls=0,clock=Date.now();const services={meeting:async()=>{calls++;return seed.meeting},weather:async()=>seed.weather,now:()=>clock};
+const post=(key,authorized=true)=>new Request('https://test/api/late-mail/refresh',{method:'POST',headers:authorized?{authorization:'Bearer '+token}:{},body:JSON.stringify({runKey:key,phase:'manual',notes:[]})});
 assert.equal((await lateMailResponse(post('2026-11-07-initial',false),env,{},services)).status,401);
 let response=await lateMailResponse(post('2026-11-07-initial'),env,{},services);assert.equal(response.status,200);assert(store.has('late-mail/2026-11-07/latest.json'));
 const saved=await(await lateMailResponse(new Request('https://test/api/late-mail'),env,{},services)).json();assert(saved.storageReady);assert(saved.updated);assert.equal(saved.meeting.races.length,9);
 response=await lateMailResponse(post('2026-11-07-initial'),env,{},services);assert((await response.json()).idempotent);assert.equal(calls,1);
-const fail={meeting:async()=>({races:[],errors:[{number:1}]}),weather:async()=>{throw Error('Down')}};
+clock+=660000;const fail={now:()=>clock,meeting:async()=>({races:[],errors:[{number:1}]}),weather:async()=>{throw Error('Down')}};
 assert.equal((await lateMailResponse(post('2026-11-07-r1-pre-1250'),env,{},fail)).status,502);
 const retained=await(await lateMailResponse(new Request('https://test/api/late-mail'),env,{},services)).json();assert.equal(retained.updated,saved.updated);assert.equal(retained.lastAttempt.success,false);
 const managed=JSON.parse(fs.readFileSync('config/factors.json'));const changedPolicy=buildLateMail({original,editorial,gearBase,feed:seed.meeting,notes:[],runKey:'2026-11-07-initial',now:morning},M,LM,{...managed,preferRecent:false,followReportedGoing:false,useComparableResults:false,crowdMaximum:0});

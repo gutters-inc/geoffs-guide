@@ -1,7 +1,6 @@
 {
   "date": "2026-11-07",
   "timezone": "Australia/Melbourne",
-  "enabled": false,
   "times": [
     "2026-11-07T12:30:00+11:00",
     "2026-11-07T13:05:00+11:00",
@@ -14,7 +13,7 @@
     "2026-11-07T17:40:00+11:00",
     "2026-11-07T18:10:00+11:00"
   ],
-  "title": "Stakes Day checks \u2014 not scheduled",
+  "title": "Stakes Day pre-race checks and bounded result watches",
   "checks": [
     {
       "race": 1,
@@ -83,5 +82,28 @@
   "final": {
     "check": "2026-11-07T18:10:00+11:00",
     "runKey": "2026-11-07-final-1810"
+  },
+  "status": "Schedule plan; /api/late-mail automation is the authoritative enabled status",
+  "postRace": {
+    "offsetMinutes": [
+      3,
+      6,
+      10,
+      20
+    ],
+    "stopOn": [
+      "official",
+      "abandoned"
+    ],
+    "maximumWatchMinutes": 45,
+    "respectSourceBackoff": true,
+    "interimInfluencesLearning": false
+  },
+  "sourceBudget": {
+    "raceCooldownSeconds": 120,
+    "racingHostGapSeconds": 3,
+    "hourlyRacingRequests": 30,
+    "dailyRacingRequests": 90,
+    "weatherCooldownMinutes": 30
   }
 }

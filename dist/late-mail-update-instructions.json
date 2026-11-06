@@ -2,13 +2,13 @@
   "site": "https://geoffs-guide-stakes-day-2026.aguthridge.chatgpt.site",
   "date": "2026-11-07",
   "timezone": "Australia/Melbourne",
-  "goal": "Prepare saved Stakes Day late mail, process preceding official results and use verified same-day evidence to refine later selections. Preserve the original form and the separate Oaks archive.",
+  "goal": "Prepare each final pre-race check ten minutes before jump, then run a bounded watch for interim and official placings. Preserve the last pre-race tip; use only official earlier results for later-race learning. Respect shared locks, source cooldowns and Retry-After.",
   "read": "/api/late-mail",
   "write": {
     "method": "POST",
     "path": "/api/late-mail/refresh",
     "payload": {
-      "runKey": "2026-11-07-rN-pre-HHMM (Melbourne check time) or 2026-11-07-final-HHMM",
+      "runKey": "2026-11-07-rN-pre-HHMM or -post-HHMM; 2026-11-07-final-HHMM for wrap",
       "notes": [
         {
           "race": "integer 0\u20139",
@@ -18,13 +18,15 @@
           "url": "https source link",
           "published": "ISO timestamp or null"
         }
-      ]
+      ],
+      "phase": "pre / post / final / manual",
+      "race": "1\u20139 for pre/post"
     }
   },
   "access": {
     "acquire": "Use Sites get_site for this linked Site to obtain its current siwc_bypass_bearer_token. Do not create or rotate tokens.",
     "send": "Only to this exact Site. OAI-Sites-Authorization: Bearer <token> for platform access, plus Authorization: Bearer <token> for the protected update route. Keep tokens in tool memory and supply them via hidden stdin, never shell arguments, files or output.",
-    "helper": "/late-mail-updater.py accepts JSON via hidden stdin: {token,mode:update|read|status,race,payload}. It writes and reads back the saved edition.",
+    "helper": "/late-mail-updater.py accepts JSON via hidden stdin. For a race slot: {token,mode:\"watch\",race:N,notes:[source-backed notes]}. For the final wrap: {token,mode:\"update\",payload:{runKey:\"2026-11-07-final-HHMM\",phase:\"final\",notes:[]}}. Download the current helper, not an old cached client.",
     "on401": "Do not bypass authorization or rotate credentials. Report the failed update and retain the old edition."
   },
   "research": {
@@ -47,13 +49,14 @@
     "limits": "Do not fabricate tips, quotes, prices, certainty, independent votes or numerical gear/jockey bonuses. Keep each note <=15 words and all derived paraphrases <=100 words per article. Never copy an article. Unsupported or contradictory claims are omitted or explicitly marked uncertain."
   },
   "execution": [
-    "Use only this meeting date. Preserve Oaks archives. Keep existing automations paused unless the user asks to enable Stakes Day checks.",
-    "Read the saved edition and determine the upcoming race for this check (or final wrap). Search current late mail, using exact meeting/date/runner matches.",
-    "Send brief new/rechecked source-backed notes with a unique scheduled-slot runKey to the protected writer. The server saves updated source facts, evidence-first revised tips, immutable baseline comparison and pre-race archives in durable storage.",
-    "Read back /api/late-mail and verify the update timestamp/runKey. Partial or failed checks must be reported; the previous verified edition is retained on total source failure. A duplicate successful slot is idempotent.",
-    "Give the user an update with late changes, reported going, official winners, revised vs baseline selection and reasons, source links and saved update time. Call a provisional leader provisional. No bet placement or API-key-backed generator is involved.",
-    "If advertised start times change, preserve this same linked automation and adjust only remaining check dates using its task control; do not create duplicates. Send updated automation times in the next authorised payload to keep the page plan accurate.",
-    "If final results remain provisional, report them as unconfirmed. Do not add unsupported sub-hour follow-ups. Each linked task must remain at most hourly; preserve its assigned race slots and the other task\u2019s remaining checks."
+    "Read the current plan and /api/late-mail. Choose the matching assigned pre-race slot using Australia/Melbourne time. The existing A/B tasks run at least an hour apart within each task. At the final-wrap slot use phase final and fetch only unresolved races.",
+    "Check concise, current late mail for the matching race through the listed sources. Preserve publication dates and unverified track forecasts. Send at most 30 short source-backed notes; do not convert a forecast into the reported going.",
+    "Run the fixed-Site helper in mode watch for this race. It checks pre-race once, follows a short defer if still before jump, then checks results near +3,+6,+10,+20 minutes. It honours later Retry-After/cooldowns, stops at official/abandoned, and ends within 45 minutes. Keep the process alive and inspect output at intervals no longer than 60 seconds; do not kill it merely because it is waiting. Each internal sleep is at most 30 seconds.",
+    "Access comes from Sites get_site for this project. Download the helper/instructions from the same exact Site using its OAI-Sites-Authorization header. Keep access only in memory, supply it through hidden stdin, and never put it in arguments, files, source or notifications. On 401/403 from the Site, stop and report; do not rotate or bypass authorization.",
+    "The protected server serialises writers with an atomic conditional R2 lease. It selects only the target race plus at most one earlier unresolved race at pre-check, has a two-minute per-race minimum, three-second host spacing, 30 racing requests/hour and 90/day, and a thirty-minute weather minimum. It stops on 429/403/errors and applies persisted backoff. Do not independently hit the primary source around this policy.",
+    "Read back every successful saved edition. Interim placings must be labelled unconfirmed and must not change model learning, winner counts, tipster scores or payouts. Save and report official results only when the source confirms them. Never create hindsight selections after jump.",
+    "Give a concise update with pre-race changes and then the result/watch outcome, the saved tip versus baseline, reported going, sources and saved timestamp. If the result is still interim/pending, state that the bounded watch ended and the next scheduled check/final wrap can retry. Creation proves scheduling, not execution or guaranteed on-time results.",
+    "If start times move, the watch follows the saved verified time within its bound. Reschedule remaining A/B slots on these same linked tasks if needed, retaining at least an hour between each task\u2019s runs. Do not create duplicate tasks or unlimited polling loops."
   ],
   "schedule": {
     "date": "2026-11-07",
@@ -127,5 +130,16 @@
       "check": "2026-11-07T18:10:00+11:00",
       "runKey": "2026-11-07-final-1810"
     }
+  },
+  "policy": {
+    "postOffsetsMinutes": [
+      3,
+      6,
+      10,
+      20
+    ],
+    "watchLimitMinutes": 45,
+    "sourceBudgetPerHour": 30,
+    "sourceBudgetPerDay": 90
   }
 }
