@@ -19,7 +19,7 @@
   if(change){const horse=change.horse?title(change.horse):'';lateText=change.type==='scratching'?`${horse} is scratched.`:change.type==='track'?`Track changed from ${change.from} to ${change.to}.`:change.type==='rider'?`${horse}: rider changed to ${change.to}.`:`${horse}: ${change.type} changed. See the sourced notice.`;lateSource=change.source}
   else if(social){const author=social.author||new URL(social.url).pathname.split('/')[1];lateText=`Late on X, ${author} selects ${title(social.horse)}.`;lateSource=social.url}
   else if(fact){lateText=(fact.horse?title(fact.horse)+'. ':'')+fact.summary;if(words(lateText)>18)lateText='Have a squiz at the sourced track and runner notices.';lateSource=fact.url}
-  const greeting=['Kia ora, team.','Gidday, team.','Kia ora, good sorts.'][(race.number-1)%3];
+  const greeting=race.number===1?'Hey bro.':['Kia ora, team.','Gidday, team.','Kia ora, good sorts.'][(race.number-1)%3];
   const scenes=[
    {title:`Race ${race.number} in 30 seconds`,caption:`${race.name} · ${race.distance}m · ${report.condition||'Going unconfirmed'}`,narration:`${greeting} Geoff here. Race ${race.number}. Going: ${report.condition||'not confirmed'}.`},
    {title:lead,caption:firm?'Saved selection':'Leading watch · no firm revised selection',narration:picked?`For mine, ${lead} leads our view.${firm?'':' A watch, not a firm tip.'}`:'No firm selection. The evidence does not support a firm call.'},
