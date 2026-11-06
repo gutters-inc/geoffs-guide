@@ -1,0 +1,1067 @@
+{
+  "text": "G’day. Jonesy here, introducing you to Geoff’s Guide. Let’s work through the tabs, from left to right.\n\nForm gives you our original view of the race: the shortlist, the full field, and the form behind each runner. Start here to see who comes out on top.\n\nLate mail brings in what changes as the day unfolds: conditions, scratchings, riders and fresh information. See our revised selection beside the original, and understand what moved it.\n\nTips brings together leading racing tipsters. Explore the collective view, then open each tip to see the reasoning, the assumed conditions, and the run that horse needs.\n\nThe Ladder connects the form. If two horses have met, who beat whom, and by how much? If they haven’t, a shared opponent can help connect them. It’s another way to weigh the evidence, rather than a guaranteed finishing order.\n\nAnd Results shows how Geoff’s selections performed, alongside the jockeys, trainers and tipsters having a day out.\n\nCome back five minutes before the jump for the latest saved late mail and race preview—Geoff’s edge. Happy punting!",
+  "words": [
+    {
+      "text": "G’day.",
+      "type": "word",
+      "start": 0,
+      "end": 0.56
+    },
+    {
+      "text": "Jonesy",
+      "type": "word",
+      "start": 0.72,
+      "end": 1.04
+    },
+    {
+      "text": "here,",
+      "type": "word",
+      "start": 1.12,
+      "end": 1.6
+    },
+    {
+      "text": "introducing",
+      "type": "word",
+      "start": 1.68,
+      "end": 2.16
+    },
+    {
+      "text": "you",
+      "type": "word",
+      "start": 2.24,
+      "end": 2.48
+    },
+    {
+      "text": "to",
+      "type": "word",
+      "start": 2.56,
+      "end": 2.64
+    },
+    {
+      "text": "Geoff’s",
+      "type": "word",
+      "start": 2.8,
+      "end": 3.04
+    },
+    {
+      "text": "Guide.",
+      "type": "word",
+      "start": 3.12,
+      "end": 3.92
+    },
+    {
+      "text": "Let’s",
+      "type": "word",
+      "start": 4,
+      "end": 4.16
+    },
+    {
+      "text": "work",
+      "type": "word",
+      "start": 4.24,
+      "end": 4.32
+    },
+    {
+      "text": "through",
+      "type": "word",
+      "start": 4.4,
+      "end": 4.48
+    },
+    {
+      "text": "the",
+      "type": "word",
+      "start": 4.56,
+      "end": 4.64
+    },
+    {
+      "text": "tabs,",
+      "type": "word",
+      "start": 4.84,
+      "end": 5.2
+    },
+    {
+      "text": "from",
+      "type": "word",
+      "start": 5.28,
+      "end": 5.36
+    },
+    {
+      "text": "left",
+      "type": "word",
+      "start": 5.44,
+      "end": 5.76
+    },
+    {
+      "text": "to",
+      "type": "word",
+      "start": 5.8,
+      "end": 5.84
+    },
+    {
+      "text": "right.",
+      "type": "word",
+      "start": 5.92,
+      "end": 6.72
+    },
+    {
+      "text": "Form",
+      "type": "word",
+      "start": 6.8,
+      "end": 7.2
+    },
+    {
+      "text": "gives",
+      "type": "word",
+      "start": 7.28,
+      "end": 7.44
+    },
+    {
+      "text": "you",
+      "type": "word",
+      "start": 7.48,
+      "end": 7.52
+    },
+    {
+      "text": "our",
+      "type": "word",
+      "start": 7.6,
+      "end": 7.68
+    },
+    {
+      "text": "original",
+      "type": "word",
+      "start": 7.76,
+      "end": 8.16
+    },
+    {
+      "text": "view",
+      "type": "word",
+      "start": 8.24,
+      "end": 8.32
+    },
+    {
+      "text": "of",
+      "type": "word",
+      "start": 8.4,
+      "end": 8.48
+    },
+    {
+      "text": "the",
+      "type": "word",
+      "start": 8.52,
+      "end": 8.56
+    },
+    {
+      "text": "race:",
+      "type": "word",
+      "start": 8.64,
+      "end": 9.28
+    },
+    {
+      "text": "the",
+      "type": "word",
+      "start": 9.32,
+      "end": 9.36
+    },
+    {
+      "text": "shortlist,",
+      "type": "word",
+      "start": 9.44,
+      "end": 10.08
+    },
+    {
+      "text": "the",
+      "type": "word",
+      "start": 10.12,
+      "end": 10.16
+    },
+    {
+      "text": "full",
+      "type": "word",
+      "start": 10.24,
+      "end": 10.4
+    },
+    {
+      "text": "field,",
+      "type": "word",
+      "start": 10.48,
+      "end": 10.96
+    },
+    {
+      "text": "and",
+      "type": "word",
+      "start": 11,
+      "end": 11.04
+    },
+    {
+      "text": "the",
+      "type": "word",
+      "start": 11.08,
+      "end": 11.12
+    },
+    {
+      "text": "form",
+      "type": "word",
+      "start": 11.2,
+      "end": 11.44
+    },
+    {
+      "text": "behind",
+      "type": "word",
+      "start": 11.52,
+      "end": 11.76
+    },
+    {
+      "text": "each",
+      "type": "word",
+      "start": 11.84,
+      "end": 12
+    },
+    {
+      "text": "runner.",
+      "type": "word",
+      "start": 12.16,
+      "end": 12.72
+    },
+    {
+      "text": "Start",
+      "type": "word",
+      "start": 12.88,
+      "end": 13.04
+    },
+    {
+      "text": "here",
+      "type": "word",
+      "start": 13.12,
+      "end": 13.36
+    },
+    {
+      "text": "to",
+      "type": "word",
+      "start": 13.44,
+      "end": 13.52
+    },
+    {
+      "text": "see",
+      "type": "word",
+      "start": 13.6,
+      "end": 13.76
+    },
+    {
+      "text": "who",
+      "type": "word",
+      "start": 13.84,
+      "end": 13.92
+    },
+    {
+      "text": "comes",
+      "type": "word",
+      "start": 14.04,
+      "end": 14.16
+    },
+    {
+      "text": "out",
+      "type": "word",
+      "start": 14.24,
+      "end": 14.32
+    },
+    {
+      "text": "on",
+      "type": "word",
+      "start": 14.4,
+      "end": 14.48
+    },
+    {
+      "text": "top.",
+      "type": "word",
+      "start": 14.6,
+      "end": 15.2
+    },
+    {
+      "text": "Late",
+      "type": "word",
+      "start": 15.28,
+      "end": 15.52
+    },
+    {
+      "text": "mail",
+      "type": "word",
+      "start": 15.64,
+      "end": 15.76
+    },
+    {
+      "text": "brings",
+      "type": "word",
+      "start": 15.84,
+      "end": 16.08
+    },
+    {
+      "text": "in",
+      "type": "word",
+      "start": 16.16,
+      "end": 16.24
+    },
+    {
+      "text": "what",
+      "type": "word",
+      "start": 16.32,
+      "end": 16.48
+    },
+    {
+      "text": "changes",
+      "type": "word",
+      "start": 16.68,
+      "end": 16.88
+    },
+    {
+      "text": "as",
+      "type": "word",
+      "start": 16.96,
+      "end": 17.04
+    },
+    {
+      "text": "the",
+      "type": "word",
+      "start": 17.12,
+      "end": 17.2
+    },
+    {
+      "text": "day",
+      "type": "word",
+      "start": 17.28,
+      "end": 17.36
+    },
+    {
+      "text": "unfolds:",
+      "type": "word",
+      "start": 17.48,
+      "end": 18.24
+    },
+    {
+      "text": "conditions,",
+      "type": "word",
+      "start": 18.56,
+      "end": 19.04
+    },
+    {
+      "text": "scratchings,",
+      "type": "word",
+      "start": 19.2,
+      "end": 19.76
+    },
+    {
+      "text": "riders",
+      "type": "word",
+      "start": 19.84,
+      "end": 20.32
+    },
+    {
+      "text": "and",
+      "type": "word",
+      "start": 20.4,
+      "end": 20.48
+    },
+    {
+      "text": "fresh",
+      "type": "word",
+      "start": 20.6,
+      "end": 20.72
+    },
+    {
+      "text": "information.",
+      "type": "word",
+      "start": 21.24,
+      "end": 21.8
+    },
+    {
+      "text": "See",
+      "type": "word",
+      "start": 21.84,
+      "end": 21.92
+    },
+    {
+      "text": "our",
+      "type": "word",
+      "start": 22,
+      "end": 22.08
+    },
+    {
+      "text": "revised",
+      "type": "word",
+      "start": 22.16,
+      "end": 22.56
+    },
+    {
+      "text": "selection",
+      "type": "word",
+      "start": 22.64,
+      "end": 23.04
+    },
+    {
+      "text": "beside",
+      "type": "word",
+      "start": 23.16,
+      "end": 23.36
+    },
+    {
+      "text": "the",
+      "type": "word",
+      "start": 23.44,
+      "end": 23.48
+    },
+    {
+      "text": "original,",
+      "type": "word",
+      "start": 23.52,
+      "end": 24.04
+    },
+    {
+      "text": "and",
+      "type": "word",
+      "start": 24.08,
+      "end": 24.16
+    },
+    {
+      "text": "understand",
+      "type": "word",
+      "start": 24.24,
+      "end": 24.72
+    },
+    {
+      "text": "what",
+      "type": "word",
+      "start": 24.84,
+      "end": 24.96
+    },
+    {
+      "text": "moved",
+      "type": "word",
+      "start": 25.08,
+      "end": 25.2
+    },
+    {
+      "text": "it.",
+      "type": "word",
+      "start": 25.28,
+      "end": 25.8
+    },
+    {
+      "text": "Tips",
+      "type": "word",
+      "start": 25.84,
+      "end": 26.16
+    },
+    {
+      "text": "brings",
+      "type": "word",
+      "start": 26.24,
+      "end": 26.48
+    },
+    {
+      "text": "together",
+      "type": "word",
+      "start": 26.56,
+      "end": 26.88
+    },
+    {
+      "text": "leading",
+      "type": "word",
+      "start": 27.04,
+      "end": 27.2
+    },
+    {
+      "text": "racing",
+      "type": "word",
+      "start": 27.28,
+      "end": 27.6
+    },
+    {
+      "text": "tipsters.",
+      "type": "word",
+      "start": 27.72,
+      "end": 28.613
+    },
+    {
+      "text": "Explore",
+      "type": "word",
+      "start": 28.747,
+      "end": 28.88
+    },
+    {
+      "text": "the",
+      "type": "word",
+      "start": 28.92,
+      "end": 28.96
+    },
+    {
+      "text": "collective",
+      "type": "word",
+      "start": 29.04,
+      "end": 29.52
+    },
+    {
+      "text": "view,",
+      "type": "word",
+      "start": 29.72,
+      "end": 29.973
+    },
+    {
+      "text": "then",
+      "type": "word",
+      "start": 30.027,
+      "end": 30.08
+    },
+    {
+      "text": "open",
+      "type": "word",
+      "start": 30.16,
+      "end": 30.4
+    },
+    {
+      "text": "each",
+      "type": "word",
+      "start": 30.48,
+      "end": 30.72
+    },
+    {
+      "text": "tip",
+      "type": "word",
+      "start": 30.84,
+      "end": 30.96
+    },
+    {
+      "text": "to",
+      "type": "word",
+      "start": 31,
+      "end": 31.04
+    },
+    {
+      "text": "see",
+      "type": "word",
+      "start": 31.12,
+      "end": 31.2
+    },
+    {
+      "text": "the",
+      "type": "word",
+      "start": 31.28,
+      "end": 31.36
+    },
+    {
+      "text": "reasoning,",
+      "type": "word",
+      "start": 31.52,
+      "end": 31.947
+    },
+    {
+      "text": "the",
+      "type": "word",
+      "start": 31.973,
+      "end": 32
+    },
+    {
+      "text": "assumed",
+      "type": "word",
+      "start": 32.08,
+      "end": 32.4
+    },
+    {
+      "text": "conditions,",
+      "type": "word",
+      "start": 32.48,
+      "end": 33.12
+    },
+    {
+      "text": "and",
+      "type": "word",
+      "start": 33.16,
+      "end": 33.2
+    },
+    {
+      "text": "the",
+      "type": "word",
+      "start": 33.28,
+      "end": 33.36
+    },
+    {
+      "text": "run",
+      "type": "word",
+      "start": 33.48,
+      "end": 33.6
+    },
+    {
+      "text": "that",
+      "type": "word",
+      "start": 33.72,
+      "end": 33.84
+    },
+    {
+      "text": "horse",
+      "type": "word",
+      "start": 33.96,
+      "end": 34.08
+    },
+    {
+      "text": "needs.",
+      "type": "word",
+      "start": 34.16,
+      "end": 34.96
+    },
+    {
+      "text": "The",
+      "type": "word",
+      "start": 35,
+      "end": 35.04
+    },
+    {
+      "text": "Ladder",
+      "type": "word",
+      "start": 35.12,
+      "end": 35.44
+    },
+    {
+      "text": "connects",
+      "type": "word",
+      "start": 35.52,
+      "end": 35.88
+    },
+    {
+      "text": "the",
+      "type": "word",
+      "start": 35.92,
+      "end": 36
+    },
+    {
+      "text": "form.",
+      "type": "word",
+      "start": 36.08,
+      "end": 36.8
+    },
+    {
+      "text": "If",
+      "type": "word",
+      "start": 36.88,
+      "end": 36.96
+    },
+    {
+      "text": "two",
+      "type": "word",
+      "start": 37.04,
+      "end": 37.12
+    },
+    {
+      "text": "horses",
+      "type": "word",
+      "start": 37.16,
+      "end": 37.44
+    },
+    {
+      "text": "have",
+      "type": "word",
+      "start": 37.52,
+      "end": 37.6
+    },
+    {
+      "text": "met,",
+      "type": "word",
+      "start": 37.68,
+      "end": 38.12
+    },
+    {
+      "text": "who",
+      "type": "word",
+      "start": 38.16,
+      "end": 38.24
+    },
+    {
+      "text": "beat",
+      "type": "word",
+      "start": 38.32,
+      "end": 38.48
+    },
+    {
+      "text": "whom,",
+      "type": "word",
+      "start": 38.56,
+      "end": 38.933
+    },
+    {
+      "text": "and",
+      "type": "word",
+      "start": 38.987,
+      "end": 39.04
+    },
+    {
+      "text": "by",
+      "type": "word",
+      "start": 39.12,
+      "end": 39.2
+    },
+    {
+      "text": "how",
+      "type": "word",
+      "start": 39.28,
+      "end": 39.36
+    },
+    {
+      "text": "much?",
+      "type": "word",
+      "start": 39.72,
+      "end": 40.12
+    },
+    {
+      "text": "If",
+      "type": "word",
+      "start": 40.16,
+      "end": 40.24
+    },
+    {
+      "text": "they",
+      "type": "word",
+      "start": 40.32,
+      "end": 40.4
+    },
+    {
+      "text": "haven’t,",
+      "type": "word",
+      "start": 40.52,
+      "end": 40.92
+    },
+    {
+      "text": "a",
+      "type": "word",
+      "start": 40.96,
+      "end": 41.04
+    },
+    {
+      "text": "shared",
+      "type": "word",
+      "start": 41.16,
+      "end": 41.28
+    },
+    {
+      "text": "opponent",
+      "type": "word",
+      "start": 41.36,
+      "end": 41.76
+    },
+    {
+      "text": "can",
+      "type": "word",
+      "start": 41.8,
+      "end": 41.84
+    },
+    {
+      "text": "help",
+      "type": "word",
+      "start": 41.92,
+      "end": 42.08
+    },
+    {
+      "text": "connect",
+      "type": "word",
+      "start": 42.24,
+      "end": 42.4
+    },
+    {
+      "text": "them.",
+      "type": "word",
+      "start": 42.64,
+      "end": 42.96
+    },
+    {
+      "text": "It’s",
+      "type": "word",
+      "start": 43,
+      "end": 43.08
+    },
+    {
+      "text": "another",
+      "type": "word",
+      "start": 43.12,
+      "end": 43.36
+    },
+    {
+      "text": "way",
+      "type": "word",
+      "start": 43.44,
+      "end": 43.52
+    },
+    {
+      "text": "to",
+      "type": "word",
+      "start": 43.6,
+      "end": 43.68
+    },
+    {
+      "text": "weigh",
+      "type": "word",
+      "start": 43.8,
+      "end": 43.92
+    },
+    {
+      "text": "the",
+      "type": "word",
+      "start": 43.96,
+      "end": 44
+    },
+    {
+      "text": "evidence,",
+      "type": "word",
+      "start": 44.08,
+      "end": 44.6
+    },
+    {
+      "text": "rather",
+      "type": "word",
+      "start": 44.64,
+      "end": 44.88
+    },
+    {
+      "text": "than",
+      "type": "word",
+      "start": 44.96,
+      "end": 45.04
+    },
+    {
+      "text": "a",
+      "type": "word",
+      "start": 45.12,
+      "end": 45.16
+    },
+    {
+      "text": "guaranteed",
+      "type": "word",
+      "start": 45.2,
+      "end": 45.68
+    },
+    {
+      "text": "finishing",
+      "type": "word",
+      "start": 45.76,
+      "end": 46.08
+    },
+    {
+      "text": "order.",
+      "type": "word",
+      "start": 46.4,
+      "end": 46.773
+    },
+    {
+      "text": "And",
+      "type": "word",
+      "start": 46.827,
+      "end": 46.88
+    },
+    {
+      "text": "Results",
+      "type": "word",
+      "start": 47.16,
+      "end": 47.44
+    },
+    {
+      "text": "shows",
+      "type": "word",
+      "start": 47.52,
+      "end": 47.76
+    },
+    {
+      "text": "how",
+      "type": "word",
+      "start": 47.88,
+      "end": 48
+    },
+    {
+      "text": "Geoff’s",
+      "type": "word",
+      "start": 48.04,
+      "end": 48.24
+    },
+    {
+      "text": "selections",
+      "type": "word",
+      "start": 48.44,
+      "end": 48.72
+    },
+    {
+      "text": "performed,",
+      "type": "word",
+      "start": 48.8,
+      "end": 49.547
+    },
+    {
+      "text": "alongside",
+      "type": "word",
+      "start": 49.653,
+      "end": 49.92
+    },
+    {
+      "text": "the",
+      "type": "word",
+      "start": 49.96,
+      "end": 50
+    },
+    {
+      "text": "jockeys,",
+      "type": "word",
+      "start": 50.08,
+      "end": 50.6
+    },
+    {
+      "text": "trainers",
+      "type": "word",
+      "start": 50.64,
+      "end": 51.04
+    },
+    {
+      "text": "and",
+      "type": "word",
+      "start": 51.12,
+      "end": 51.2
+    },
+    {
+      "text": "tipsters",
+      "type": "word",
+      "start": 51.32,
+      "end": 51.68
+    },
+    {
+      "text": "having",
+      "type": "word",
+      "start": 51.76,
+      "end": 51.92
+    },
+    {
+      "text": "a",
+      "type": "word",
+      "start": 52,
+      "end": 52.04
+    },
+    {
+      "text": "day",
+      "type": "word",
+      "start": 52.08,
+      "end": 52.24
+    },
+    {
+      "text": "out.",
+      "type": "word",
+      "start": 52.32,
+      "end": 52.933
+    },
+    {
+      "text": "Come",
+      "type": "word",
+      "start": 52.987,
+      "end": 53.04
+    },
+    {
+      "text": "back",
+      "type": "word",
+      "start": 53.16,
+      "end": 53.28
+    },
+    {
+      "text": "five",
+      "type": "word",
+      "start": 53.36,
+      "end": 53.52
+    },
+    {
+      "text": "minutes",
+      "type": "word",
+      "start": 53.6,
+      "end": 53.84
+    },
+    {
+      "text": "before",
+      "type": "word",
+      "start": 53.96,
+      "end": 54.08
+    },
+    {
+      "text": "the",
+      "type": "word",
+      "start": 54.16,
+      "end": 54.24
+    },
+    {
+      "text": "jump",
+      "type": "word",
+      "start": 54.36,
+      "end": 54.48
+    },
+    {
+      "text": "for",
+      "type": "word",
+      "start": 54.56,
+      "end": 54.64
+    },
+    {
+      "text": "the",
+      "type": "word",
+      "start": 54.68,
+      "end": 54.72
+    },
+    {
+      "text": "latest",
+      "type": "word",
+      "start": 54.8,
+      "end": 55.2
+    },
+    {
+      "text": "saved",
+      "type": "word",
+      "start": 55.36,
+      "end": 55.52
+    },
+    {
+      "text": "late",
+      "type": "word",
+      "start": 55.6,
+      "end": 55.76
+    },
+    {
+      "text": "mail",
+      "type": "word",
+      "start": 55.88,
+      "end": 56
+    },
+    {
+      "text": "and",
+      "type": "word",
+      "start": 56.08,
+      "end": 56.16
+    },
+    {
+      "text": "race",
+      "type": "word",
+      "start": 56.28,
+      "end": 56.4
+    },
+    {
+      "text": "preview—Geoff’s",
+      "type": "word",
+      "start": 56.48,
+      "end": 57.52
+    },
+    {
+      "text": "edge.",
+      "type": "word",
+      "start": 57.6,
+      "end": 58.28
+    },
+    {
+      "text": "Happy",
+      "type": "word",
+      "start": 58.32,
+      "end": 58.48
+    },
+    {
+      "text": "punting!",
+      "type": "word",
+      "start": 58.56,
+      "end": 59.04
+    }
+  ]
+}

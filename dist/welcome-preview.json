@@ -1,73 +1,80 @@
 {
-  "id": "stakes-welcome-2026",
-  "duration": 30,
-  "presenter": "Geoff",
+  "id": "jonesy-guide-welcome-2026",
+  "duration": 59.08898,
+  "presenter": "Jonesy",
   "voice": {
-    "lang": "en-GB",
+    "lang": "en-AU",
     "kind": "synthetic",
     "recorded": true,
     "embeddedAudio": true,
-    "engine": "Kokoro v1.0 neural TTS",
-    "name": "George",
-    "cloned": false
+    "engine": "ElevenLabs eleven_v4",
+    "name": "Jonesy",
+    "voiceId": "HKfYneV95ngljSlkEAT4"
   },
-  "video": "assets/geoff-tv-neural-30s.mp4",
-  "poster": "assets/geoff-tv-poster.jpg",
+  "video": "assets/jonesy-guide-welcome.mp4",
+  "poster": "assets/jonesy-guide-poster.jpg",
   "scenes": [
     {
       "start": 0,
-      "end": 5,
-      "title": "Hello, Stakes Day.",
-      "caption": "Your 30-second guide \u00b7 Flemington \u00b7 Sat 7 Nov",
-      "narration": "Hello, Geoff here. Welcome to Stakes Day at Flemington."
+      "end": 6.8,
+      "title": "Welcome",
+      "caption": "Welcome",
+      "narration": "G’day. Jonesy here, introducing you to Geoff’s Guide. Let’s work through the tabs, from left to right."
     },
     {
-      "start": 5,
-      "end": 10,
-      "title": "Start with the field.",
-      "caption": "Next to jump opens first. Tap a runner for form and silks.",
-      "narration": "Start with the next race and full field. Tap a runner for form and silks."
+      "start": 6.8,
+      "end": 15.28,
+      "title": "Form",
+      "caption": "Form",
+      "narration": "Form gives you our original view of the race: the shortlist, the full field, and the form behind each runner. Start here to see who comes out on top."
     },
     {
-      "start": 10,
-      "end": 15,
-      "title": "The form, connected.",
-      "caption": "Ladder explains the links. Tips carries the published calls.",
-      "narration": "The ladder connects form. Tips includes Adam Page and Glenn Ingram."
+      "start": 15.28,
+      "end": 25.84,
+      "title": "Late Mail",
+      "caption": "Late Mail",
+      "narration": "Late mail brings in what changes as the day unfolds: conditions, scratchings, riders and fresh information. See our revised selection beside the original, and understand what moved it."
     },
     {
-      "start": 15,
-      "end": 20,
-      "title": "Late mail, ten out.",
-      "caption": "Track, riders, scratchings and fresh evidence.",
-      "narration": "Ten minutes before jump, Late Mail checks the track and late changes."
+      "start": 25.84,
+      "end": 35.12,
+      "title": "Tips",
+      "caption": "Tips",
+      "narration": "Tips brings together leading racing tipsters. Explore the collective view, then open each tip to see the reasoning, the assumed conditions, and the run that horse needs."
     },
     {
-      "start": 20,
-      "end": 25,
-      "title": "Three Group Ones.",
-      "caption": "Champions Sprint \u00b7 Mile \u00b7 Stakes. Watch the evidence confidence.",
-      "narration": "Three Group One features. Confidence stays cautious when evidence is thin."
+      "start": 35.12,
+      "end": 47.16,
+      "title": "Ladder",
+      "caption": "Ladder",
+      "narration": "The Ladder connects the form. If two horses have met, who beat whom, and by how much? If they haven’t, a shared opponent can help connect them. It’s another way to weigh the evidence, rather than a guaranteed finishing order."
     },
     {
-      "start": 25,
-      "end": 30,
-      "title": "Results, then learn.",
-      "caption": "Interim stays unconfirmed. Official results inform later assessments.",
-      "narration": "Interim results stay labelled. Official results inform the next assessment."
+      "start": 47.16,
+      "end": 52.99,
+      "title": "Results",
+      "caption": "Results",
+      "narration": "And Results shows how Geoff’s selections performed, alongside the jockeys, trainers and tipsters having a day out."
+    },
+    {
+      "start": 52.99,
+      "end": 59.08898,
+      "title": "Geoff’S Edge",
+      "caption": "Geoff’S Edge",
+      "narration": "Come back five minutes before the jump for the latest saved late mail and race preview—Geoff’s edge. Happy punting!"
     }
   ],
   "sources": [
     {
-      "title": "VRC \u00b7 Stakes Day programme",
+      "title": "VRC · Stakes Day programme",
       "url": "https://www.vrc.com.au/race-days-and-events/2026-2027/tab-champions-stakes-day/"
     },
     {
-      "title": "Adam Page \u00b7 published race-by-race preview",
+      "title": "Adam Page · published race-by-race preview",
       "url": "https://www.justhorseracing.com.au/tips/flemington-horse-racing-tips-and-best-bets-champions-stakes-day-saturday-7-11-2026/913829"
     },
     {
-      "title": "Glenn Ingram \u00b7 TABtouch race previews",
+      "title": "Glenn Ingram · TABtouch race previews",
       "url": "https://www.tabtouch.com.au/racing/2026-11-07/mr/8"
     },
     {
@@ -85,17 +92,19 @@
     {
       "title": "TABtouch: declared field and historical form statistics",
       "url": "https://www.tabtouch.com.au/racing/2026-11-07/mr/7"
+    },
+    {
+      "title": "Ladder example · published shared race history",
+      "url": "https://www.tabtouch.com.au/racing/2026-11-07/mr/3"
     }
   ],
   "animation": {
-    "kind": "illustrated pose animation",
-    "gestures": [
-      "talking",
-      "blink",
-      "point"
-    ],
-    "statsAsOf": "2026-11-06",
-    "note": "Animated likeness with synthetic British English narration. Stylised mouth animation. Historical stats are not win probabilities."
+    "kind": "ElevenLabs Creatify Aurora photo animation",
+    "sourceResolution": "480p",
+    "exportResolution": "720x1280",
+    "naturalSpeechSpeed": true,
+    "note": "User-supplied Jonesy photo and selected synthetic voice. Local captions, navigation graphics, horse photos and historical form example."
   },
-  "audio": "assets/geoff-welcome-neural.mp3"
+  "audio": "assets/jonesy-guide-narration.mp3",
+  "captions": "assets/jonesy-guide.vtt"
 }

@@ -1,0 +1,130 @@
+{
+  "status": "Narration and presenter completed; local finishing and publication",
+  "order": [
+    "Form",
+    "Late mail",
+    "Tips",
+    "Ladder",
+    "Results"
+  ],
+  "speech": "G’day. Jonesy here, introducing you to Geoff’s Guide. Let’s work through the tabs, from left to right.\n\nForm gives you our original view of the race: the shortlist, the full field, and the form behind each runner. Start here to see who comes out on top.\n\nLate mail brings in what changes as the day unfolds: conditions, scratchings, riders and fresh information. See our revised selection beside the original, and understand what moved it.\n\nTips brings together leading racing tipsters. Explore the collective view, then open each tip to see the reasoning, the assumed conditions, and the run that horse needs.\n\nThe Ladder connects the form. If two horses have met, who beat whom, and by how much? If they haven’t, a shared opponent can help connect them. It’s another way to weigh the evidence, rather than a guaranteed finishing order.\n\nAnd Results shows how Geoff’s selections performed, alongside the jockeys, trainers and tipsters having a day out.\n\nCome back five minutes before the jump for the latest saved late mail and race preview—Geoff’s edge. Happy punting!",
+  "sections": [
+    {
+      "name": "Greeting",
+      "speech": "G’day. Jonesy here, introducing you to Geoff’s Guide. Let’s work through the tabs, from left to right."
+    },
+    {
+      "name": "Form",
+      "speech": "Form gives you our original view of the race: the shortlist, the full field, and the form behind each runner. Start here to see who comes out on top."
+    },
+    {
+      "name": "Late mail",
+      "speech": "Late mail brings in what changes as the day unfolds: conditions, scratchings, riders and fresh information. See our revised selection beside the original, and understand what moved it."
+    },
+    {
+      "name": "Tips",
+      "speech": "Tips brings together leading racing tipsters. Explore the collective view, then open each tip to see the reasoning, the assumed conditions, and the run that horse needs."
+    },
+    {
+      "name": "Ladder",
+      "speech": "The Ladder connects the form. If two horses have met, who beat whom, and by how much? If they haven’t, a shared opponent can help connect them. It’s another way to weigh the evidence, rather than a guaranteed finishing order."
+    },
+    {
+      "name": "Results",
+      "speech": "And Results shows how Geoff’s selections performed, alongside the jockeys, trainers and tipsters having a day out."
+    },
+    {
+      "name": "Closing",
+      "speech": "Come back five minutes before the jump for the latest saved late mail and race preview—Geoff’s edge. Happy punting!"
+    }
+  ],
+  "targetSeconds": 90,
+  "durationPolicy": "Natural original speech speed; actual runtime determines edit. Confirm service/plan duration support before submission.",
+  "aspectRatio": "9:16",
+  "resolution": "1080p if supported",
+  "style": {
+    "palette": [
+      "#e61e1e",
+      "#171717",
+      "#ffffff"
+    ],
+    "composition": "Full-frame presenter intercut with sourced horse photos and legible single-focus graphics. Preserve avatar background.",
+    "captions": "Complete speech-synchronised captions; one or two short lines; no competing repeated headline."
+  },
+  "budget": {
+    "paidGenerationCallsMade": 0,
+    "plannedPresenterRenders": 1,
+    "generatedHorseFootage": false,
+    "separateChapterRenders": false,
+    "paidVoiceSamples": false,
+    "creditCost": "Unknown; no ElevenLabs account connected"
+  },
+  "reviews": [
+    {
+      "role": "script editor",
+      "finding": "177-word draft, natural phrasing, correct tab order, greeting and closing retained"
+    },
+    {
+      "role": "director/mobile UX",
+      "finding": "One focal point per beat; longer ladder explanation; no tiny dashboard and presenter split"
+    },
+    {
+      "role": "racing fact-checker",
+      "finding": "Form is original; Late mail revises. Five-minute return is not a guaranteed new render. Ladder estimates form. Results use official placings. Evidence confidence is not win probability."
+    },
+    {
+      "role": "producer/showrunner",
+      "finding": "One confirmed look and script; one avatar render; local finishing; no blind rerenders"
+    },
+    {
+      "role": "revision editor",
+      "finding": "Opening and presenter changed to Jonesy; left-to-right tour preserved. Existing Geoff portrait must not be used as Jonesy."
+    }
+  ],
+  "evidence": {
+    "form": "/workspace/sites/oaks-connections/dist/app.js: chooseRace uses originalData and M.rate default options",
+    "lateMail": "/workspace/sites/oaks-connections/worker/late-mail.mjs: saved pre-jump preview within final ten minutes",
+    "ladder": "/workspace/sites/oaks-connections/dist/model.js: shared race paths and historical comparisons",
+    "photos": "/workspace/sites/oaks-connections/dist/media.json: preserve source/credit links"
+  },
+  "presenter": {
+    "name": "Jonesy",
+    "reference": "Newly supplied seated-man portrait in this conversation",
+    "voiceProvider": "ElevenLabs",
+    "voice": "User-selected ElevenLabs voice; access not yet verified",
+    "noVoiceCloningRequested": true,
+    "voiceId": "HKfYneV95ngljSlkEAT4"
+  },
+  "constraints": [
+    "No fabricated recorded tipster appearances",
+    "No guarantee of a winner or exact five-minute generation",
+    "No paid generation until avatar look and script resolved",
+    "Do not replace current public welcome until final video passes checks"
+  ],
+  "spokenWords": 177,
+  "elevenlabs": {
+    "flowId": "f5NWQ8QUd5G7oHZiO6oT",
+    "speechNodeId": "tRor7gOF3lFvT4d6bLOT",
+    "sessionIds": [
+      "BOQpMhLvIu8k7QF0RTlh"
+    ],
+    "photoAssetId": "ugMDZt3CW0iCQINiCqcx",
+    "photoNodeId": "bFj0wTgvJY6sAdyXFRTv",
+    "voiceId": "HKfYneV95ngljSlkEAT4",
+    "model": "eleven_v4",
+    "narrationTakes": 1,
+    "reportedCredits": 1070,
+    "estimateUsd": 0.107,
+    "speechGenerationId": "67JqXeedvR1ms9eOcmzC",
+    "speechStatus": "completed",
+    "billingNote": "Provider reported1070 credits in submission and failed result; refund or final charge not established. No retry submitted.",
+    "speechSessionId": "s2897mqA8hmgvl99FHGc",
+    "videoGenerationId": "zAH6Mb37oKkinLzV0Pyn",
+    "videoSessionId": "F7IoxFF3D0UEShaz6j1Q",
+    "videoNodeId": "uMrdRh9v6d7s5wGoL2mA",
+    "videoResolution": "480p",
+    "videoEstimateCredits": 25452,
+    "videoEstimateUsd": 5.0904,
+    "narrationSeconds": 59.04
+  }
+}
