@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 const root=path.resolve(import.meta.dirname,'..'),dir=path.join(root,'dist');
 const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json','.jpg':'image/jpeg','.png':'image/png','.svg':'image/svg+xml','.webp':'image/webp','.mp4':'video/mp4','.vtt':'text/vtt; charset=utf-8'};
-const files={};function walk(folder){for(const ent of fs.readdirSync(folder,{withFileTypes:true})){if(['server','.openai','__pycache__','geoffs-returns-after-r7.png'].includes(ent.name))continue;const full=path.join(folder,ent.name);if(ent.isDirectory())walk(full);else{const key='/'+path.relative(dir,full).split(path.sep).join('/');files[key]={type:mime[path.extname(full)]||'application/octet-stream',body:fs.readFileSync(full).toString('base64')}}}}walk(dir);
+const files={};function walk(folder){for(const ent of fs.readdirSync(folder,{withFileTypes:true})){if(['server','.openai','__pycache__','geoffs-returns-after-r7.png','geoff-welcome-30s.mp4'].includes(ent.name))continue;const full=path.join(folder,ent.name);if(ent.isDirectory())walk(full);else{const key='/'+path.relative(dir,full).split(path.sep).join('/');files[key]={type:mime[path.extname(full)]||'application/octet-stream',body:fs.readFileSync(full).toString('base64')}}}}walk(dir);
 const live=fs.readFileSync(path.join(root,'worker/live.mjs'),'utf8').replaceAll('export ','');
 const core=fs.readFileSync(path.join(dir,'model.js'),'utf8')+'\n'+fs.readFileSync(path.join(dir,'live-model.js'),'utf8')+'\n'+fs.readFileSync(path.join(dir,'preview-model.js'),'utf8');
 const staticModule=fs.readFileSync(path.join(root,'worker/static.mjs'),'utf8').replaceAll('export ','');
