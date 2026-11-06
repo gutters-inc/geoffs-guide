@@ -49,30 +49,8 @@ function renderFormResult(){
  const caveat=winnerNote?`A saved ${esc(winnerNote.type)} note did mention the winner: ${esc(winnerNote.summary)}`:'No saved high-profile late-mail note selected the winner.';
  box.innerHTML=`<article class="form-result-card result-${outcome.kind}"><header><span>OFFICIAL RESULT · RACE ${report.number}</span><strong>${winner?`#${winner.number} ${esc(M.title(winner.name))}`:'Winner unavailable'}</strong>${officialReturn(placed[0])?`<small class="official-return">${officialReturn(placed[0])}</small>`:''}</header><section class="result-celebration"><span>${outcome.label}</span><strong>${esc(outcome.headline)}</strong><p>${esc(outcome.detail)}${officialReturn(savedRunner)?` · ${officialReturn(savedRunner)}`:''}</p></section><ol class="form-finish">${placed.map(h=>`<li><b>${placingLabel(h.placing)}</b><span>#${h.number} ${esc(M.title(h.name))}</span><small>${officialReturn(h)||esc(M.title(h.jockey||''))}</small></li>`).join('')}</ol><p class="finish-limit">${placed.length?`The official feed currently supplies the first ${placed.length} placings; the remaining order is not published here.`:'The finishing order has not been supplied.'}</p>${matchedReview?`<section class="root-cause-review"><span>HOW THE WINNER WON</span><p>${esc(matchedReview.how)}</p><span>${pickWon?'WHY IT WORKED':'WHY WE MISSED'}</span><p>${esc(matchedReview.miss)}</p><div>${matchedReview.sources.map(([label,url])=>`<a href="${esc(url)}" target="_blank" rel="noopener">${esc(label)} ↗</a>`).join('')}</div><small>Replay/form analysis, not a jockey quote. Same-day stewards and sectionals were not yet published.</small></section>`:''}<section class="miss-review"><span>${outcome.kind!=='miss'?'WHAT WE GOT RIGHT':'WHAT THE SAVED TIP SAID'}</span><p>${miss}</p><ul><li>${going}</li><li>${caveat}</li></ul></section><a href="${esc(s.source)}" target="_blank" rel="noopener">Official race source ↗</a></article>`;
 }
-let alertTimer=null;
-const alertStorageKey=n=>`gg-alert-${lateMail?.date||data?.date||'meeting'}-r${n}-pre`;
-async function alertRegistration(){
- if(typeof navigator==='undefined'||!navigator.serviceWorker)return null;
- try{await navigator.serviceWorker.register('/sw.js');return await navigator.serviceWorker.ready}catch{return null}
-}
 function updateAlertStatus(message){const el=$('raceAlertStatus');if(el)el.textContent=message||''}
-async function showRaceAlert(n){
- if(typeof Notification==='undefined'||Notification.permission!=='granted')return;
- try{if(localStorage.getItem(alertStorageKey(n)))return}catch{}
- const s=lateMail?.selections?.[String(n)],report=lateMail?.meeting?.races?.find(r=>r.number===n);
- if(!s||!report||report.status!=='pending')return;
- const pick=s.revisedTip?.display||'No firm revised pick',changes=(lateMail.changes?.[String(n)]||[]).filter(c=>['scratching','rider','track'].includes(c.type)).length;
- const options={body:`${report.condition||'Going not confirmed'} · ${pick} · ${changes} key change${changes===1?'':'s'}. Tap for sourced late mail.`,tag:`geoffs-guide-r${n}`,renotify:true,data:{url:`/#race-${n}/race-day`}};
- const reg=await alertRegistration();if(reg)await reg.showNotification(`Race ${n} late mail is ready`,options);else new Notification(`Race ${n} late mail is ready`,options);
- try{localStorage.setItem(alertStorageKey(n),new Date().toISOString())}catch{}
-}
-function scheduleRaceAlert(){
- clearTimeout(alertTimer);if(typeof Notification==='undefined'||Notification.permission!=='granted'||!lateMail)return;
- const match=String(lateMail.runKey||'').match(/-r([1-9])-pre-/),n=Number(match?.[1]);if(n){showRaceAlert(n);return}
- const upcoming=lateMail.meeting?.races?.filter(r=>r.status==='pending'&&r.startAt).sort((a,b)=>Date.parse(a.startAt)-Date.parse(b.startAt))[0];
- if(!upcoming)return;const wait=Date.parse(upcoming.startAt)-Date.now()-600000;
- if(wait<=0&&wait>-900000)showRaceAlert(upcoming.number);else if(wait>0&&wait<21600000)alertTimer=setTimeout(()=>showRaceAlert(upcoming.number),wait);
-}
+function scheduleRaceAlert(){}
 function nextPlannedRaceCheck(){
  if(!lateMail?.automation?.enabled)return null;const now=Date.now(),times=(lateMail.automation.times||[]).map(Date.parse).filter(t=>t>now);
  for(const r of lateMail.meeting?.races||[]){if(['official','abandoned'].includes(r.status))continue;const jump=Date.parse(r.startAt||lateMail.selections?.[String(r.number)]?.startAt);if(!Number.isFinite(jump))continue;for(const offset of [-10,3,6,10,20]){const t=jump+offset*60000;if(t>now)times.push(t)}}
@@ -120,13 +98,4 @@ async function loadSavedMail(){
 }
 function initSavedMail(){fetch('lessons.json').then(r=>r.json()).then(d=>{lessons=d;renderLateMail()}).catch(()=>{});loadSavedMail();if(typeof setInterval==='function')setInterval(()=>{if(!document.hidden)loadSavedMail()},60000+Math.floor(Math.random()*15000));document.addEventListener('visibilitychange',()=>{if(!document.hidden)loadSavedMail()})}
 document.getElementById('openLateMail').onclick=()=>{setExperience('race-day');document.getElementById('lateMailPanel').scrollIntoView?.({behavior:'smooth',block:'start'})};
-document.getElementById('enableRaceAlerts').onclick=async()=>{
- if(typeof Notification==='undefined'){updateAlertStatus('Browser alerts are unavailable on this device.');return}
- const ios=/iPad|iPhone|iPod/.test(navigator.userAgent||''),installed=window.matchMedia?.('(display-mode: standalone)').matches||navigator.standalone===true;
- if(ios&&!installed){updateAlertStatus('On iPhone: Share → Add to Home Screen, then open Geoffs Guide and enable alerts.');return}
- const permission=await Notification.requestPermission();
- if(permission!=='granted'){updateAlertStatus('Alerts were not enabled. You can change notification permission in browser settings.');return}
- const reg=await alertRegistration();if(!reg){updateAlertStatus('Alert setup failed on this browser.');return}
- await reg.showNotification('Geoffs Guide alerts are working',{body:'Test successful. Race late mail will appear here when this Site is active.',tag:'geoffs-guide-test',data:{url:location.href}});
- updateAlertStatus('Test alert sent. Keep the installed Site available for its scheduled race alert.');scheduleRaceAlert();
-};
+document.getElementById('enableRaceAlerts').onclick=()=>enableGuidePush();

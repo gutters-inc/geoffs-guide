@@ -5,9 +5,9 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
 <meta content="#171717" name="theme-color"/>
-<title>Geoffs Guide · Stakes Day 2026</title>
+<link rel="manifest" href="/manifest.webmanifest"><link rel="apple-touch-icon" href="/assets/push-icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><title>Geoffs Guide · Stakes Day 2026</title>
 <meta content="Geoffs Guide: published racing tips, each guide’s reasoning, and a visual form ladder for Flemington Stakes Day. Mobile only." name="description"/>
-<link href="results.css?v=24" rel="stylesheet"/>
+<link href="results.css?v=45" rel="stylesheet"/>
 </head>
 <body class="simple-mode">
 <header>
@@ -84,12 +84,12 @@
 <div aria-live="polite" class="home-updated" id="homeLastUpdated">
 <span>LAST UPDATED</span>
 <b>Loading the saved edition…</b>
-<button id="enableRaceAlerts">10-minute alerts</button>
+<button id="enableRaceAlerts">Enable push</button><button id="openWelcome" type="button">How to use</button>
 <button id="openLateMail">Late mail ↗</button>
 </div>
 <p aria-live="polite" class="race-alert-status" id="raceAlertStatus">
 </p>
-<section id="welcomeBriefing" class="geoff-briefing" aria-label="Thirty-second welcome from Geoff"><p class="mail-quiet">Geoff’s 30-second welcome is loading…</p></section><section aria-label="Share Geoff's tips" class="share-geoff" id="shareGeoffPanel">
+<section id="formRaceBriefing" class="geoff-briefing" aria-label="Saved thirty-second race preview"></section><section aria-label="Share Geoff's tips" class="share-geoff" id="shareGeoffPanel">
 </section>
 <section aria-live="polite" id="formResultReview">
 </section>
@@ -258,8 +258,10 @@
 </script>
 <script defer="" src="share.js">
 </script>
-<script defer="" src="briefing.js"></script><script defer="" src="app.js">
+<script defer="" src="push.js"></script><script defer="" src="briefing.js"></script><script defer="" src="app.js">
 </script>
+<dialog id="pushDialog" aria-labelledby="pushTitle"><div class="welcome-toolbar"><h2 id="pushTitle">Updates from Geoff</h2><button type="button" id="closePush">Close ×</button></div><p>Get Geoff’s updates even when the guide is closed. Messages are sent by the guide’s editor; enabling push does not book a timed reminder.</p><p id="pushStatus" role="status">Enable push, then check the test notification appears.</p><div class="push-actions"><button id="pushSubscribe" type="button">Enable push on this device</button><button id="pushTest" type="button" hidden>Send me a test</button><button id="pushUnsubscribe" type="button" hidden>Disable push</button></div><small>On iPhone, use Safari → Share → Add to Home Screen, then open the saved guide. Browser permission and delivery restrictions apply.</small></dialog>
+<dialog id="welcomeDialog" aria-labelledby="welcomeTitle"><div class="welcome-toolbar"><h2 id="welcomeTitle">Welcome to Geoffs Guide</h2><button id="dismissWelcome" type="button" aria-label="Dismiss welcome">Close ×</button></div><section id="welcomeBriefing" class="geoff-briefing" aria-label="Thirty-second welcome from Geoff"></section><button id="startGuide" type="button">Let’s get to the racing →</button></dialog>
 <dialog aria-label="Runner form details" id="runnerDialog">
 <div class="dialog-toolbar">
 <span class="eyebrow">RUNNER DETAILS</span>
