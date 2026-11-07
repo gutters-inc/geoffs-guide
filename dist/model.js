@@ -110,8 +110,8 @@
       const ownRecentRuns=h.history.filter(r=>r.date<scenario.asOf&&(Date.parse(scenario.asOf)-Date.parse(r.date))/86400000<=90&&Math.abs(Math.log(race.distance/r.distance))<.5).length;
       const ownGoingRuns=h.history.filter(r=>r.date<scenario.asOf&&(Date.parse(scenario.asOf)-Date.parse(r.date))/86400000<=90&&ground(r.going)===scenario.going&&Math.abs(Math.log(race.distance/r.distance))<.5).length;
       const latestDate=h.history.map(r=>r.date).filter(d=>d<scenario.asOf).sort().at(-1),daysSinceRun=latestDate?(Date.parse(scenario.asOf)-Date.parse(latestDate))/86400000:null;
-      return {...h,ownRecentRuns,ownGoingRuns,daysSinceRun,raw,score:50+45*Math.tanh(raw/4),direct,runs:connectedRuns.size,relevantRuns,evidence,component:graph.components.get(h.name),eligible:!h.scratched&&!h.emergency,edges,goingRuns,trackRuns,manualBonus,drawBonus,evidenceRaw,crowdBonus,scenarioWeight:targets.get(h.name)};
-    }).sort((a,b)=>Number(b.eligible)-Number(a.eligible)||Number(b.history.length>0)-Number(a.history.length>0)||b.raw-a.raw||a.number-b.number);
+      return {...h,ownRecentRuns,ownGoingRuns,daysSinceRun,raw,score:50+45*Math.tanh(raw/4),direct,runs:connectedRuns.size,relevantRuns,evidence,component:graph.components.get(h.name),eligible:!h.scratched&&!h.emergency,rankable:!h.scratched&&!h.emergency&&connectedRuns.size>0,edges,goingRuns,trackRuns,manualBonus,drawBonus,evidenceRaw,crowdBonus,scenarioWeight:targets.get(h.name)};
+    }).sort((a,b)=>Number(b.eligible)-Number(a.eligible)||Number(b.rankable)-Number(a.rankable)||Number(b.history.length>0)-Number(a.history.length>0)||b.raw-a.raw||a.number-b.number);
   }
   function path(graph,from,to,max=3){
     if(from===to)return [];

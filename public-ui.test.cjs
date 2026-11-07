@@ -21,7 +21,7 @@ async function boot({hash='',failure='',delay=false,at=null,seenWelcome=false}={
  assert.equal(vm.runInContext("selectionConfidence({evidence:'Sparse',score:99}).level",context),'low');
  assert.equal(vm.runInContext("selectionConfidence({evidence:'Supported',ownRecentRuns:3,daysSinceRun:14}).level",context),'moderate');
  assert.equal(vm.runInContext("selectionConfidence({evidence:'Supported'},{live:true,checked:'2020-01-01'}).level",context),'low');
- assert.equal(document.querySelectorAll('#contenderCards .selection-confidence').length,Math.min(3,original.races[Number(document.getElementById('mobileRaceSelect').value)-1].horses.filter(h=>!h.scratched&&!h.emergency&&h.history.length).length));
+ assert.equal(document.querySelectorAll('#contenderCards .selection-confidence').length,Math.min(3,require('./dist/model.js').rate(require('./dist/model.js').build(original),original.races[Number(document.getElementById('mobileRaceSelect').value)-1]).filter(h=>h.rankable).length));
  assert(document.querySelector('img[alt="Geoff"]'));assert(document.getElementById('homeLastUpdated').textContent.includes('LAST UPDATED'));
  for(let n=1;n<=9;n++){
   vm.runInContext(`chooseRace(${n})`,context);const frozen=vm.runInContext('JSON.stringify(baseline.map(h=>[h.name,h.score]))',context);
@@ -29,13 +29,14 @@ async function boot({hash='',failure='',delay=false,at=null,seenWelcome=false}={
    document.getElementById(tab).onclick();assert(!document.getElementById(panel).hidden);assert.equal(['formPanel','raceDayPanel','valuePanel','connectionsPanel','resultsPanel'].filter(id=>!document.getElementById(id).hidden).length,1);
    assert.equal(document.getElementById(tab).getAttribute('aria-selected'),'true');assert.equal(vm.runInContext('JSON.stringify(baseline.map(h=>[h.name,h.score]))',context),frozen);
   }
-  assert.equal(document.querySelectorAll('.contender-card').length,Math.min(3,original.races[n-1].horses.filter(h=>!h.scratched&&!h.emergency&&h.history.length).length));assert.equal(document.querySelectorAll('.field-runner').length,original.races[n-1].horses.length);
+  assert.equal(document.querySelectorAll('.contender-card').length,Math.min(3,require('./dist/model.js').rate(require('./dist/model.js').build(original),original.races[n-1]).filter(h=>h.rankable).length));assert.equal(document.querySelectorAll('.field-runner').length,original.races[n-1].horses.length);
   assert.equal(document.querySelectorAll('.guide-card').length,JSON.parse(fs.readFileSync('dist/editorial.json')).sources.filter(s=>Object.hasOwn(s.picks||{},String(n))||Object.hasOwn(s.calls||{},String(n))).length);assert(document.getElementById('guideCards').textContent.includes('Track & run assumptions'));
-  assert.equal(document.querySelectorAll('.ladder-rung').length,Math.min(4,original.races[n-1].horses.filter(h=>!h.scratched&&!h.emergency&&h.history.length).length));
-  document.getElementById('showFullLadder').onclick();assert.equal(document.querySelectorAll('.ladder-rung').length,original.races[n-1].horses.filter(h=>!h.scratched&&!h.emergency&&h.history.length).length);
+  assert.equal(document.querySelectorAll('.ladder-rung').length,Math.min(4,require('./dist/model.js').rate(require('./dist/model.js').build(original),original.races[n-1]).filter(h=>h.rankable).length));
+  document.getElementById('showFullLadder').onclick();assert.equal(document.querySelectorAll('.ladder-rung').length,require('./dist/model.js').rate(require('./dist/model.js').build(original),original.races[n-1]).filter(h=>h.rankable).length);
   document.getElementById('simpleMode').onclick();document.querySelector('.full-field').open=true;
   for(const h of original.races[n-1].horses){vm.runInContext(`inspectRunner(${JSON.stringify(h.name)})`,context);assert(document.getElementById('horseDetail').textContent.includes(require('./dist/model.js').title(h.name)));assert(document.getElementById('runnerDialog').hasAttribute('open'));document.getElementById('closeRunner').onclick();assert(!document.getElementById('runnerDialog').hasAttribute('open'))}
  }
+ vm.runInContext('chooseRace(1)',context);assert.equal(document.querySelector('#contenderCards h4').textContent,"She's Supreme");assert.equal(document.querySelector('#formLadder h3').textContent,"She's Supreme");assert(document.querySelector('.unranked-support').textContent.includes('Soldi'));const soldi=[...document.querySelectorAll('.field-runner')].find(x=>x.textContent.includes('Soldi'));assert.equal(soldi.querySelector('.field-position').textContent,'—');
  // Pass 2: mobile navigation, route preservation, keyboard and freshness.
  let anchored=0;document.getElementById('raceStart').scrollIntoView=()=>{anchored++};
  vm.runInContext('chooseRace(1)',context);assert(document.getElementById('previousRace').disabled);document.getElementById('nextRace').onclick();assert.equal(document.getElementById('mobileRaceSelect').value,'2');

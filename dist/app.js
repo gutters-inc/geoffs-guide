@@ -78,12 +78,12 @@ function renderRankings() {
               : h.emergency
                 ? "Emergency"
                 : "",
-        position = h.eligible && h.history.length
+        position = h.rankable
           ? baseline
-              .filter((x) => x.eligible && x.history.length)
+              .filter((x) => x.rankable)
               .findIndex((x) => x.name === h.name) + 1
           : "—";
-      return `<button class="field-runner ${status ? "field-flagged" : ""}" data-horse="${esc(h.name)}"><span class="field-position">${position}</span>${silk(h)}<span><b>${h.number}. ${esc(h.display)}</b><small>${status || (!h.history.length?'Unassessed · no race history':esc(h.jockey))}</small></span><i>↗</i></button>`;
+      return `<button class="field-runner ${status ? "field-flagged" : ""}" data-horse="${esc(h.name)}"><span class="field-position">${position}</span>${silk(h)}<span><b>${h.number}. ${esc(h.display)}</b><small>${status || (!h.history.length?'Unassessed · no race history':!h.rankable?'Unranked · no shared-race links':esc(h.jockey))}</small></span><i>↗</i></button>`;
     })
     .join("");
   document
@@ -166,6 +166,7 @@ Promise.all([
     initSavedMail();
   })
   .catch((e) => {
+    console.error("Guide initialisation failed",e);
     $("loading").innerHTML =
       '<div>Form could not be loaded.<br><button onclick="location.reload()">Try again</button></div>';
   });

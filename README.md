@@ -128,3 +128,9 @@ Geoff race scripts always open with a rotating classic NZ greeting and use restr
 
 
 Race-preview editorial emphasis leads with the selection, verified first-pick support (with coverage and outlet-group context), the original form-ladder leader and the most material new runner/going change. One short qualification distinguishes a provisional watch from a firm selection; evidence-confidence ratings are unchanged. Fresh public social tips require a direct X/Twitter status URL, named author, exact active runner and verified publication time within3 hours. They remain attributed opinions. Unreadable posts and unsupported timestamps are omitted.
+
+
+### Missing-link ranking and video recovery
+Only active runners with usable shared-race links are rankable on the form ladder. Unlinked runners retain their race/trial details and published tip support in the full field, with a separate tipster-support callout; a neutral internal score never gives them a ladder position. The same rankable flag drives Form, Ladder, comparison labels and future saved baseline/scenario lists. Existing pre-race selections and archived clips are not rewritten using results.
+
+The race-video manifest also reports safe job-status metadata. Narration can be published independently while its single provider animation is still rendering. No duplicate paid render is started to clear a delay. The original Race1 clip includes an erroneous Soldi-ladder sentence; publication requires a local correction flag, with that sentence cut at measured audio boundaries rather than a new paid performance. The original saved snapshot is retained for audit.

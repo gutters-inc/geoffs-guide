@@ -4,6 +4,7 @@ if sys.stdin.isatty():
  attrs=termios.tcgetattr(sys.stdin.fileno());attrs[3]&=~termios.ECHO;termios.tcsetattr(sys.stdin.fileno(),termios.TCSANOW,attrs)
 print('Ready for race-video JSON on stdin (hidden).',flush=True)
 x=json.loads(sys.stdin.readline());token=x.pop('token');body=x.pop('payload',x)
+if body.get('audioPath'):body['audioBase64']=base64.b64encode(pathlib.Path(body.pop('audioPath')).read_bytes()).decode()
 if body.get('videoPath'):body['videoBase64']=base64.b64encode(pathlib.Path(body.pop('videoPath')).read_bytes()).decode()
 if body.get('captionsPath'):body['captions']=pathlib.Path(body.pop('captionsPath')).read_text()
 url='https://geoffs-guide-stakes-day-2026.aguthridge.chatgpt.site/api/race-videos'

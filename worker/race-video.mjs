@@ -1,17 +1,17 @@
 const RACE_VIDEO_INDEX='race-videos/2026-11-07/index.json';
 const rvJSON=(body,status=200)=>Response.json(body,{status,headers:{'cache-control':'no-store'}});
-export async function raceVideoIndex(env){const o=await env.BUCKET?.get(RACE_VIDEO_INDEX);return o?await o.json():{videos:{}}}
+export async function raceVideoIndex(env){const o=await env.BUCKET?.get(RACE_VIDEO_INDEX),index=o?await o.json():{videos:{}};index.jobs={};await Promise.all(Array.from({length:9},async(_,i)=>{const j=await env.BUCKET?.get(`race-videos/2026-11-07/r${i+1}-job.json`);if(j){const x=await j.json();index.jobs[String(i+1)]={state:x.state,claimedAt:x.claimedAt,updatedAt:x.updatedAt||x.claimedAt,error:x.error||null}}}));return index}
 export async function raceVideoResponse(request,env,ctx,services={}){
  const url=new URL(request.url),path=url.pathname;if(!path.startsWith('/api/race-videos')&&!path.startsWith('/race-videos/'))return null;
  if(!env.BUCKET)return rvJSON({error:'Video storage unavailable'},503);
  const bucket=env.BUCKET,now=services.now?.()??Date.now();
  if(path==='/api/race-videos'&&request.method==='GET')return rvJSON(await raceVideoIndex(env));
- const media=path.match(/^\/race-videos\/([1-9])\.(mp4|vtt)$/);
+ const media=path.match(/^\/race-videos\/([1-9])\.(mp4|mp3|vtt)$/);
  if(media){
   if(!['GET','HEAD'].includes(request.method))return new Response('Method not allowed',{status:405});
   const key=`race-videos/2026-11-07/${media[1]}.${media[2]}`,head=await bucket.head(key);if(!head)return new Response('Not found',{status:404});
-  const headers={'content-type':media[2]==='mp4'?'video/mp4':'text/vtt; charset=utf-8','cache-control':'public, max-age=60','content-length':String(head.size),'accept-ranges':'bytes'};let range;
-  if(media[2]==='mp4'&&request.headers.has('range')){const m=request.headers.get('range').match(/^bytes=(\d*)-(\d*)$/);let start=Number(m?.[1]||0),end=m?.[2]?Number(m[2]):head.size-1;if(m&&!m[1]&&m[2]){start=Math.max(0,head.size-Number(m[2]));end=head.size-1}if(!m||!m[1]&&!m[2]||start>=head.size||end<start)return new Response(null,{status:416,headers:{...headers,'content-range':`bytes */${head.size}`}});end=Math.min(end,head.size-1);range={offset:start,length:end-start+1};headers['content-length']=String(range.length);headers['content-range']=`bytes ${start}-${end}/${head.size}`}
+  const headers={'content-type':media[2]==='mp4'?'video/mp4':media[2]==='mp3'?'audio/mpeg':'text/vtt; charset=utf-8','cache-control':'public, max-age=60','content-length':String(head.size),'accept-ranges':'bytes'};let range;
+  if(media[2]!=='vtt'&&request.headers.has('range')){const m=request.headers.get('range').match(/^bytes=(\d*)-(\d*)$/);let start=Number(m?.[1]||0),end=m?.[2]?Number(m[2]):head.size-1;if(m&&!m[1]&&m[2]){start=Math.max(0,head.size-Number(m[2]));end=head.size-1}if(!m||!m[1]&&!m[2]||start>=head.size||end<start)return new Response(null,{status:416,headers:{...headers,'content-range':`bytes */${head.size}`}});end=Math.min(end,head.size-1);range={offset:start,length:end-start+1};headers['content-length']=String(range.length);headers['content-range']=`bytes ${start}-${end}/${head.size}`}
   if(request.method==='HEAD')return new Response(null,{status:range?206:200,headers});const object=await bucket.get(key,range?{range}:undefined);return new Response(object.body,{status:range?206:200,headers});
  }
  if(request.method!=='POST')return rvJSON({error:'Method not allowed'},405);
@@ -30,20 +30,29 @@ export async function raceVideoResponse(request,env,ctx,services={}){
   const job={race:n,state:'claimed',id:crypto.randomUUID(),preparedAt:preview.preparedAt,claimedAt:new Date(now).toISOString(),voiceId:'fokq7YjnEjprXL6oclZl',speechCreditCap:1000,videoCreditCap:16000};
   const written=await bucket.put(ledgerKey,JSON.stringify(job),{onlyIf:{etagDoesNotMatch:'*'}});return rvJSON(written?{claimed:true,job,preview}:{claimed:false,reason:'Another run already claimed this race'});
  }
- if(!existing)return rvJSON({error:'Claim this race first'},409);const job=await existing.json();if(job.id!==p.id)return rvJSON({error:'Wrong job ID'},409);if(job.state==='published')return rvJSON({published:true,idempotent:true});
+ if(!existing)return rvJSON({error:'Claim this race first'},409);const job=await existing.json();if(job.id!==p.id)return rvJSON({error:'Wrong job ID'},409);if(job.state==='published'&&!(p.action==='publish'&&p.correctionApplied===true&&!job.correctionApplied))return rvJSON({published:true,idempotent:true});
  if(p.action==='progress'||p.action==='failed'){
   const update={...job,state:p.action==='failed'?'failed':String(p.state||'working').slice(0,40),updatedAt:new Date(now).toISOString()};for(const k of ['flowId','speechNodeId','videoNodeId','speechSessionId','videoSessionId','error'])if(p[k])update[k]=String(p[k]).slice(0,k==='error'?250:100);await bucket.put(ledgerKey,JSON.stringify(update));return rvJSON(update);
  }
+ if(p.action==='publish-audio'){
+  const duration=Number(p.duration);let bytes;try{bytes=Uint8Array.from(atob(p.audioBase64||''),c=>c.charCodeAt(0))}catch{return rvJSON({error:'Invalid audio'},400)}
+  if(!Number.isFinite(duration)||duration<10||duration>45||bytes.length<1000||bytes.length>2000000)return rvJSON({error:'Narration must be10–45 seconds and under2 MB'},400);
+  await bucket.put(`race-videos/2026-11-07/${n}.mp3`,bytes,{httpMetadata:{contentType:'audio/mpeg'}});
+  const info={race:n,preparedAt:job.preparedAt,duration,audio:`/race-videos/${n}.mp3`,presenter:'Geoff',recordingNote:typeof p.note==='string'?p.note.slice(0,220):null,voice:{lang:'en-NZ',kind:'synthetic',recorded:true,embeddedAudio:true,engine:'ElevenLabs',voiceId:job.voiceId}};
+  for(let attempt=0;attempt<5;attempt++){const o=await bucket.get(RACE_VIDEO_INDEX),index=o?await o.json():{videos:{}};if(index.videos[String(n)]?.video)return rvJSON({published:true,idempotent:true});index.videos[String(n)]=info;const w=await bucket.put(RACE_VIDEO_INDEX,JSON.stringify(index),{onlyIf:o?{etagMatches:o.etag}:{etagDoesNotMatch:'*'}});if(w)return rvJSON({audioPublished:true,info})}
+  return rvJSON({error:'Index busy; retry publication without new narration'},503);
+ }
+ if(p.action==='publish'&&n===1&&job.preparedAt==='2026-11-07T01:32:45.742Z'&&!p.correctionApplied)return rvJSON({error:'This recorded clip contains the old Soldi ladder-ranking error. Remove that sentence locally and publish with correctionApplied:true; never regenerate or change the saved selection.'},409);
  if(p.action!=='publish')return rvJSON({error:'Invalid action'},400);
- if(job.preparedAt!==preview.preparedAt||!['claimed','working','speech','video','finishing'].includes(job.state))return rvJSON({error:'Job is no longer publishable'},409);
+ if(job.preparedAt!==preview.preparedAt||!['claimed','working','speech','video','finishing','published'].includes(job.state))return rvJSON({error:'Job is no longer publishable'},409);
  const duration=Number(p.duration);if(!Number.isFinite(duration)||duration<10||duration>45)return rvJSON({error:'Video must be10–45 seconds'},400);
  let bytes;try{bytes=Uint8Array.from(atob(p.videoBase64||''),c=>c.charCodeAt(0))}catch{return rvJSON({error:'Invalid video bytes'},400)}
  if(bytes.length<1000||bytes.length>8000000||String.fromCharCode(...bytes.slice(4,8))!=='ftyp')return rvJSON({error:'MP4 video required (8 MB maximum)'},400);
  const captions=String(p.captions||'');if(captions.length>30000||captions&&!captions.startsWith('WEBVTT'))return rvJSON({error:'Invalid captions'},400);
  await bucket.put(`race-videos/2026-11-07/${n}.mp4`,bytes,{httpMetadata:{contentType:'video/mp4'}});if(captions)await bucket.put(`race-videos/2026-11-07/${n}.vtt`,captions,{httpMetadata:{contentType:'text/vtt'}});
  // Merge concurrent publications using conditional retries rather than overwriting another race.
- const info={race:n,preparedAt:job.preparedAt,publishedAt:new Date(now).toISOString(),duration,video:`/race-videos/${n}.mp4`,...(captions?{captions:`/race-videos/${n}.vtt`}:{}),presenter:'Geoff',voice:{lang:'en-NZ',kind:'synthetic',recorded:true,embeddedAudio:true,engine:'ElevenLabs',voiceId:job.voiceId}};
+ const info={race:n,...(p.correctionApplied?{recordingNote:'Saved pre-race narration; video published after jump. The incorrect Soldi ladder sentence has been removed.',omittedNarration:['Soldi tops our form ladder.']}:{}),preparedAt:job.preparedAt,publishedAt:new Date(now).toISOString(),duration,video:`/race-videos/${n}.mp4${p.correctionApplied?'?revision=ranking-correction':''}`,...(captions?{captions:`/race-videos/${n}.vtt`}:{}),presenter:'Geoff',voice:{lang:'en-NZ',kind:'synthetic',recorded:true,embeddedAudio:true,engine:'ElevenLabs',voiceId:job.voiceId}};
  let saved=false;for(let attempt=0;attempt<5;attempt++){const obj=await bucket.get(RACE_VIDEO_INDEX),index=obj?await obj.json():{videos:{}};index.videos[String(n)]=info;const w=await bucket.put(RACE_VIDEO_INDEX,JSON.stringify(index),{onlyIf:obj?{etagMatches:obj.etag}:{etagDoesNotMatch:'*'}});if(w){saved=true;break}}
  if(!saved)return rvJSON({error:'Video saved but index busy; retry publication without regeneration'},503);
- await bucket.put(ledgerKey,JSON.stringify({...job,state:'published',publishedAt:info.publishedAt}));return rvJSON({published:true,info});
+ await bucket.put(ledgerKey,JSON.stringify({...job,state:'published',correctionApplied:!!p.correctionApplied,publishedAt:info.publishedAt}));return rvJSON({published:true,info});
 }

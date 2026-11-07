@@ -97,3 +97,6 @@ assert.equal(M.confidence({history:[{}],ownRecentRuns:3,ownGoingRuns:0,daysSince
 assert.equal(M.confidence({history:[{}],ownRecentRuns:3,daysSinceRun:14,evidence:'Supported'},{separateGroups:true}).level,'low');
 assert.equal(M.confidence({history:[{}],ownRecentRuns:3,daysSinceRun:14,evidence:'Supported'}).level,'moderate');
 const review=require('./dist/lessons.json');assert.equal(review.originalWins,3);assert.equal(review.revisedWins,1);assert.equal(review.firmRevisedPicks,4);
+
+// Neutral defaults without comparative links must not outrank assessed horses.
+{const d=require('./dist/data.json'),g=M.build(d),field=M.rate(g,d.races[0]),soldi=field.find(h=>h.name==='SOLDI'),supreme=field.find(h=>h.name==="SHE'S SUPREME");assert.equal(soldi.raw,0);assert.equal(soldi.rankable,false);assert.equal(supreme.rankable,true);assert(field.indexOf(supreme)<field.indexOf(soldi));assert.equal(field.find(h=>h.rankable).name,"SHE'S SUPREME");}
